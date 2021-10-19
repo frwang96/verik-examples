@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-package uvmprimer02
+package uvmprimer02.dut
 
-import io.verik.core.*
-
-@Top
-class TbTop : Module()
+enum class Op {
+    NOP,
+    ADD,
+    AND,
+    XOR,
+    MUL,
+    RST
+}
