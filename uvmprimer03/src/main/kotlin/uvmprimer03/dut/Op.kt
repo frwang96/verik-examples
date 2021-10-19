@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-rootProject.name = "verik-examples"
+package uvmprimer03.dut
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
-    }
+enum class Op {
+    NOP,
+    ADD,
+    AND,
+    XOR,
+    MUL,
+    RST
 }
-
-include("uvmprimer02")
-include("uvmprimer03")
