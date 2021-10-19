@@ -1,0 +1,11 @@
+*
+!*/
+!.gitignore
+
+!codeStyles/codeStyleConfig.xml
+!codeStyles/Project.xml
+!copyright/apache.xml
+!copyright/profiles_settings.xml
+!inspectionProfiles/Project_Default.xml
+!misc.xml
+!vcs.xml

@@ -1,0 +1,7 @@
+/.run/
+.gradle/
+out/
+build/
+
+*.swp
+.DS_Store
