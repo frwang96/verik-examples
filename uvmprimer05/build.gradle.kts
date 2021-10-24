@@ -14,15 +14,6 @@
  * limitations under the License.
  */
 
-rootProject.name = "verik-examples"
-
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
-    }
+verik {
+    debug = true
 }
-
-include("uvmprimer02")
-include("uvmprimer03")
-include("uvmprimer05")

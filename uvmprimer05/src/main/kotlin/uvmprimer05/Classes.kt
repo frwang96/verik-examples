@@ -14,15 +14,27 @@
  * limitations under the License.
  */
 
-rootProject.name = "verik-examples"
+package uvmprimer05
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
+import io.verik.core.*
+
+@Top
+class ClassesTop : Module() {
+
+    @Run
+    fun run() {
+        val rectangle = Rectangle(50, 20)
+        println("Rectangle area: ${rectangle.area()}")
+        val square = Square(50)
+        println("Square area: ${square.area()}")
     }
 }
 
-include("uvmprimer02")
-include("uvmprimer03")
-include("uvmprimer05")
+open class Rectangle(val width: Int, val length: Int) {
+
+    fun area(): Int {
+        return width * length
+    }
+}
+
+class Square(side: Int) : Rectangle(side, side)
