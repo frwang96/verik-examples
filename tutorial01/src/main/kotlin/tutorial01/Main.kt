@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-rootProject.name = "verik-examples"
+package tutorial01
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
+import io.verik.core.*
+
+@Top
+class Main : Module() {
+
+    @Run
+    fun helloWorld() {
+        println("Hello World!")
+        finish()
     }
 }
-
-include("tutorial01")
-include("uvmprimer02")
-include("uvmprimer03")
-include("uvmprimer05")
-include("uvmprimer06")
-include("uvmprimer07")

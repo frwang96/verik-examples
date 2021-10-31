@@ -14,18 +14,35 @@
  * limitations under the License.
  */
 
-rootProject.name = "verik-examples"
+package uvmprimer07
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
+import io.verik.core.*
+
+@Top
+class StaticMethodsTop : Module() {
+
+    @Run
+    fun run() {
+        LionCage.cageLion(Lion("Kimba"))
+        LionCage.cageLion(Lion("Simba"))
+        LionCage.cageLion(Lion("Mustafa"))
+        LionCage.listLions()
     }
 }
 
-include("tutorial01")
-include("uvmprimer02")
-include("uvmprimer03")
-include("uvmprimer05")
-include("uvmprimer06")
-include("uvmprimer07")
+abstract class Animal
+
+class Lion(val name: String) : Animal()
+
+object LionCage {
+
+    val cage = ArrayList<Lion>()
+
+    fun cageLion(lion: Lion) {
+        cage.add(lion)
+    }
+
+    fun listLions() {
+        cage.forEach { println(it.name) }
+    }
+}
