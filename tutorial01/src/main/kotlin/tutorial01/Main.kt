@@ -18,7 +18,7 @@ package tutorial01
 
 import io.verik.core.*
 
-@Top
+@SimTop
 class Main : Module() {
 
     @Run

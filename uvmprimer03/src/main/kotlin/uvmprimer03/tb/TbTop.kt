@@ -19,7 +19,7 @@ package uvmprimer03.tb
 import io.verik.core.*
 import uvmprimer03.dut.TinyAlu
 
-@Top
+@SimTop
 class TbTop : Module() {
 
     @Make

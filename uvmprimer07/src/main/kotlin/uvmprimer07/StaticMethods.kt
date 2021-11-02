@@ -18,7 +18,7 @@ package uvmprimer07
 
 import io.verik.core.*
 
-@Top
+@SimTop
 class StaticMethodsTop : Module() {
 
     @Run

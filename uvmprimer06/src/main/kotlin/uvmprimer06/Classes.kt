@@ -18,7 +18,7 @@ package uvmprimer06
 
 import io.verik.core.*
 
-@Top
+@SimTop
 class ClassesTop : Module() {
 
     @Run

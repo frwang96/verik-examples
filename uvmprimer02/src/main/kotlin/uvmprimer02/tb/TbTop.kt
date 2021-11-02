@@ -20,7 +20,7 @@ import io.verik.core.*
 import uvmprimer02.dut.Op
 import uvmprimer02.dut.TinyAlu
 
-@Top
+@SimTop
 class TbTop : Module() {
 
     var clk: Boolean = nc()
