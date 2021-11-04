@@ -24,8 +24,10 @@ pluginManagement {
 }
 
 include("tutorial01")
+
 include("uvmprimer02")
 include("uvmprimer03")
 include("uvmprimer05")
 include("uvmprimer06")
 include("uvmprimer07")
+include("uvmprimer08")
