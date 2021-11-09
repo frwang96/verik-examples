@@ -38,10 +38,10 @@ class SingleCycleAlu(
             } else {
                 done_aax = (start && op != Op.NOP)
                 result_aax = when(op) {
-                    Op.ADD -> a add b
-                    Op.AND -> a and b
-                    Op.XOR -> a xor b
-                    else -> u0<`16`>()
+                    Op.ADD -> (a add b).uext()
+                    Op.AND -> (a and b).uext()
+                    Op.XOR -> (a xor b).uext()
+                    else -> u0()
                 }
             }
         }

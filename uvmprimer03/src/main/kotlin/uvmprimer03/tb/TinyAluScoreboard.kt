@@ -25,11 +25,11 @@ class TinyAluScoreboard(val bfm: TinyAluBfm) : Module() {
     fun check() {
         on(posedge(bfm.done)) {
             val expected: Ubit<`16`> = when(bfm.op) {
-                Op.ADD -> bfm.a add bfm.b
-                Op.AND -> bfm.a and bfm.b
-                Op.XOR -> bfm.a xor bfm.b
-                Op.MUL -> bfm.a mul bfm.b
-                else -> u0<`16`>()
+                Op.ADD -> (bfm.a add bfm.b).uext()
+                Op.AND -> (bfm.a and bfm.b).uext()
+                Op.XOR -> (bfm.a xor bfm.b).uext()
+                Op.MUL -> (bfm.a mul bfm.b).uext()
+                else -> u0()
             }
             if (bfm.op != Op.NOP && bfm.op != Op.RST) {
                 print("[${time()}] ")
