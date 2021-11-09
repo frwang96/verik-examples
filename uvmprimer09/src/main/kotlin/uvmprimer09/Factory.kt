@@ -23,8 +23,28 @@ class FactoryTop : Module() {
 
     @Run
     fun run() {
-        val lion = AnimalFactory.makeAnimal("lion", 15, "Mustafa")
-        lion.makeSound()
+        val lionCage = AnimalCage<Lion>()
+        val chickenCage = AnimalCage<Chicken>()
+
+        val lionMustafa = AnimalFactory.makeAnimal("lion", 15, "Mustafa")
+        lionMustafa.makeSound()
+        if (lionMustafa is Lion)
+            lionCage.cageAnimal(lionMustafa)
+
+        val lionSimba = AnimalFactory.makeAnimal("lion", 2, "Simba")
+        if (lionSimba is Lion)
+            lionCage.cageAnimal(lionSimba)
+
+        val chickenClucker = AnimalFactory.makeAnimal("chicken", 1, "Clucker")
+        chickenCage.cageAnimal(chickenClucker as Chicken)
+
+        val chickenBoomer = AnimalFactory.makeAnimal("chicken", 1, "Boomer")
+        chickenCage.cageAnimal(chickenBoomer as Chicken)
+
+        println("--- Lions ---")
+        lionCage.listAnimals()
+        println("--- Chickens ---")
+        chickenCage.listAnimals()
     }
 }
 
@@ -44,6 +64,19 @@ class Chicken(age: Int, name: String) : Animal(age, name) {
 
     override fun makeSound() {
         println("The Chicken, $name, $age, says BECAWW")
+    }
+}
+
+class AnimalCage<A : Animal> {
+
+    private val cage = ArrayList<A>()
+
+    fun cageAnimal(animal: A) {
+        cage.add(animal)
+    }
+
+    fun listAnimals() {
+        cage.forEach { println(it.name) }
     }
 }
 
