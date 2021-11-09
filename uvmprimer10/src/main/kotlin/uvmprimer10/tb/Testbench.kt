@@ -14,22 +14,9 @@
  * limitations under the License.
  */
 
-rootProject.name = "verik-examples"
+package uvmprimer10.tb
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
-    }
+class Testbench {
+
+    fun execute() {}
 }
-
-include("tutorial01")
-
-include("uvmprimer02")
-include("uvmprimer03")
-include("uvmprimer05")
-include("uvmprimer06")
-include("uvmprimer07")
-include("uvmprimer08")
-include("uvmprimer09")
-include("uvmprimer10")

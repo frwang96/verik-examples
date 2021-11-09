@@ -14,22 +14,32 @@
  * limitations under the License.
  */
 
-rootProject.name = "verik-examples"
+package uvmprimer10.tb
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
+import io.verik.core.*
+import uvmprimer10.dut.TinyAlu
+
+@SimTop
+class Top : Module() {
+
+    @Make
+    val bfm = TinyAluBfm()
+
+    @Make
+    val tinyAlu = TinyAlu(
+        clk = bfm.clk,
+        rst_n = bfm.rst_n,
+        a = bfm.a,
+        b = bfm.b,
+        op = bfm.op,
+        start = bfm.start,
+        done = bfm.done,
+        result = bfm.result
+    )
+
+    @Run
+    fun test() {
+        val testbench = Testbench()
+        testbench.execute()
     }
 }
-
-include("tutorial01")
-
-include("uvmprimer02")
-include("uvmprimer03")
-include("uvmprimer05")
-include("uvmprimer06")
-include("uvmprimer07")
-include("uvmprimer08")
-include("uvmprimer09")
-include("uvmprimer10")

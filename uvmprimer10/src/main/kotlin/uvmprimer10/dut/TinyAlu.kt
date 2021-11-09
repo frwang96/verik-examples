@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uvmprimer03.dut
+package uvmprimer10.dut
 
 import io.verik.core.*
 
