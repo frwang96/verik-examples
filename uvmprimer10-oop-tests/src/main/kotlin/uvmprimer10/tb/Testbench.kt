@@ -16,30 +16,7 @@
 
 package uvmprimer10.tb
 
-import io.verik.core.*
-import uvmprimer10.dut.TinyAlu
+class Testbench(val bfm: TinyAluBfm) {
 
-@SimTop
-class Top : Module() {
-
-    @Make
-    val bfm = TinyAluBfm()
-
-    @Make
-    val tinyAlu = TinyAlu(
-        clk = bfm.clk,
-        rst_n = bfm.rst_n,
-        a = bfm.a,
-        b = bfm.b,
-        op = bfm.op,
-        start = bfm.start,
-        done = bfm.done,
-        result = bfm.result
-    )
-
-    @Run
-    fun test() {
-        val testbench = Testbench()
-        testbench.execute()
-    }
+    fun execute() {}
 }

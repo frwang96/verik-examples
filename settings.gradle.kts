@@ -23,13 +23,13 @@ pluginManagement {
     }
 }
 
-include("tutorial01")
+include("tutorial01-overview")
 
-include("uvmprimer02")
-include("uvmprimer03")
-include("uvmprimer05")
-include("uvmprimer06")
-include("uvmprimer07")
-include("uvmprimer08")
-include("uvmprimer09")
-include("uvmprimer10")
+include("uvmprimer02-tests")
+include("uvmprimer03-interfaces")
+include("uvmprimer05-classes")
+include("uvmprimer06-polymorphism")
+include("uvmprimer07-objects")
+include("uvmprimer08-type-parameters")
+include("uvmprimer09-factory-pattern")
+include("uvmprimer10-oop-tests")

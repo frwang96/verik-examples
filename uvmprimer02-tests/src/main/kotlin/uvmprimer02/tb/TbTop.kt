@@ -91,9 +91,9 @@ class TbTop : Module() {
     fun scoreboard() {
         on(posedge(done)) {
             val expected: Ubit<`16`> = when(op) {
-                Op.ADD -> (a add b).uext()
-                Op.AND -> (a and b).uext()
-                Op.XOR -> (a xor b).uext()
+                Op.ADD -> (a add b).ext()
+                Op.AND -> (a and b).ext()
+                Op.XOR -> (a xor b).ext()
                 Op.MUL -> a mul b
                 else -> u0()
             }

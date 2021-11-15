@@ -38,9 +38,9 @@ class SingleCycleAlu(
             } else {
                 done_aax = (start && op != Op.NOP)
                 result_aax = when(op) {
-                    Op.ADD -> (a add b).uext()
-                    Op.AND -> (a and b).uext()
-                    Op.XOR -> (a xor b).uext()
+                    Op.ADD -> (a add b).ext()
+                    Op.AND -> (a and b).ext()
+                    Op.XOR -> (a xor b).ext()
                     else -> u0()
                 }
             }

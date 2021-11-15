@@ -50,7 +50,7 @@ class TinyAluBfm : ModuleInterface() {
     }
 
     @Task
-    fun sendOp(nextA: Ubit<`8`>, nextB: Ubit<`8`>, nextOp: Op) {
+    fun sendOp(nextA: Ubit<`8`>, nextB: Ubit<`8`>, nextOp: Op): Ubit<`16`> {
         op = nextOp
         if (nextOp == Op.RST) {
             wait(posedge(clk))
@@ -72,5 +72,6 @@ class TinyAluBfm : ModuleInterface() {
             }
             start = false
         }
+        return result
     }
 }
