@@ -24,6 +24,7 @@ pluginManagement {
 }
 
 include("tutorial01-overview")
+include("tutorial03-data-types")
 
 include("uvmprimer02-tests")
 include("uvmprimer03-interfaces")
