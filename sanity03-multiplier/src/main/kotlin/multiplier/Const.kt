@@ -14,28 +14,9 @@
  * limitations under the License.
  */
 
-rootProject.name = "verik-examples"
+package multiplier
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
-    }
-}
+import io.verik.core.*
 
-include("sanity01-count")
-include("sanity02-adder")
-include("sanity03-multiplier")
-include("sanity04-cache")
-
-include("tutorial01-overview")
-include("tutorial03-data-types")
-
-include("uvmprimer02-tests")
-include("uvmprimer03-interfaces")
-include("uvmprimer05-classes")
-include("uvmprimer06-polymorphism")
-include("uvmprimer07-objects")
-include("uvmprimer08-type-parameters")
-include("uvmprimer09-factory-pattern")
-include("uvmprimer10-oop-tests")
+typealias REQ_WIDTH = `8`
+typealias RSP_WIDTH = MUL<REQ_WIDTH, `2`>

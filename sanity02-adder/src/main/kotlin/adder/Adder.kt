@@ -14,28 +14,30 @@
  * limitations under the License.
  */
 
-rootProject.name = "verik-examples"
+package adder
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
+import io.verik.core.*
+
+class Adder<N : `*`>(
+    @In var a: Ubit<N>,
+    @In var b: Ubit<N>,
+    @Out var x: Ubit<N>
+) : Module() {
+
+    fun fullAdder(a: Boolean, b: Boolean, c: Boolean): Ubit<`2`> {
+        val x: Ubit<`2`> = u0()
+        x[0] = a xor b xor c
+        x[1] = (a && b) || (a && c) || (b && c)
+        return x
+    }
+
+    @Com
+    fun f() {
+        var c = false
+        for (i in 0 until i<N>()) {
+            val fa = fullAdder(a[i], b[i], c)
+            x[i] = fa[0]
+            c = fa[1]
+        }
     }
 }
-
-include("sanity01-count")
-include("sanity02-adder")
-include("sanity03-multiplier")
-include("sanity04-cache")
-
-include("tutorial01-overview")
-include("tutorial03-data-types")
-
-include("uvmprimer02-tests")
-include("uvmprimer03-interfaces")
-include("uvmprimer05-classes")
-include("uvmprimer06-polymorphism")
-include("uvmprimer07-objects")
-include("uvmprimer08-type-parameters")
-include("uvmprimer09-factory-pattern")
-include("uvmprimer10-oop-tests")

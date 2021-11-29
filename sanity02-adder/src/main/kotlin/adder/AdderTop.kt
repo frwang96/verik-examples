@@ -14,28 +14,32 @@
  * limitations under the License.
  */
 
-rootProject.name = "verik-examples"
+package adder
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
+import io.verik.core.*
+
+typealias WIDTH = `8`
+
+@SimTop
+class AdderTop : Module() {
+
+    var a: Ubit<WIDTH> = nc()
+    var b: Ubit<WIDTH> = nc()
+    var x: Ubit<WIDTH> = nc()
+
+    @Make
+    val adder = Adder<WIDTH>(a, b, x)
+
+    @Run
+    fun test() {
+        repeat(64) {
+            a = randomUbit()
+            b = randomUbit()
+            delay(1)
+            val expected = a + b
+            if (x == expected) print("PASS ")
+            else print("FAIL ")
+            println("$a + $b = $x")
+        }
     }
 }
-
-include("sanity01-count")
-include("sanity02-adder")
-include("sanity03-multiplier")
-include("sanity04-cache")
-
-include("tutorial01-overview")
-include("tutorial03-data-types")
-
-include("uvmprimer02-tests")
-include("uvmprimer03-interfaces")
-include("uvmprimer05-classes")
-include("uvmprimer06-polymorphism")
-include("uvmprimer07-objects")
-include("uvmprimer08-type-parameters")
-include("uvmprimer09-factory-pattern")
-include("uvmprimer10-oop-tests")

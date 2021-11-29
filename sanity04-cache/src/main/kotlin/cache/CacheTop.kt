@@ -14,28 +14,35 @@
  * limitations under the License.
  */
 
-rootProject.name = "verik-examples"
+package cache
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
+import io.verik.core.*
+
+@SimTop
+object CacheTop : Module() {
+
+    var clk = false
+
+    @Make
+    val txnIf_tb_cache = TxnIf(clk)
+
+    @Make
+    val txnIf_cache_mainMem = TxnIf(clk)
+
+    @Make
+    val cache = Cache(clk, txnIf_tb_cache.rx, txnIf_cache_mainMem.tx)
+
+    @Make
+    val mainMem = MainMem(clk, txnIf_cache_mainMem.rx)
+
+    @Make
+    val tb = CacheTb(txnIf_tb_cache.tb)
+
+    @Run
+    fun toggleClk() {
+        forever {
+            delay(1)
+            clk = !clk
+        }
     }
 }
-
-include("sanity01-count")
-include("sanity02-adder")
-include("sanity03-multiplier")
-include("sanity04-cache")
-
-include("tutorial01-overview")
-include("tutorial03-data-types")
-
-include("uvmprimer02-tests")
-include("uvmprimer03-interfaces")
-include("uvmprimer05-classes")
-include("uvmprimer06-polymorphism")
-include("uvmprimer07-objects")
-include("uvmprimer08-type-parameters")
-include("uvmprimer09-factory-pattern")
-include("uvmprimer10-oop-tests")

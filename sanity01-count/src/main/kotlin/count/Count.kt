@@ -14,28 +14,43 @@
  * limitations under the License.
  */
 
-rootProject.name = "verik-examples"
+package count
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
+import io.verik.core.*
+
+typealias WIDTH = `8`
+
+@SimTop
+object Count : Module() {
+
+    var clk = false
+    var rst = true
+    var count: Ubit<WIDTH> = u0()
+
+    @Seq
+    fun update() {
+        on(posedge(clk)) {
+            println("@${time()} count=$count")
+            if (rst) count = u0()
+            else count += u(1)
+        }
+    }
+
+    @Run
+    fun toggleClk() {
+        clk = false
+        forever {
+            delay(1)
+            clk = !clk
+        }
+    }
+
+    @Run
+    fun toggleRst() {
+        rst = true
+        delay(2)
+        rst = false
+        delay(16)
+        finish()
     }
 }
-
-include("sanity01-count")
-include("sanity02-adder")
-include("sanity03-multiplier")
-include("sanity04-cache")
-
-include("tutorial01-overview")
-include("tutorial03-data-types")
-
-include("uvmprimer02-tests")
-include("uvmprimer03-interfaces")
-include("uvmprimer05-classes")
-include("uvmprimer06-polymorphism")
-include("uvmprimer07-objects")
-include("uvmprimer08-type-parameters")
-include("uvmprimer09-factory-pattern")
-include("uvmprimer10-oop-tests")

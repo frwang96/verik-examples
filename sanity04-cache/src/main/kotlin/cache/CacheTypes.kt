@@ -14,28 +14,40 @@
  * limitations under the License.
  */
 
-rootProject.name = "verik-examples"
+package cache
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
-    }
+import io.verik.core.*
+
+typealias ADDR_WIDTH = `6`
+typealias DATA_WIDTh = `8`
+typealias TAG_WIDTH = `3`
+typealias INDEX_WIDTH = `3`
+
+typealias UbitAddr = Ubit<ADDR_WIDTH>
+typealias UbitData = Ubit<DATA_WIDTh>
+typealias UbitTag = Ubit<TAG_WIDTH>
+typealias UbitIndex = Ubit<INDEX_WIDTH>
+
+enum class Op {
+    NOP,
+    READ,
+    WRITE
 }
 
-include("sanity01-count")
-include("sanity02-adder")
-include("sanity03-multiplier")
-include("sanity04-cache")
+enum class State {
+    READY,
+    WRITEBACK,
+    FILL
+}
 
-include("tutorial01-overview")
-include("tutorial03-data-types")
+enum class Status {
+    INVALID,
+    CLEAN,
+    DIRTY
+}
 
-include("uvmprimer02-tests")
-include("uvmprimer03-interfaces")
-include("uvmprimer05-classes")
-include("uvmprimer06-polymorphism")
-include("uvmprimer07-objects")
-include("uvmprimer08-type-parameters")
-include("uvmprimer09-factory-pattern")
-include("uvmprimer10-oop-tests")
+class Line(
+    var status: Status,
+    var tag: UbitTag,
+    var data: UbitData
+) : Struct()
