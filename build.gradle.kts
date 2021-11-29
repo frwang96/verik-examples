@@ -21,16 +21,18 @@ plugins {
 }
 
 subprojects {
-    apply(plugin = "io.verik.verik-plugin")
-    dependencies {
-        val implementation by configurations
-        implementation("io.verik:verik-core:local-SNAPSHOT")
-    }
-    repositories {
-        mavenLocal()
-        mavenCentral()
-    }
-    configure<VerikPluginExtension> {
-        debug = true
+    subprojects {
+        apply(plugin = "io.verik.verik-plugin")
+        dependencies {
+            val implementation by configurations
+            implementation("io.verik:verik-core:local-SNAPSHOT")
+        }
+        repositories {
+            mavenLocal()
+            mavenCentral()
+        }
+        configure<VerikPluginExtension> {
+            debug = true
+        }
     }
 }

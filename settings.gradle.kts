@@ -23,19 +23,19 @@ pluginManagement {
     }
 }
 
-include("sanity01-count")
-include("sanity02-adder")
-include("sanity03-multiplier")
-include("sanity04-cache")
+include("sanity:01-count")
+include("sanity:02-adder")
+include("sanity:03-multiplier")
+include("sanity:04-cache")
 
-include("tutorial01-overview")
-include("tutorial03-data-types")
+include("tutorial:01-overview")
+include("tutorial:03-data-types")
 
-include("uvmprimer02-tests")
-include("uvmprimer03-interfaces")
-include("uvmprimer05-classes")
-include("uvmprimer06-polymorphism")
-include("uvmprimer07-objects")
-include("uvmprimer08-type-parameters")
-include("uvmprimer09-factory-pattern")
-include("uvmprimer10-oop-tests")
+include("uvmprimer:02-tests")
+include("uvmprimer:03-interfaces")
+include("uvmprimer:05-classes")
+include("uvmprimer:06-polymorphism")
+include("uvmprimer:07-objects")
+include("uvmprimer:08-type-parameters")
+include("uvmprimer:09-factory-pattern")
+include("uvmprimer:10-oop-tests")
