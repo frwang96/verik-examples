@@ -23,10 +23,6 @@ plugins {
 subprojects {
     subprojects {
         apply(plugin = "io.verik.verik-plugin")
-        dependencies {
-            val implementation by configurations
-            implementation("io.verik:verik-core:local-SNAPSHOT")
-        }
         repositories {
             mavenLocal()
             mavenCentral()
