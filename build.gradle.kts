@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import io.verik.plugin.VerikPluginExtension
-
 plugins {
     id("io.verik.verik-plugin") version "local-SNAPSHOT" apply false
 }
@@ -26,9 +24,6 @@ subprojects {
         repositories {
             mavenLocal()
             mavenCentral()
-        }
-        configure<VerikPluginExtension> {
-            debug = true
         }
     }
 }
