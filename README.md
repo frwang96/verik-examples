@@ -31,4 +31,6 @@ Miscellaneous projects that demonstrate various aspects of the language.
 - `01-count`: Simple counter module.
 - `02-adder`: Simple adder module.
 - `03-multiplier`: Simple multiplier module.
-- `04-cache`: Direct mapped cache.
+- `04-comb`: Various combinational logic.
+- `05-alu`: Simple ALU implementation.
+- `06-cache`: Direct mapped cache.

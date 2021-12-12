@@ -26,7 +26,9 @@ pluginManagement {
 include("sanity:01-count")
 include("sanity:02-adder")
 include("sanity:03-multiplier")
-include("sanity:04-cache")
+include("sanity:04-comb")
+include("sanity:05-alu")
+include("sanity:06-cache")
 
 include("tutorial:01-overview")
 include("tutorial:03-data-types")
