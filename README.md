@@ -3,12 +3,16 @@
 Example projects for [Verik](https://github.com/frwang96/verik). Refer to
 [template](https://github.com/frwang96/verik-template) for a template project.
 
-## tutorial
+## sanity
 
-Projects corresponding to the [tutorials](https://verik.io/tutorial).
+Miscellaneous projects that demonstrate various aspects of the language.
 
-- `01-overview`: Hello world project.
-- `03-data-types`: Demonstration of data types.
+- `01-count`: Counter module.
+- `02-adder`: Adder module.
+- `03-multiplier`: Multiplier module.
+- `04-comb`: Various combinational logic.
+- `05-alu`: Arithmetic logic unit.
+- `06-cache`: Direct mapped cache.
 
 ## uvmprimer
 
@@ -23,14 +27,3 @@ functionalities.
 - `08-type-parameters`: Type parameterized classes.
 - `09-factory-pattern`: Factory pattern for object instantiation.
 - `10-oop-tests`: Basic OOP testbench.
-
-## sanity
-
-Miscellaneous projects that demonstrate various aspects of the language.
-
-- `01-count`: Simple counter module.
-- `02-adder`: Simple adder module.
-- `03-multiplier`: Simple multiplier module.
-- `04-comb`: Various combinational logic.
-- `05-alu`: Simple ALU implementation.
-- `06-cache`: Direct mapped cache.

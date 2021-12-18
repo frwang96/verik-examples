@@ -30,9 +30,6 @@ include("sanity:04-comb")
 include("sanity:05-alu")
 include("sanity:06-cache")
 
-include("tutorial:01-overview")
-include("tutorial:03-data-types")
-
 include("uvmprimer:02-tests")
 include("uvmprimer:03-interfaces")
 include("uvmprimer:05-classes")
