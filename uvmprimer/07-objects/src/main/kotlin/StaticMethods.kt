@@ -17,7 +17,7 @@
 import io.verik.core.*
 
 @SimTop
-class StaticMethodsTop : Module() {
+object StaticMethodsTop : Module() {
 
     @Run
     fun run() {

@@ -1,7 +1,7 @@
 import io.verik.core.*
 
 @SimTop
-class MultiplyModuleTest : Module() {
+object MultiplyModuleTest : Module() {
 
     var clk: Boolean = nc()
     var mulIn: MultiplierInput = nc()

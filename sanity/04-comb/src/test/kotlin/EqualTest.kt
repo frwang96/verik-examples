@@ -1,7 +1,7 @@
 import io.verik.core.*
 
 @SimTop
-class EqualTest : Module() {
+object EqualTest : Module() {
 
     @Run
     fun test() {

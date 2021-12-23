@@ -1,7 +1,7 @@
 import io.verik.core.*
 
 @SimTop
-class AluTest : Module() {
+object AluTest : Module() {
 
     fun aluReference(a: Ubit<`32`>, b: Ubit<`32`>, func: AluFunc): Ubit<`32`> {
         return when (func) {

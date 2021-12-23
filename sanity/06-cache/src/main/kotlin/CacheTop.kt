@@ -28,10 +28,17 @@ object CacheTop : Module() {
     val txnIf_cache_mainMem = TxnIf(clk)
 
     @Make
-    val cache = Cache(clk, txnIf_tb_cache.rx, txnIf_cache_mainMem.tx)
+    val cache = Cache(
+        clk = clk,
+        ifRx = txnIf_tb_cache.rx,
+        ifTx = txnIf_cache_mainMem.tx
+    )
 
     @Make
-    val mainMem = MainMem(clk, txnIf_cache_mainMem.rx)
+    val mainMem = MainMem(
+        clk = clk,
+        ifRx = txnIf_cache_mainMem.rx
+    )
 
     @Make
     val tb = CacheTb(txnIf_tb_cache.tb)

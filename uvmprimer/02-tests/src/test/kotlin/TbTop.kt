@@ -17,7 +17,7 @@
 import io.verik.core.*
 
 @SimTop
-class TbTop : Module() {
+object TbTop : Module() {
 
     var clk: Boolean = nc()
     var rst_n: Boolean = nc()

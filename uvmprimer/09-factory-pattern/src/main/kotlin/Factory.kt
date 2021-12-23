@@ -17,7 +17,7 @@
 import io.verik.core.*
 
 @SimTop
-class FactoryTop : Module() {
+object FactoryTop : Module() {
 
     @Run
     fun run() {

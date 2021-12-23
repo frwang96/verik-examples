@@ -1,7 +1,7 @@
 import io.verik.core.*
 
 @SimTop
-class BitScanReverseTest : Module() {
+object BitScanReverseTest : Module() {
 
     fun bitScanReverseReference(a: Ubit<`4`>): Ubit<`2`> {
         var ret = u(0b00)

@@ -1,7 +1,7 @@
 import io.verik.core.*
 
 @SimTop
-class MultiplyFunctionTest : Module() {
+object MultiplyFunctionTest : Module() {
 
     @Run
     fun test() {

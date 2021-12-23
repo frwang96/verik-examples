@@ -17,7 +17,7 @@
 import io.verik.core.*
 
 @SimTop
-class CagesTop : Module() {
+object CagesTop : Module() {
 
     @Run
     fun run() {

@@ -1,7 +1,7 @@
 import io.verik.core.*
 
 @SimTop
-class FaTest : Module() {
+object FaTest : Module() {
 
     @Run
     fun test() {

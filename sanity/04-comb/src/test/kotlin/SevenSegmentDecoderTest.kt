@@ -1,7 +1,7 @@
 import io.verik.core.*
 
 @SimTop
-class SevenSegmentDecoderTest : Module() {
+object SevenSegmentDecoderTest : Module() {
 
     @Run
     fun test() {

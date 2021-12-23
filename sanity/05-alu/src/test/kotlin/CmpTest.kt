@@ -1,7 +1,7 @@
 import io.verik.core.*
 
 @SimTop
-class CmpTest : Module() {
+object CmpTest : Module() {
 
     @Run
     fun test() {

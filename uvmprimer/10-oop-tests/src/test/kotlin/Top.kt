@@ -17,7 +17,7 @@
 import io.verik.core.*
 
 @SimTop
-class Top : Module() {
+object Top : Module() {
 
     @Make
     val bfm = TinyAluBfm()

@@ -1,7 +1,7 @@
 import io.verik.core.*
 
 @SimTop
-class Sll32Test : Module() {
+object Sll32Test : Module() {
 
     @Run
     fun test() {
