@@ -54,8 +54,11 @@ class ThreeCycleAlu(
                 mult2 = mult1
                 result_mult = mult2
                 done1 = start && !done_mult
+                @Suppress("KotlinConstantConditions")
                 done2 = done1 && !done_mult
+                @Suppress("KotlinConstantConditions")
                 done3 = done2 && !done_mult
+                @Suppress("KotlinConstantConditions")
                 done_mult = done3 && !done_mult
             }
         }
