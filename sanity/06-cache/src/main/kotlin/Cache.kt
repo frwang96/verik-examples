@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
+@file:Verik
+
 import io.verik.core.*
 
 @SynthTop
 class Cache(
     @In var clk: Boolean,
-    var ifRx: TxnIf.TxnRx,
-    var ifTx: TxnIf.TxnTx
+    val ifRx: TxnIf.TxnRx,
+    val ifTx: TxnIf.TxnTx
 ) : Module() {
 
     val lines: Unpacked<EXP<INDEX_WIDTH>, Line> = nc()

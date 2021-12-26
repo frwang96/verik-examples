@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+@file:Verik
+
+import io.verik.core.*
+
 class Testbench(val bfm: TinyAluBfm) {
 
     fun execute() {}

@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+@file:Verik
+
+import io.verik.core.*
+
 enum class Op {
     NOP,
     ADD,

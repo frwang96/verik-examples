@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Verik
+
 import io.verik.core.*
 
 typealias ADDR_WIDTH = `6`
