@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Francis Wang
+ * Copyright (c) 2022 Francis Wang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
-plugins {
-    id("io.verik.verik-plugin") version "local-SNAPSHOT" apply false
-}
+@file:Verik
+
+package riscv
+
+import io.verik.core.*
+
+@SynthTop
+class RV32 : Module()

@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
-plugins {
-    id("io.verik.verik-plugin") version "local-SNAPSHOT" apply false
+subprojects {
+    apply(plugin = "io.verik.verik-plugin")
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
 }

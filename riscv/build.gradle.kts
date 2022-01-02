@@ -15,5 +15,10 @@
  */
 
 plugins {
-    id("io.verik.verik-plugin") version "local-SNAPSHOT" apply false
+    id("io.verik.verik-plugin")
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
 }
