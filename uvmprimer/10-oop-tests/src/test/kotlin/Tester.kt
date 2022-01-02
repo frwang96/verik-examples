@@ -23,7 +23,6 @@ class Tester(val bfm: TinyAluBfm) {
     @Task
     fun execute() {
         bfm.resetAlu()
-        bfm.sendOp(u0(), u0(), Op.RST)
         repeat(10) {
             val a = getData()
             val b = getData()
@@ -31,6 +30,8 @@ class Tester(val bfm: TinyAluBfm) {
             val result = bfm.sendOp(a, b, op)
             println("$a $op $b = $result")
         }
+        delay(100)
+        finish()
     }
 
     private fun getData(): Ubit<`8`> {

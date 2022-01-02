@@ -20,5 +20,11 @@ import io.verik.core.*
 
 class Testbench(val bfm: TinyAluBfm) {
 
-    fun execute() {}
+    @Task
+    fun execute() {
+        val tester = Tester(bfm)
+        val scoreboard = Scoreboard(bfm)
+        fork { tester.execute() }
+        fork { scoreboard.execute() }
+    }
 }
