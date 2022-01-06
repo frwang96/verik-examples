@@ -21,35 +21,35 @@ import io.verik.core.*
 @SimTop
 object MultiplyModuleTest : Module() {
 
-    var clk: Boolean = nc()
-    var mulIn: MultiplierInput = nc()
-    var mulInValid: Boolean = nc()
-    var res: Ubit<`64`> = nc()
-    var resValid: Boolean = nc()
+    val NUM_TESTS = 128
 
-    val numTests = 128
+    var clk: Boolean = nc()
+    var mul_in: MultiplierInput = nc()
+    var mul_in_valid: Boolean = nc()
+    var res: Ubit<`64`> = nc()
+    var res_valid: Boolean = nc()
 
     @Make
     val multiplier = FoldedMultiplier(
         clk = clk,
-        mulIn = mulIn,
-        mulInValid = mulInValid,
+        mul_in = mul_in,
+        mul_in_valid = mul_in_valid,
         res = res,
-        resValid = resValid
+        res_valid = res_valid
     )
 
     @Run
     fun test() {
-        repeat(numTests) {
+        repeat(NUM_TESTS) {
             val a: Ubit<`32`> = randomUbit()
             val b: Ubit<`32`> = randomUbit()
             val expected = a mul b
 
-            mulIn = MultiplierInput(a, b)
-            mulInValid = true
+            mul_in = MultiplierInput(a, b)
+            mul_in_valid = true
             wait(posedge(clk))
-            mulInValid = false
-            while (!resValid) wait(posedge(clk))
+            mul_in_valid = false
+            while (!res_valid) wait(posedge(clk))
             if (res != expected) {
                 println("FAIL $a * $b expected $expected actual $res")
                 fatal()
@@ -59,9 +59,9 @@ object MultiplyModuleTest : Module() {
     }
 
     @Run
-    fun toggleClk() {
+    fun runClk() {
         clk = false
-        repeat(numTests * 32 * 4) {
+        repeat(NUM_TESTS * 32 * 4) {
             clk = !clk
             delay(1)
         }

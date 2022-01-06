@@ -25,7 +25,7 @@ object Top : Module() {
     val bfm = TinyAluBfm()
 
     @Make
-    val tinyAlu = TinyAlu(
+    val tiny_alu = TinyAlu(
         clk = bfm.clk,
         rst_n = bfm.rst_n,
         a = bfm.a,

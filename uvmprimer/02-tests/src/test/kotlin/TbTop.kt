@@ -31,7 +31,7 @@ object TbTop : Module() {
     var result: Ubit<`16`> = nc()
 
     @Make
-    val tinyAlu = TinyAlu(
+    val tiny_alu = TinyAlu(
         clk = clk,
         rst_n = rst_n,
         a = a,
@@ -75,7 +75,7 @@ object TbTop : Module() {
     }
 
     @Run
-    fun toggleClk() {
+    fun runClk() {
         clk = false
         repeat(1000) {
             delay(10)

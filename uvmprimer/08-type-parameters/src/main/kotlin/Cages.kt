@@ -23,18 +23,18 @@ object CagesTop : Module() {
 
     @Run
     fun run() {
-        val lionCage = AnimalCage<Lion>()
-        lionCage.cageAnimal(Lion("Mustafa"))
-        lionCage.cageAnimal(Lion("Simba"))
+        val lion_cage = AnimalCage<Lion>()
+        lion_cage.cageAnimal(Lion("Mustafa"))
+        lion_cage.cageAnimal(Lion("Simba"))
 
-        val chickenCage = AnimalCage<Chicken>()
-        chickenCage.cageAnimal(Chicken("Little Red Hen"))
-        chickenCage.cageAnimal(Chicken("Lady Clucksalot"))
+        val chicken_cage = AnimalCage<Chicken>()
+        chicken_cage.cageAnimal(Chicken("Little Red Hen"))
+        chicken_cage.cageAnimal(Chicken("Lady Clucksalot"))
 
         println("-- Lions --")
-        lionCage.listAnimals()
+        lion_cage.listAnimals()
         println("-- Chickens --")
-        chickenCage.listAnimals()
+        chicken_cage.listAnimals()
     }
 }
 

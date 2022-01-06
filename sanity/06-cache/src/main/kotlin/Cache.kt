@@ -21,24 +21,24 @@ import io.verik.core.*
 @SynthTop
 class Cache(
     @In var clk: Boolean,
-    val ifRx: TxnIf.TxnRx,
-    val ifTx: TxnIf.TxnTx
+    val if_rx: TxnIf.TxnRx,
+    val if_tx: TxnIf.TxnTx
 ) : Module() {
 
     val lines: Unpacked<EXP<INDEX_WIDTH>, Line> = nc()
     var state: State = nc()
-    var curOp: Op = nc()
-    var curAddr: UbitAddr = nc()
-    var curData: UbitData = nc()
+    var cur_op: Op = nc()
+    var cur_addr: UbitAddr = nc()
+    var cur_data: UbitData = nc()
 
     @Seq
     fun update() {
         on(posedge(clk)) {
-            ifRx.rspVld = false
-            ifTx.rst = false
-            ifTx.reqOp = Op.NOP
-            if (ifRx.rst) {
-                ifTx.rst = true
+            if_rx.rsp_vld = false
+            if_tx.rst = false
+            if_tx.req_op = Op.NOP
+            if (if_rx.rst) {
+                if_tx.rst = true
                 state = State.READY
                 for (i in 0 until lines.size) {
                     lines[i] = Line(Status.INVALID, u0(), u0())
@@ -46,58 +46,56 @@ class Cache(
             } else {
                 when (state) {
                     State.READY -> {
-                        if (ifRx.reqOp != Op.NOP) {
-                            println("cache received op=${ifRx.reqOp} addr=0x${ifRx.reqAddr} data=0x${ifRx.reqData}")
-                            curOp = ifRx.reqOp
-                            curAddr = ifRx.reqAddr
-                            curData = ifRx.reqData
+                        if (if_rx.req_op != Op.NOP) {
+                            println("cache received op=${if_rx.req_op} addr=0x${if_rx.req_addr} data=0x${if_rx.req_data}")
+                            cur_op = if_rx.req_op
+                            cur_addr = if_rx.req_addr
+                            cur_data = if_rx.req_data
 
-                            val tag = getTag(ifRx.reqAddr)
-                            val index = getIndex(ifRx.reqAddr)
+                            val tag = getTag(if_rx.req_addr)
+                            val index = getIndex(if_rx.req_addr)
                             val line = lines[index]
                             if (line.status != Status.INVALID && line.tag == tag) {
-                                print("cache hit index=0x$index tag=0x$tag")
-                                println(" line.tag=0x${line.tag} line.status=${line.status}")
-                                if (ifRx.reqOp == Op.WRITE) {
-                                    lines[index].data = ifRx.reqData
+                                print("cache hit index=0x$index tag=0x$tag line.tag=0x${line.tag} line.status=${line.status}")
+                                if (if_rx.req_op == Op.WRITE) {
+                                    lines[index].data = if_rx.req_data
                                     lines[index].status = Status.DIRTY
                                 } else {
-                                    ifRx.rspVld = true
-                                    ifRx.rspData = line.data
+                                    if_rx.rsp_vld = true
+                                    if_rx.rsp_data = line.data
                                 }
                             } else {
-                                print("cache miss index=0x$index tag=0x$tag")
-                                println(" line.tag=0x${line.tag} line.status=${line.status}")
+                                print("cache miss index=0x$index tag=0x$tag line.tag=0x${line.tag} line.status=${line.status}")
                                 if (line.status == Status.DIRTY) {
-                                    ifTx.reqOp = Op.WRITE
-                                    ifTx.reqAddr = cat(line.tag, index)
-                                    ifTx.reqData = line.data
+                                    if_tx.req_op = Op.WRITE
+                                    if_tx.req_addr = cat(line.tag, index)
+                                    if_tx.req_data = line.data
                                     state = State.WRITEBACK
                                 } else {
-                                    ifTx.reqOp = Op.READ
-                                    ifTx.reqAddr = ifRx.reqAddr
+                                    if_tx.req_op = Op.READ
+                                    if_tx.req_addr = if_rx.req_addr
                                     state = State.FILL
                                 }
                             }
                         }
                     }
                     State.WRITEBACK -> {
-                        ifTx.reqOp = Op.READ
-                        ifTx.reqAddr = curAddr
+                        if_tx.req_op = Op.READ
+                        if_tx.req_addr = cur_addr
                         state = State.FILL
                     }
                     State.FILL -> {
-                        if (ifTx.rspVld) {
-                            val tag = getTag(curAddr)
-                            val index = getIndex(curAddr)
-                            println("cache fill index=0x$index tag=0x$tag data=0x${ifTx.rspData}")
-                            lines[index] = Line(Status.CLEAN, tag, ifTx.rspData)
-                            if (curOp == Op.WRITE) {
-                                lines[index].data = curData
+                        if (if_tx.rsp_vld) {
+                            val tag = getTag(cur_addr)
+                            val index = getIndex(cur_addr)
+                            println("cache fill index=0x$index tag=0x$tag data=0x${if_tx.rsp_data}")
+                            lines[index] = Line(Status.CLEAN, tag, if_tx.rsp_data)
+                            if (cur_op == Op.WRITE) {
+                                lines[index].data = cur_data
                                 lines[index].status = Status.DIRTY
                             } else {
-                                ifRx.rspVld = true
-                                ifRx.rspData = ifTx.rspData
+                                if_rx.rsp_vld = true
+                                if_rx.rsp_data = if_tx.rsp_data
                             }
                             state = State.READY
                         }

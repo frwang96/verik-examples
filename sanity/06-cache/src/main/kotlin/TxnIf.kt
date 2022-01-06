@@ -23,41 +23,41 @@ class TxnIf(
 ) : ModuleInterface() {
 
     var rst: Boolean = nc()
-    var reqOp: Op = nc()
-    var reqAddr: UbitAddr = nc()
-    var reqData: UbitData = nc()
-    var rspVld: Boolean = nc()
-    var rspData: UbitData = nc()
+    var req_op: Op = nc()
+    var req_addr: UbitAddr = nc()
+    var req_data: UbitData = nc()
+    var rsp_vld: Boolean = nc()
+    var rsp_data: UbitData = nc()
 
     @Make
     val tx = TxnTx(
         rst = rst,
-        reqOp = reqOp,
-        reqAddr = reqAddr,
-        reqData = reqData,
-        rspVld = rspVld,
-        rspData = rspData
+        req_op = req_op,
+        req_addr = req_addr,
+        req_data = req_data,
+        rsp_vld = rsp_vld,
+        rsp_data = rsp_data
     )
 
     @Make
     val rx = TxnRx(
         rst = rst,
-        reqOp = reqOp,
-        reqAddr = reqAddr,
-        reqData = reqData,
-        rspVld = rspVld,
-        rspData = rspData
+        req_op = req_op,
+        req_addr = req_addr,
+        req_data = req_data,
+        rsp_vld = rsp_vld,
+        rsp_data = rsp_data
     )
 
     @Make
     val cb = TxnCb(
         event = posedge(clk),
         rst = rst,
-        reqOp = reqOp,
-        reqAddr = reqAddr,
-        reqData = reqData,
-        rspVld = rspVld,
-        rspData = rspData
+        req_op = req_op,
+        req_addr = req_addr,
+        req_data = req_data,
+        rsp_vld = rsp_vld,
+        rsp_data = rsp_data
     )
 
     @Make
@@ -65,30 +65,30 @@ class TxnIf(
 
     class TxnTx(
         @Out var rst: Boolean,
-        @Out var reqOp: Op,
-        @Out var reqAddr: UbitAddr,
-        @Out var reqData: UbitData,
-        @In var rspVld: Boolean,
-        @In var rspData: UbitData
+        @Out var req_op: Op,
+        @Out var req_addr: UbitAddr,
+        @Out var req_data: UbitData,
+        @In var rsp_vld: Boolean,
+        @In var rsp_data: UbitData
     ) : ModulePort()
 
     class TxnRx(
         @In var rst: Boolean,
-        @In var reqOp: Op,
-        @In var reqAddr: UbitAddr,
-        @In var reqData: UbitData,
-        @Out var rspVld: Boolean,
-        @Out var rspData: UbitData
+        @In var req_op: Op,
+        @In var req_addr: UbitAddr,
+        @In var req_data: UbitData,
+        @Out var rsp_vld: Boolean,
+        @Out var rsp_data: UbitData
     ) : ModulePort()
 
     class TxnCb(
         override val event: Event,
         @Out var rst: Boolean,
-        @Out var reqOp: Op,
-        @Out var reqAddr: UbitAddr,
-        @Out var reqData: UbitData,
-        @In var rspVld: Boolean,
-        @In var rspData: UbitData
+        @Out var req_op: Op,
+        @Out var req_addr: UbitAddr,
+        @Out var req_data: UbitData,
+        @In var rsp_vld: Boolean,
+        @In var rsp_data: UbitData
     ) : ClockingBlock()
 
     class TxnTb(

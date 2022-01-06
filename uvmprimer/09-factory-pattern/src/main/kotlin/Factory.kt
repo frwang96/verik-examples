@@ -23,28 +23,28 @@ object FactoryTop : Module() {
 
     @Run
     fun run() {
-        val lionCage = AnimalCage<Lion>()
-        val chickenCage = AnimalCage<Chicken>()
+        val lion_cage = AnimalCage<Lion>()
+        val chicken_cage = AnimalCage<Chicken>()
 
-        val lionMustafa = AnimalFactory.makeAnimal("lion", 15, "Mustafa")
-        lionMustafa.makeSound()
-        if (lionMustafa is Lion)
-            lionCage.cageAnimal(lionMustafa)
+        val lion_mustafa = AnimalFactory.makeAnimal("lion", 15, "Mustafa")
+        lion_mustafa.makeSound()
+        if (lion_mustafa is Lion)
+            lion_cage.cageAnimal(lion_mustafa)
 
-        val lionSimba = AnimalFactory.makeAnimal("lion", 2, "Simba")
-        if (lionSimba is Lion)
-            lionCage.cageAnimal(lionSimba)
+        val lion_simba = AnimalFactory.makeAnimal("lion", 2, "Simba")
+        if (lion_simba is Lion)
+            lion_cage.cageAnimal(lion_simba)
 
-        val chickenClucker = AnimalFactory.makeAnimal("chicken", 1, "Clucker")
-        chickenCage.cageAnimal(chickenClucker as Chicken)
+        val chicken_clucker = AnimalFactory.makeAnimal("chicken", 1, "Clucker")
+        chicken_cage.cageAnimal(chicken_clucker as Chicken)
 
-        val chickenBoomer = AnimalFactory.makeAnimal("chicken", 1, "Boomer")
-        chickenCage.cageAnimal(chickenBoomer as Chicken)
+        val chicken_boomer = AnimalFactory.makeAnimal("chicken", 1, "Boomer")
+        chicken_cage.cageAnimal(chicken_boomer as Chicken)
 
         println("--- Lions ---")
-        lionCage.listAnimals()
+        lion_cage.listAnimals()
         println("--- Chickens ---")
-        chickenCage.listAnimals()
+        chicken_cage.listAnimals()
     }
 }
 

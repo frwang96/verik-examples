@@ -24,26 +24,26 @@ object CacheTop : Module() {
     var clk = false
 
     @Make
-    val txnIf_tb_cache = TxnIf(clk)
+    val if_tb_cache = TxnIf(clk)
 
     @Make
-    val txnIf_cache_mainMem = TxnIf(clk)
+    val if_cache_main_mem = TxnIf(clk)
 
     @Make
     val cache = Cache(
         clk = clk,
-        ifRx = txnIf_tb_cache.rx,
-        ifTx = txnIf_cache_mainMem.tx
+        if_rx = if_tb_cache.rx,
+        if_tx = if_cache_main_mem.tx
     )
 
     @Make
-    val mainMem = MainMem(
+    val main_mem = MainMem(
         clk = clk,
-        ifRx = txnIf_cache_mainMem.rx
+        if_rx = if_cache_main_mem.rx
     )
 
     @Make
-    val tb = CacheTb(txnIf_tb_cache.tb)
+    val tb = CacheTb(if_tb_cache.tb)
 
     @Run
     fun toggleClk() {

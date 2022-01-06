@@ -30,7 +30,7 @@ class TinyAluBfm : ModuleInterface() {
     var result: Ubit<`16`> = nc()
 
     @Run
-    fun toggleClk() {
+    fun runClk() {
         clk = false
         repeat(1000) {
             delay(10)

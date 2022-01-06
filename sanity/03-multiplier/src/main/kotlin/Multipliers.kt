@@ -34,10 +34,10 @@ fun multiplyByAdding(a: Ubit<`32`>, b: Ubit<`32`>): Ubit<`64`> {
 
 class FoldedMultiplier(
     @In var clk: Boolean,
-    @In var mulIn: MultiplierInput,
-    @In var mulInValid: Boolean,
+    @In var mul_in: MultiplierInput,
+    @In var mul_in_valid: Boolean,
     @Out var res: Ubit<`64`>,
-    @Out var resValid: Boolean
+    @Out var res_valid: Boolean
 ) : Module() {
 
     var a: Ubit<`32`> = nc()
@@ -49,9 +49,9 @@ class FoldedMultiplier(
     @Seq
     fun compute() {
         on(posedge(clk)) {
-            if (mulInValid) {
-                a = mulIn.a
-                b = mulIn.b
+            if (mul_in_valid) {
+                a = mul_in.a
+                b = mul_in.b
                 prod = u0()
                 tp = u0()
                 i = u(32)
@@ -66,8 +66,8 @@ class FoldedMultiplier(
     }
 
     @Com
-    fun setRes() {
+    fun comRes() {
         res = cat(prod, tp)
-        resValid = (i == u0<`*`>())
+        res_valid = (i == u0<`*`>())
     }
 }

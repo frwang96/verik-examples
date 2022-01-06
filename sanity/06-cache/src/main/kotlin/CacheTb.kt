@@ -19,7 +19,7 @@
 import io.verik.core.*
 
 class CacheTb(
-    val ifTb: TxnIf.TxnTb
+    val if_tb: TxnIf.TxnTb
 ) : Module() {
 
     val mem: Unpacked<EXP<ADDR_WIDTH>, UbitData> = nc()
@@ -40,16 +40,16 @@ class CacheTb(
         for (i in 0 until mem.size) {
             mem[i] = u0()
         }
-        wait(ifTb.cb)
-        ifTb.cb.rst = true
-        ifTb.cb.reqOp = Op.NOP
-        wait(ifTb.cb)
-        ifTb.cb.rst = false
+        wait(if_tb.cb)
+        if_tb.cb.rst = true
+        if_tb.cb.req_op = Op.NOP
+        wait(if_tb.cb)
+        if_tb.cb.rst = false
     }
 
     @Task
     fun transact() {
-        repeat(3) { wait(ifTb.cb) }
+        repeat(3) { wait(if_tb.cb) }
         if (random(1) == 0) {
             // write mem
             val addr: UbitAddr = randomUbit()
@@ -57,25 +57,25 @@ class CacheTb(
             mem[addr] = data
             println("tb write addr=0x$addr data=0x$data")
 
-            wait(ifTb.cb)
-            ifTb.cb.reqOp = Op.WRITE
-            ifTb.cb.reqAddr = addr
-            ifTb.cb.reqData = data
-            wait(ifTb.cb)
-            ifTb.cb.reqOp = Op.NOP
+            wait(if_tb.cb)
+            if_tb.cb.req_op = Op.WRITE
+            if_tb.cb.req_addr = addr
+            if_tb.cb.req_data = data
+            wait(if_tb.cb)
+            if_tb.cb.req_op = Op.NOP
         } else {
             // read mem
             val addr: UbitAddr = randomUbit()
             println("tb read addr=0x$addr")
 
-            wait(ifTb.cb)
-            ifTb.cb.reqOp = Op.READ
-            ifTb.cb.reqAddr = addr
-            wait(ifTb.cb)
-            ifTb.cb.reqOp = Op.NOP
+            wait(if_tb.cb)
+            if_tb.cb.req_op = Op.READ
+            if_tb.cb.req_addr = addr
+            wait(if_tb.cb)
+            if_tb.cb.req_op = Op.NOP
 
-            while (!ifTb.cb.rspVld) wait(ifTb.cb)
-            val data = ifTb.cb.rspData
+            while (!if_tb.cb.rsp_vld) wait(if_tb.cb)
+            val data = if_tb.cb.rsp_data
             val expected = mem[addr]
 
             if (data == expected) {

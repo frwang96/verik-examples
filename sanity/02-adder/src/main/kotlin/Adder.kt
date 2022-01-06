@@ -32,7 +32,7 @@ class Adder<N : `*`>(
     }
 
     @Com
-    fun f() {
+    fun comOutput() {
         var c = false
         for (i in 0 until i<N>()) {
             val fa = fullAdder(a[i], b[i], c)

@@ -37,7 +37,7 @@ object Count : Module() {
     }
 
     @Run
-    fun toggleClk() {
+    fun runClk() {
         clk = false
         forever {
             delay(1)
@@ -46,7 +46,7 @@ object Count : Module() {
     }
 
     @Run
-    fun toggleRst() {
+    fun runRst() {
         rst = true
         delay(2)
         rst = false

@@ -28,8 +28,6 @@ object VectorEqualTest : Module() {
         do {
             val a: Ubit<`16`> = randomUbit()
             val b: Ubit<`16`> = a
-            @Suppress("JoinDeclarationAndAssignment")
-            var actual: Ubit<`4`>
 
             if (!expected[0])
                 b[0] = !b[0]
@@ -40,7 +38,7 @@ object VectorEqualTest : Module() {
             if (!expected[3])
                 b[12] = !b[12]
 
-            actual = vectorEqual(a, b)
+            val actual = vectorEqual(a, b)
             if (actual != expected) {
                 println("vectorEqual($a, $b) = $actual (ERROR)")
                 error = true

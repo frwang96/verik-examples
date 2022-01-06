@@ -3,6 +3,10 @@
 Example projects for [Verik](https://github.com/frwang96/verik). Refer to
 [template](https://github.com/frwang96/verik-template) for a template project.
 
+## riscv
+
+RISC-V core based on the [PicoRV32](https://github.com/YosysHQ/picorv32) project.
+
 ## sanity
 
 Miscellaneous projects that demonstrate various aspects of the language.
@@ -27,7 +31,3 @@ functionalities.
 - `08-type-parameters`: Type parameterized classes.
 - `09-factory-pattern`: Factory pattern for object instantiation.
 - `10-oop-tests`: Basic OOP testbench.
-
-## riscv
-
-RISC-V core based on the [PicoRV32](https://github.com/YosysHQ/picorv32) project.

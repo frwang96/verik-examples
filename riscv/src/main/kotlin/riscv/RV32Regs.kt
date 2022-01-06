@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Francis Wang
+ * Copyright (c) 2022 Francis Wang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,29 +16,23 @@
 
 @file:Verik
 
+package riscv
+
 import io.verik.core.*
 
-@SimTop
-object TbTop : Module() {
+class RV32Regs(
+    @In var clk: Boolean,
+    @In var wen: Boolean,
+    @In var waddr: Ubit<`6`>,
+    @In var raddr1: Ubit<`6`>,
+    @In var raddr2: Ubit<`6`>,
+    @In var wdata: Ubit<`32`>,
+    @Out var rdata1: Ubit<`32`>,
+    @Out var rdata2: Ubit<`32`>
+) : Module() {
 
-    @Make
-    val bfm = TinyAluBfm()
+    val regs: Unpacked<`31`, Ubit<`32`>> = nc()
 
-    @Make
-    val tiny_alu = TinyAlu(
-        clk = bfm.clk,
-        rst_n = bfm.rst_n,
-        a = bfm.a,
-        b = bfm.b,
-        op = bfm.op,
-        start = bfm.start,
-        done = bfm.done,
-        result = bfm.result
-    )
-
-    @Make
-    val tester = TinyAluTester(bfm)
-
-    @Make
-    val scoreboard = TinyAluScoreboard(bfm)
+    @Seq
+    fun seqRegs() {}
 }
