@@ -69,7 +69,34 @@ object RV32BasicTest : Module() {
     }
 
     @Make
-    val rv32 = RV32(
+    val rv32 = RV32<
+        TRUE,  // ENABLE_REGS_16_31
+        FALSE, // ENABLE_MUL
+        FALSE, // ENABLE_FAST_MUL
+        FALSE, // ENABLE_DIV
+        FALSE, // ENABLE_IRQ
+        TRUE   // ENABLE_IRQ_QREGS
+    >(
+        ENABLE_COUNTERS = true,
+        ENABLE_COUNTERS64 = true,
+        ENABLE_REGS_DUALPORT = true,
+        LATCHED_MEM_RDATA = false,
+        TWO_STAGE_SHIFT = true,
+        BARREL_SHIFTER = false,
+        TWO_CYCLE_COMPARE = false,
+        TWO_CYCLE_ALU = false,
+        COMPRESSED_ISA = false,
+        CATCH_MISALIGN = true,
+        CATCH_ILLINSN = true,
+        ENABLE_PCPI = true,
+        ENABLE_IRQ_TIMER = true,
+        ENABLE_TRACE = false,
+        REGS_INIT_ZERO = false,
+        MASKED_IRQ = u("32'h0000_0000"),
+        LATCHED_IRQ = u("32'hffff_ffff"),
+        PROGADDR_RESET = u("32'h0000_0000"),
+        PROGADDR_IRQ = u("32'h0000_0010"),
+        STACKADDR = u("32'hffff_ffff"),
         clk = clk,
         resetn = resetn,
         trap = nc(),

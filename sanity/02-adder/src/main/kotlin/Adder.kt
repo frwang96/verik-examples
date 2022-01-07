@@ -18,10 +18,10 @@
 
 import io.verik.core.*
 
-class Adder<N : `*`>(
-    @In var a: Ubit<N>,
-    @In var b: Ubit<N>,
-    @Out var x: Ubit<N>
+class Adder<X : `*`>(
+    @In var a: Ubit<X>,
+    @In var b: Ubit<X>,
+    @Out var x: Ubit<X>
 ) : Module() {
 
     fun fullAdder(a: Boolean, b: Boolean, c: Boolean): Ubit<`2`> {
@@ -34,7 +34,7 @@ class Adder<N : `*`>(
     @Com
     fun comOutput() {
         var c = false
-        for (i in 0 until i<N>()) {
+        for (i in 0 until i<X>()) {
             val fa = fullAdder(a[i], b[i], c)
             x[i] = fa[0]
             c = fa[1]
