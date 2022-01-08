@@ -303,6 +303,255 @@ class RV32<
         }
     }
 
+    @Seq
+    fun seqLastMem() {
+        on(posedge(clk)) {
+            if (!resetn) {
+                mem_la_firstword_reg = false
+                last_mem_valid = false
+            } else {
+                if (!last_mem_valid)
+                    mem_la_firstword_reg = mem_la_firstword
+                last_mem_valid = mem_valid && !mem_ready
+            }
+        }
+    }
+
+    @Com
+    fun comMemRdata() {
+        when (mem_wordsize) {
+            u(0b00) -> {
+                mem_la_wdata = reg_op2
+                mem_la_wstrb = u(0b1111)
+                mem_rdata_word = mem_rdata
+            }
+            u(0b01) -> {
+                mem_la_wdata = rep<`2`>(reg_op2.tru<`16`>())
+                mem_la_wstrb = if (reg_op1[1]) u(0b1100) else u(0b0011)
+                mem_rdata_word = when (reg_op1[1]) {
+                    false -> cat(u("16'b0"), mem_rdata.tru<`16`>())
+                    true -> cat(u("16'b0"), mem_rdata.slice<`16`, `16`>())
+                }
+            }
+            u(0b10) -> {
+                mem_la_wdata = rep<`4`>(reg_op2.tru<`8`>())
+                mem_la_wstrb = u(0b0001) shl reg_op1.tru<`2`>()
+                mem_rdata_word = when (reg_op1.tru<`2`>()) {
+                    u(0b00) -> cat(u("24'b0"), mem_rdata.tru<`8`>())
+                    u(0b01) -> cat(u("24'b0"), mem_rdata.slice<`8`, `8`>())
+                    u(0b10) -> cat(u("24'b0"), mem_rdata.slice<`8`, `16`>())
+                    u(0b11) -> cat(u("24'b0"), mem_rdata.slice<`8`, `24`>())
+                    else -> ux()
+                }
+            }
+            else -> {
+                mem_la_wdata = ux()
+                mem_la_wstrb = ux()
+                mem_rdata_word = ux()
+            }
+        }
+    }
+
+    @Seq
+    fun seqMemRdataQ() {
+        on(posedge(clk)) {
+            if (mem_xfer) {
+                mem_rdata_q = if (COMPRESSED_ISA) mem_rdata_latched else mem_rdata
+                next_insn_opcode = if (COMPRESSED_ISA) mem_rdata_latched else mem_rdata
+            }
+            if (COMPRESSED_ISA && mem_done && (mem_do_prefetch || mem_do_rinst)) {
+                when (mem_rdata_latched.tru<`2`>()) {
+                    u(0b00) -> { // Quadrant 0
+                        when (mem_rdata_latched.slice<`3`, `13`>()) {
+                            u(0b000) -> { // C.ADDI4SPN
+                                mem_rdata_q[12] = u(0b000)
+                                mem_rdata_q[20] = cat(
+                                    u(0b00),
+                                    mem_rdata_latched.slice<`4`, `7`>(),
+                                    mem_rdata_latched.slice<`2`, `11`>(),
+                                    mem_rdata_latched[6],
+                                    u(0b00)
+                                )
+                            }
+                            u(0b010) -> { // C.LW
+                                mem_rdata_q[20] = cat(
+                                    u(0b0_0000),
+                                    mem_rdata_latched[5],
+                                    mem_rdata_latched.slice<`3`, `10`>(),
+                                    mem_rdata_latched[6],
+                                    u(0b00)
+                                )
+                                mem_rdata_q[12] = u(0b010)
+                            }
+                            u(0b110) -> { // C.SW
+                                val mem_rdata_q_next = cat(
+                                    u(0b0_0000),
+                                    mem_rdata_latched[5],
+                                    mem_rdata_latched.slice<`3`, `10`>(),
+                                    mem_rdata_latched[6],
+                                    u(0b00)
+                                )
+                                mem_rdata_q[7] = mem_rdata_q_next.tru<`5`>()
+                                mem_rdata_q[25] = mem_rdata_q_next.slice<`7`, `5`>()
+                                mem_rdata_q[12] = u(0b010)
+                            }
+                        }
+                    }
+                    u(0b01) -> { // Quadrant 1
+                        when (mem_rdata_latched.slice<`3`, `13`>()) {
+                            u(0b000) -> { // C.ADDI
+                                mem_rdata_q[12] = u(0b000)
+                                mem_rdata_q[20] = cat(
+                                    mem_rdata_latched[12],
+                                    mem_rdata_latched.slice<`5`, `2`>()
+                                ).sext<`12`>()
+                            }
+                            u(0b010) -> { // C.LI
+                                mem_rdata_q[12] = u(0b000)
+                                mem_rdata_q[20] = cat(
+                                    mem_rdata_latched[12],
+                                    mem_rdata_latched.slice<`5`, `2`>()
+                                ).sext<`12`>()
+                            }
+                            u(0b011) -> {
+                                if (mem_rdata_latched.slice<`5`, `7`>() == u("5'd2")) { // C.ADDI16SP
+                                    mem_rdata_q[12] = u(0b000)
+                                    mem_rdata_q[20] = cat(
+                                        mem_rdata_latched[12],
+                                        mem_rdata_latched.slice<`2`, `3`>(),
+                                        mem_rdata_latched[5],
+                                        mem_rdata_latched[2],
+                                        mem_rdata_latched[6],
+                                        u(0b0000)
+                                    ).sext<`12`>()
+                                } else { // C.LUI
+                                    mem_rdata_q[20] = cat(
+                                        mem_rdata_latched[12],
+                                        mem_rdata_latched.slice<`5`, `2`>()
+                                    ).sext<`12`>()
+                                }
+                            }
+                            u(0b100) -> {
+                                when {
+                                    mem_rdata_latched.slice<`2`, `10`>() == u(0b00) -> { // C.SRLI
+                                        mem_rdata_q[25] = u(0b000_0000)
+                                        mem_rdata_q[12] = u(0b101)
+                                    }
+                                    mem_rdata_latched.slice<`2`, `10`>() == u(0b01) -> { // C.SRAI
+                                        mem_rdata_q[25] = u(0b010_0000)
+                                        mem_rdata_q[12] = u(0b101)
+                                    }
+                                    mem_rdata_latched.slice<`2`, `10`>() == u(0b10) -> { // C.ANDI
+                                        mem_rdata_q[12] = u(0b111)
+                                        mem_rdata_q[20] = cat(
+                                            mem_rdata_latched[12],
+                                            mem_rdata_latched.slice<`5`, `2`>()
+                                        ).sext<`12`>()
+                                    }
+                                    mem_rdata_latched.slice<`3`, `10`>() == u(0b011) -> { // C.SUB, C.XOR, C.OR, C.AND
+                                        when (mem_rdata_latched.slice<`2`, `5`>()) {
+                                            u(0b00) -> mem_rdata_q[12] = u(0b000)
+                                            u(0b01) -> mem_rdata_q[12] = u(0b100)
+                                            u(0b10) -> mem_rdata_q[12] = u(0b110)
+                                            u(0b11) -> mem_rdata_q[12] = u(0b111)
+                                        }
+                                        mem_rdata_q[25] = if (mem_rdata_latched.slice<`2`, `5`>() == u(0b00)) {
+                                            u(0b010_0000)
+                                        } else {
+                                            u(0b000_0000)
+                                        }
+                                    }
+                                }
+                            }
+                            u(0b110) -> { // C.BEQZ
+                                mem_rdata_q[12] = u(0b000)
+                                val mem_rdata_q_next = cat(
+                                    mem_rdata_latched[12],
+                                    mem_rdata_latched.slice<`2`, `5`>(),
+                                    mem_rdata_latched[2],
+                                    mem_rdata_latched.slice<`2`, `10`>(),
+                                    mem_rdata_latched.slice<`2`, `3`>(),
+                                ).sext<`12`>()
+                                mem_rdata_q[8] = mem_rdata_q_next.tru<`4`>()
+                                mem_rdata_q[25] = mem_rdata_q_next.slice<`6`, `4`>()
+                                mem_rdata_q[7] = mem_rdata_q_next[10]
+                                mem_rdata_q[31] = mem_rdata_q_next[11]
+                            }
+                            u(0b111) -> { // C.BNEZ
+                                mem_rdata_q[12] = u(0b001)
+                                val mem_rdata_q_next = cat(
+                                    mem_rdata_latched[12],
+                                    mem_rdata_latched.slice<`2`, `5`>(),
+                                    mem_rdata_latched[2],
+                                    mem_rdata_latched.slice<`2`, `10`>(),
+                                    mem_rdata_latched.slice<`2`, `3`>(),
+                                ).sext<`12`>()
+                                mem_rdata_q[8] = mem_rdata_q_next.tru<`4`>()
+                                mem_rdata_q[25] = mem_rdata_q_next.slice<`6`, `4`>()
+                                mem_rdata_q[7] = mem_rdata_q_next[10]
+                                mem_rdata_q[31] = mem_rdata_q_next[11]
+                            }
+                        }
+                    }
+                    u(0b10) -> { // Quadrant 2
+                        when (mem_rdata_latched.slice<`3`, `13`>()) {
+                            u(0b000) -> { // C.SLLI
+                                mem_rdata_q[25] = u(0b000_0000)
+                                mem_rdata_q[12] = u(0b001)
+                            }
+                            u(0b010) -> { // C.LWSP
+                                mem_rdata_q[20] = cat(
+                                    u(0b0000),
+                                    mem_rdata_latched.slice<`2`,`2`>(),
+                                    mem_rdata_latched[12],
+                                    mem_rdata_latched.slice<`3`,`4`>(),
+                                    u(0b00)
+                                )
+                                mem_rdata_q[12] = u(0b010)
+                            }
+                            u(0b100) -> {
+                                when {
+                                    !mem_rdata_latched[12] &&
+                                        mem_rdata_latched.slice<`5`, `2`>() == u0<`*`>() -> { // C.JR
+                                        mem_rdata_q[12] = u("3'b0")
+                                        mem_rdata_q[20] = u("12'b0")
+                                    }
+                                    !mem_rdata_latched[12] &&
+                                        mem_rdata_latched.slice<`5`, `2`>() != u0<`*`>() -> { // C.MC
+                                        mem_rdata_q[12] = u("3'b0")
+                                        mem_rdata_q[25] = u("7'b0")
+                                    }
+                                    mem_rdata_latched[12] &&
+                                        mem_rdata_latched.slice<`5`, `7`>() != u0<`*`>() &&
+                                        mem_rdata_latched.slice<`5`, `2`>() == u0<`*`>() -> { // C.JALR
+                                        mem_rdata_q[12] = u("3'b0")
+                                        mem_rdata_q[20] = u("12'b0")
+                                    }
+                                    mem_rdata_latched[12] &&
+                                        mem_rdata_latched.slice<`5`, `2`>() != u0<`*`>() -> { // C.ADD
+                                        mem_rdata_q[12] = u("3'b0")
+                                        mem_rdata_q[25] = u("7'b0")
+                                    }
+                                }
+                            }
+                            u(0b110) -> { // C.SWSP
+                                val mem_rdata_latched_next = cat(
+                                    u(0b0000),
+                                    mem_rdata_latched.slice<`2`, `7`>(),
+                                    mem_rdata_latched.slice<`4`, `9`>(),
+                                    u(0b00)
+                                )
+                                mem_rdata_q[7] = mem_rdata_latched_next.tru<`5`>()
+                                mem_rdata_q[25] = mem_rdata_latched_next.slice<`7`, `5`>()
+                                mem_rdata_q[12] = u(0b010)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     // Instruction Decoder
 
     var instr_lui: Boolean = nc()
