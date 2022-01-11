@@ -87,9 +87,15 @@ class RV32<
     @Out var trace_data: Ubit<`36`>
 ) : Module() {
 
+    val ENABLE_REGS_16_31 = b<ENABLE_REGS_16_31>()
     val ENABLE_MUL = b<ENABLE_MUL>()
     val ENABLE_FAST_MUL = b<ENABLE_FAST_MUL>()
     val ENABLE_DIV = b<ENABLE_DIV>()
+    val ENABLE_IRQ = b<ENABLE_IRQ>()
+    val ENABLE_IRQ_QREGS = b<ENABLE_IRQ_QREGS>()
+    val REGINDEX_BITS = i<REGINDEX_BITS<ENABLE_REGS_16_31, ENABLE_IRQ, ENABLE_IRQ_QREGS>>()
+
+    val IRQREGS_OFFSET = if (ENABLE_REGS_16_31) u(32) else u(16)
 
     val IRQ_TIMER = 0
     val IRQ_EBREAK = 1
@@ -292,13 +298,13 @@ class RV32<
                 (COMPRESSED_ISA && mem_xfer && (if (!last_mem_valid) mem_la_firstword else mem_la_firstword_reg) &&
                     !mem_la_secondword && mem_rdata_latched.tru<`2`>().reduceAnd()))
         mem_la_addr =
-            if (mem_do_prefetch || mem_do_rinst) cat(next_pc.slice<`30`, `2`>() + u(mem_la_firstword_xfer), u(0b00))
-            else cat(reg_op1.slice<`30`, `2`>(), u(0b00))
+            if (mem_do_prefetch || mem_do_rinst) cat(next_pc.slice<`30`>(2) + u(mem_la_firstword_xfer), u(0b00))
+            else cat(reg_op1.slice<`30`>(2), u(0b00))
         mem_rdata_latched_noshuffle = if (mem_xfer || LATCHED_MEM_RDATA) mem_rdata else mem_rdata_q
         mem_rdata_latched = when {
             COMPRESSED_ISA && mem_la_use_prefetched_high_word -> cat(u("16'bx"), mem_16bit_buffer)
             COMPRESSED_ISA && mem_la_secondword -> cat(mem_rdata_latched_noshuffle.tru<`16`>(), mem_16bit_buffer)
-            COMPRESSED_ISA && mem_la_firstword -> cat(u("16'bx"), mem_rdata_latched_noshuffle.slice<`16`, `16`>())
+            COMPRESSED_ISA && mem_la_firstword -> cat(u("16'bx"), mem_rdata_latched_noshuffle.slice<`16`>(16))
             else -> mem_rdata_latched_noshuffle
         }
     }
@@ -330,7 +336,7 @@ class RV32<
                 mem_la_wstrb = if (reg_op1[1]) u(0b1100) else u(0b0011)
                 mem_rdata_word = when (reg_op1[1]) {
                     false -> cat(u("16'b0"), mem_rdata.tru<`16`>())
-                    true -> cat(u("16'b0"), mem_rdata.slice<`16`, `16`>())
+                    true -> cat(u("16'b0"), mem_rdata.slice<`16`>(16))
                 }
             }
             u(0b10) -> {
@@ -338,9 +344,9 @@ class RV32<
                 mem_la_wstrb = u(0b0001) shl reg_op1.tru<`2`>()
                 mem_rdata_word = when (reg_op1.tru<`2`>()) {
                     u(0b00) -> cat(u("24'b0"), mem_rdata.tru<`8`>())
-                    u(0b01) -> cat(u("24'b0"), mem_rdata.slice<`8`, `8`>())
-                    u(0b10) -> cat(u("24'b0"), mem_rdata.slice<`8`, `16`>())
-                    u(0b11) -> cat(u("24'b0"), mem_rdata.slice<`8`, `24`>())
+                    u(0b01) -> cat(u("24'b0"), mem_rdata.slice<`8`>(8))
+                    u(0b10) -> cat(u("24'b0"), mem_rdata.slice<`8`>(16))
+                    u(0b11) -> cat(u("24'b0"), mem_rdata.slice<`8`>(24))
                     else -> ux()
                 }
             }
@@ -362,13 +368,13 @@ class RV32<
             if (COMPRESSED_ISA && mem_done && (mem_do_prefetch || mem_do_rinst)) {
                 when (mem_rdata_latched.tru<`2`>()) {
                     u(0b00) -> { // Quadrant 0
-                        when (mem_rdata_latched.slice<`3`, `13`>()) {
+                        when (mem_rdata_latched.slice<`3`>(13)) {
                             u(0b000) -> { // C.ADDI4SPN
                                 mem_rdata_q[12] = u(0b000)
                                 mem_rdata_q[20] = cat(
                                     u(0b00),
-                                    mem_rdata_latched.slice<`4`, `7`>(),
-                                    mem_rdata_latched.slice<`2`, `11`>(),
+                                    mem_rdata_latched.slice<`4`>(7),
+                                    mem_rdata_latched.slice<`2`>(11),
                                     mem_rdata_latched[6],
                                     u(0b00)
                                 )
@@ -377,48 +383,48 @@ class RV32<
                                 mem_rdata_q[20] = cat(
                                     u(0b0_0000),
                                     mem_rdata_latched[5],
-                                    mem_rdata_latched.slice<`3`, `10`>(),
+                                    mem_rdata_latched.slice<`3`>(10),
                                     mem_rdata_latched[6],
                                     u(0b00)
                                 )
                                 mem_rdata_q[12] = u(0b010)
                             }
                             u(0b110) -> { // C.SW
-                                val mem_rdata_q_next = cat(
+                                val mem_rdata_q_scrambled = cat(
                                     u(0b0_0000),
                                     mem_rdata_latched[5],
-                                    mem_rdata_latched.slice<`3`, `10`>(),
+                                    mem_rdata_latched.slice<`3`>(10),
                                     mem_rdata_latched[6],
                                     u(0b00)
                                 )
-                                mem_rdata_q[7] = mem_rdata_q_next.tru<`5`>()
-                                mem_rdata_q[25] = mem_rdata_q_next.slice<`7`, `5`>()
+                                mem_rdata_q[7] = mem_rdata_q_scrambled.tru<`5`>()
+                                mem_rdata_q[25] = mem_rdata_q_scrambled.slice<`7`>(5)
                                 mem_rdata_q[12] = u(0b010)
                             }
                         }
                     }
                     u(0b01) -> { // Quadrant 1
-                        when (mem_rdata_latched.slice<`3`, `13`>()) {
+                        when (mem_rdata_latched.slice<`3`>(13)) {
                             u(0b000) -> { // C.ADDI
                                 mem_rdata_q[12] = u(0b000)
                                 mem_rdata_q[20] = cat(
                                     mem_rdata_latched[12],
-                                    mem_rdata_latched.slice<`5`, `2`>()
+                                    mem_rdata_latched.slice<`5`>(2)
                                 ).sext<`12`>()
                             }
                             u(0b010) -> { // C.LI
                                 mem_rdata_q[12] = u(0b000)
                                 mem_rdata_q[20] = cat(
                                     mem_rdata_latched[12],
-                                    mem_rdata_latched.slice<`5`, `2`>()
+                                    mem_rdata_latched.slice<`5`>(2)
                                 ).sext<`12`>()
                             }
                             u(0b011) -> {
-                                if (mem_rdata_latched.slice<`5`, `7`>() == u("5'd2")) { // C.ADDI16SP
+                                if (mem_rdata_latched.slice<`5`>(7) == u("5'd2")) { // C.ADDI16SP
                                     mem_rdata_q[12] = u(0b000)
                                     mem_rdata_q[20] = cat(
                                         mem_rdata_latched[12],
-                                        mem_rdata_latched.slice<`2`, `3`>(),
+                                        mem_rdata_latched.slice<`2`>(3),
                                         mem_rdata_latched[5],
                                         mem_rdata_latched[2],
                                         mem_rdata_latched[6],
@@ -427,35 +433,35 @@ class RV32<
                                 } else { // C.LUI
                                     mem_rdata_q[20] = cat(
                                         mem_rdata_latched[12],
-                                        mem_rdata_latched.slice<`5`, `2`>()
+                                        mem_rdata_latched.slice<`5`>(2)
                                     ).sext<`12`>()
                                 }
                             }
                             u(0b100) -> {
                                 when {
-                                    mem_rdata_latched.slice<`2`, `10`>() == u(0b00) -> { // C.SRLI
+                                    mem_rdata_latched.slice<`2`>(10) == u(0b00) -> { // C.SRLI
                                         mem_rdata_q[25] = u(0b000_0000)
                                         mem_rdata_q[12] = u(0b101)
                                     }
-                                    mem_rdata_latched.slice<`2`, `10`>() == u(0b01) -> { // C.SRAI
+                                    mem_rdata_latched.slice<`2`>(10) == u(0b01) -> { // C.SRAI
                                         mem_rdata_q[25] = u(0b010_0000)
                                         mem_rdata_q[12] = u(0b101)
                                     }
-                                    mem_rdata_latched.slice<`2`, `10`>() == u(0b10) -> { // C.ANDI
+                                    mem_rdata_latched.slice<`2`>(10) == u(0b10) -> { // C.ANDI
                                         mem_rdata_q[12] = u(0b111)
                                         mem_rdata_q[20] = cat(
                                             mem_rdata_latched[12],
-                                            mem_rdata_latched.slice<`5`, `2`>()
+                                            mem_rdata_latched.slice<`5`>(2)
                                         ).sext<`12`>()
                                     }
-                                    mem_rdata_latched.slice<`3`, `10`>() == u(0b011) -> { // C.SUB, C.XOR, C.OR, C.AND
-                                        when (mem_rdata_latched.slice<`2`, `5`>()) {
+                                    mem_rdata_latched.slice<`3`>(10) == u(0b011) -> { // C.SUB, C.XOR, C.OR, C.AND
+                                        when (mem_rdata_latched.slice<`2`>(5)) {
                                             u(0b00) -> mem_rdata_q[12] = u(0b000)
                                             u(0b01) -> mem_rdata_q[12] = u(0b100)
                                             u(0b10) -> mem_rdata_q[12] = u(0b110)
                                             u(0b11) -> mem_rdata_q[12] = u(0b111)
                                         }
-                                        mem_rdata_q[25] = if (mem_rdata_latched.slice<`2`, `5`>() == u(0b00)) {
+                                        mem_rdata_q[25] = if (mem_rdata_latched.slice<`2`>(5) == u(0b00)) {
                                             u(0b010_0000)
                                         } else {
                                             u(0b000_0000)
@@ -465,36 +471,36 @@ class RV32<
                             }
                             u(0b110) -> { // C.BEQZ
                                 mem_rdata_q[12] = u(0b000)
-                                val mem_rdata_q_next = cat(
+                                val mem_rdata_q_scrambled = cat(
                                     mem_rdata_latched[12],
-                                    mem_rdata_latched.slice<`2`, `5`>(),
+                                    mem_rdata_latched.slice<`2`>(5),
                                     mem_rdata_latched[2],
-                                    mem_rdata_latched.slice<`2`, `10`>(),
-                                    mem_rdata_latched.slice<`2`, `3`>(),
+                                    mem_rdata_latched.slice<`2`>(10),
+                                    mem_rdata_latched.slice<`2`>(3),
                                 ).sext<`12`>()
-                                mem_rdata_q[8] = mem_rdata_q_next.tru<`4`>()
-                                mem_rdata_q[25] = mem_rdata_q_next.slice<`6`, `4`>()
-                                mem_rdata_q[7] = mem_rdata_q_next[10]
-                                mem_rdata_q[31] = mem_rdata_q_next[11]
+                                mem_rdata_q[8] = mem_rdata_q_scrambled.tru<`4`>()
+                                mem_rdata_q[25] = mem_rdata_q_scrambled.slice<`6`>(4)
+                                mem_rdata_q[7] = mem_rdata_q_scrambled[10]
+                                mem_rdata_q[31] = mem_rdata_q_scrambled[11]
                             }
                             u(0b111) -> { // C.BNEZ
                                 mem_rdata_q[12] = u(0b001)
-                                val mem_rdata_q_next = cat(
+                                val mem_rdata_q_scrambled = cat(
                                     mem_rdata_latched[12],
-                                    mem_rdata_latched.slice<`2`, `5`>(),
+                                    mem_rdata_latched.slice<`2`>(5),
                                     mem_rdata_latched[2],
-                                    mem_rdata_latched.slice<`2`, `10`>(),
-                                    mem_rdata_latched.slice<`2`, `3`>(),
+                                    mem_rdata_latched.slice<`2`>(10),
+                                    mem_rdata_latched.slice<`2`>(3),
                                 ).sext<`12`>()
-                                mem_rdata_q[8] = mem_rdata_q_next.tru<`4`>()
-                                mem_rdata_q[25] = mem_rdata_q_next.slice<`6`, `4`>()
-                                mem_rdata_q[7] = mem_rdata_q_next[10]
-                                mem_rdata_q[31] = mem_rdata_q_next[11]
+                                mem_rdata_q[8] = mem_rdata_q_scrambled.tru<`4`>()
+                                mem_rdata_q[25] = mem_rdata_q_scrambled.slice<`6`>(4)
+                                mem_rdata_q[7] = mem_rdata_q_scrambled[10]
+                                mem_rdata_q[31] = mem_rdata_q_scrambled[11]
                             }
                         }
                     }
                     u(0b10) -> { // Quadrant 2
-                        when (mem_rdata_latched.slice<`3`, `13`>()) {
+                        when (mem_rdata_latched.slice<`3`>(13)) {
                             u(0b000) -> { // C.SLLI
                                 mem_rdata_q[25] = u(0b000_0000)
                                 mem_rdata_q[12] = u(0b001)
@@ -502,9 +508,9 @@ class RV32<
                             u(0b010) -> { // C.LWSP
                                 mem_rdata_q[20] = cat(
                                     u(0b0000),
-                                    mem_rdata_latched.slice<`2`,`2`>(),
+                                    mem_rdata_latched.slice<`2`>(2),
                                     mem_rdata_latched[12],
-                                    mem_rdata_latched.slice<`3`,`4`>(),
+                                    mem_rdata_latched.slice<`3`>(4),
                                     u(0b00)
                                 )
                                 mem_rdata_q[12] = u(0b010)
@@ -512,43 +518,140 @@ class RV32<
                             u(0b100) -> {
                                 when {
                                     !mem_rdata_latched[12] &&
-                                        mem_rdata_latched.slice<`5`, `2`>() == u0<`*`>() -> { // C.JR
+                                        mem_rdata_latched.slice<`5`>(2) == u0<`*`>() -> { // C.JR
                                         mem_rdata_q[12] = u("3'b0")
                                         mem_rdata_q[20] = u("12'b0")
                                     }
                                     !mem_rdata_latched[12] &&
-                                        mem_rdata_latched.slice<`5`, `2`>() != u0<`*`>() -> { // C.MC
+                                        mem_rdata_latched.slice<`5`>(2) != u0<`*`>() -> { // C.MC
                                         mem_rdata_q[12] = u("3'b0")
                                         mem_rdata_q[25] = u("7'b0")
                                     }
                                     mem_rdata_latched[12] &&
-                                        mem_rdata_latched.slice<`5`, `7`>() != u0<`*`>() &&
-                                        mem_rdata_latched.slice<`5`, `2`>() == u0<`*`>() -> { // C.JALR
+                                        mem_rdata_latched.slice<`5`>(7) != u0<`*`>() &&
+                                        mem_rdata_latched.slice<`5`>(2) == u0<`*`>() -> { // C.JALR
                                         mem_rdata_q[12] = u("3'b0")
                                         mem_rdata_q[20] = u("12'b0")
                                     }
                                     mem_rdata_latched[12] &&
-                                        mem_rdata_latched.slice<`5`, `2`>() != u0<`*`>() -> { // C.ADD
+                                        mem_rdata_latched.slice<`5`>(2) != u0<`*`>() -> { // C.ADD
                                         mem_rdata_q[12] = u("3'b0")
                                         mem_rdata_q[25] = u("7'b0")
                                     }
                                 }
                             }
                             u(0b110) -> { // C.SWSP
-                                val mem_rdata_latched_next = cat(
+                                val mem_rdata_latched_scrambled = cat(
                                     u(0b0000),
-                                    mem_rdata_latched.slice<`2`, `7`>(),
-                                    mem_rdata_latched.slice<`4`, `9`>(),
+                                    mem_rdata_latched.slice<`2`>(7),
+                                    mem_rdata_latched.slice<`4`>(9),
                                     u(0b00)
                                 )
-                                mem_rdata_q[7] = mem_rdata_latched_next.tru<`5`>()
-                                mem_rdata_q[25] = mem_rdata_latched_next.slice<`7`, `5`>()
+                                mem_rdata_q[7] = mem_rdata_latched_scrambled.tru<`5`>()
+                                mem_rdata_q[25] = mem_rdata_latched_scrambled.slice<`7`>(5)
                                 mem_rdata_q[12] = u(0b010)
                             }
                         }
                     }
                 }
             }
+        }
+    }
+
+    @Seq
+    fun assertMemDo() {
+        on(posedge(clk)) {
+            if (resetn && !trap) {
+                if (mem_do_prefetch || mem_do_rinst || mem_do_rdata)
+                    assert(!mem_do_wdata)
+                if (mem_do_prefetch || mem_do_rinst)
+                    assert(!mem_do_rdata)
+                if (mem_do_rdata)
+                    assert(!mem_do_prefetch && !mem_do_rinst)
+                if (mem_do_wdata)
+                    assert(!(mem_do_prefetch || mem_do_rinst || mem_do_rdata))
+                if (mem_state == u("2'd2") || mem_state == u("2'd3"))
+                    assert(mem_valid || mem_do_prefetch)
+            }
+        }
+    }
+
+    @Seq
+    fun seqMemState() {
+        on(posedge(clk)) {
+            if (!resetn || trap) {
+                if (!resetn)
+                    mem_state = u(0b00)
+                if (!resetn || mem_ready)
+                    mem_valid = false
+                mem_la_secondword = false
+                prefetched_high_word = false
+            } else {
+                if (mem_la_read || mem_la_write) {
+                    mem_addr = mem_la_addr
+                    mem_wstrb = mem_la_wstrb and rep<`4`>(mem_la_write)
+                }
+                if (mem_la_write) {
+                    mem_wdata = mem_la_wdata
+                }
+                when (mem_state) {
+                    u(0b00) -> {
+                        if (mem_do_prefetch || mem_do_rinst || mem_do_rdata) {
+                            mem_valid = !mem_la_use_prefetched_high_word
+                            mem_instr = mem_do_prefetch || mem_do_rinst
+                            mem_wstrb = u(0b0000)
+                            mem_state = u(0b01)
+                        }
+                        if (mem_do_wdata) {
+                            mem_valid = true
+                            mem_instr = false
+                            mem_state = u(0b10)
+                        }
+                    }
+                    u(0b01) -> {
+                        assert(mem_wstrb == u(0b0000))
+                        assert(mem_do_prefetch || mem_do_rinst || mem_do_rdata)
+                        assert(mem_valid == !mem_la_use_prefetched_high_word)
+                        assert(mem_instr == (mem_do_prefetch || mem_do_rinst))
+                        if (mem_xfer) {
+                            if (COMPRESSED_ISA && mem_la_read) {
+                                mem_valid = true
+                                mem_la_secondword = true
+                                if (!mem_la_use_prefetched_high_word)
+                                    mem_16bit_buffer = mem_rdata.slice<`16`>(16)
+                            } else {
+                                mem_valid = false
+                                mem_la_secondword = false
+                                if (COMPRESSED_ISA && !mem_do_rdata) {
+                                    if (!mem_rdata_latched.tru<`2`>().reduceAnd() || mem_la_secondword) {
+                                        mem_16bit_buffer = mem_rdata_latched.slice<`16`>(16)
+                                        prefetched_high_word = true
+                                    } else {
+                                        prefetched_high_word = false
+                                    }
+                                }
+                                mem_state = if (mem_do_rinst || mem_do_rdata) u(0b00) else u(0b11)
+                            }
+                        }
+                    }
+                    u(0b10) -> {
+                        assert(!mem_wstrb.isZeroes())
+                        assert(mem_do_wdata)
+                        if (mem_xfer) {
+                            mem_valid = false
+                            mem_state = u(0b00)
+                        }
+                    }
+                    u(0b11) -> {
+                        assert(!mem_wstrb.isZeroes())
+                        assert(mem_do_prefetch)
+                        if (mem_do_rinst)
+                            mem_state = u(0b00)
+                    }
+                }
+            }
+            if (clear_prefetched_high_word)
+                prefetched_high_word = false
         }
     }
 
@@ -562,7 +665,7 @@ class RV32<
     var instr_beq: Boolean = nc()
     var instr_bne: Boolean = nc()
     var instr_blt: Boolean = nc()
-    var instr_bgq: Boolean = nc()
+    var instr_bge: Boolean = nc()
     var instr_bltu: Boolean = nc()
     var instr_bgeu: Boolean = nc()
 
@@ -637,7 +740,127 @@ class RV32<
     var is_alu_reg_reg: Boolean = nc()
     var is_compare: Boolean = nc()
 
-    var is_rdcycle_rdcycleh_rdinstr_rdinstrh: Boolean = nc()
+    @Com
+    fun comInstrTrap() {
+        instr_trap = (CATCH_ILLINSN || WITH_PCPI) && cat(
+                instr_lui, instr_auipc, instr_jal, instr_jalr,
+                instr_beq, instr_bne, instr_blt, instr_bge, instr_bltu, instr_bgeu,
+                instr_lb, instr_lh, instr_lw, instr_lbu, instr_lhu, instr_sb, instr_sh, instr_sw,
+                instr_addi, instr_slti, instr_sltiu, instr_xori, instr_ori, instr_andi, instr_slli, instr_srli, instr_srai,
+                instr_add, instr_sub, instr_sll, instr_slt, instr_sltu, instr_xor, instr_srl, instr_sra, instr_or, instr_and,
+                instr_rdcycle, instr_rdcycleh, instr_rdinstr, instr_rdinstrh,
+                instr_getq, instr_setq, instr_retirq, instr_maskirq, instr_waitirq, instr_timer
+            ).isZeroes()
+    }
+
+    @Com
+    var is_rdcycle_rdcycleh_rdinstr_rdinstrh =
+        cat(instr_rdcycle, instr_rdcycleh, instr_rdinstr, instr_rdinstrh).reduceOr()
+
+    @Seq
+    fun seqInstr() {
+        on(posedge(clk)) {
+            is_lui_auipc_jal = cat(instr_lui, instr_auipc, instr_jal).reduceOr()
+            is_lui_auipc_jal_jalr_addi_add_sub =
+                cat(instr_lui, instr_auipc, instr_jal, instr_jalr, instr_addi, instr_add, instr_sub).reduceOr()
+            is_slti_blt_slt = cat(instr_slti, instr_blt, instr_slt).reduceOr()
+            is_sltiu_bltu_sltu = cat(instr_sltiu, instr_bltu, instr_sltu).reduceOr()
+            is_lbu_lhu_lw = cat(instr_lbu, instr_lhu, instr_lw).reduceOr()
+            is_compare = cat(is_beq_bne_blt_bge_bltu_bgeu, instr_slti, instr_slt, instr_sltiu, instr_sltu).reduceOr()
+
+            if (mem_do_rinst && mem_done) {
+                instr_lui = mem_rdata_latched.tru<`7`>() == u(0b0110111)
+                instr_auipc = mem_rdata_latched.tru<`7`>() == u(0b0010111)
+                instr_jal = mem_rdata_latched.tru<`7`>() == u(0b1101111)
+                instr_jalr = mem_rdata_latched.tru<`7`>() == u(0b1100111) &&
+                    mem_rdata_latched.slice<`3`>(12) == u(0b000)
+                instr_retirq = mem_rdata_latched.tru<`7`>() == u(0b0001011) &&
+                    mem_rdata_latched.slice<`7`>(25) == u(0b0000010) && ENABLE_IRQ
+                instr_waitirq = mem_rdata_latched.tru<`7`>() == u(0b0001011) &&
+                    mem_rdata_latched.slice<`7`>(25) == u(0b0000100) && ENABLE_IRQ
+
+                is_beq_bne_blt_bge_bltu_bgeu = mem_rdata_latched.tru<`7`>() == u(0b1100011)
+                is_lb_lh_lw_lbu_lhu = mem_rdata_latched.tru<`7`>() == u(0b0000011)
+                is_sb_sh_sw = mem_rdata_latched.tru<`7`>() == u(0b0100011)
+                is_alu_reg_imm = mem_rdata_latched.tru<`7`>() == u(0b0010011)
+                is_alu_reg_reg = mem_rdata_latched.tru<`7`>() == u(0b0110011)
+
+                var decoded_imm_j_scrambled = cat(mem_rdata_latched.slice<`20`>(12), false).sext<`32`>()
+                decoded_imm_j[0] = decoded_imm_j_scrambled[0]
+                decoded_imm_j[12] = decoded_imm_j_scrambled.slice<`8`>(1)
+                decoded_imm_j[11] = decoded_imm_j_scrambled[9]
+                decoded_imm_j[1] = decoded_imm_j_scrambled.slice<`10`>(10)
+                decoded_imm_j[20] = decoded_imm_j_scrambled.slice<`12`>(20)
+
+                decoded_rd[0] = mem_rdata_latched.slice<`5`>(7)
+                decoded_rs1[0] = mem_rdata_latched.slice<`5`>(15)
+                decoded_rs2[0] = mem_rdata_latched.slice<`5`>(20)
+
+                if (mem_rdata_latched.tru<`7`>() == u(0b0001011) &&
+                    mem_rdata_latched.slice<`7`>(25) == u(0b0000000) && ENABLE_IRQ && ENABLE_IRQ_QREGS
+                ) { // instr_getq
+                    decoded_rs1[REGINDEX_BITS - 1] = true
+                }
+                if (mem_rdata_latched.tru<`7`>() == u(0b0001011) &&
+                    mem_rdata_latched.slice<`7`>(25) == u(0b0000010) && ENABLE_IRQ
+                ) { // instr_retirq
+                    decoded_rs1 = if (ENABLE_IRQ_QREGS) IRQREGS_OFFSET else u(3).ext()
+                }
+
+                compressed_instr = false
+                if (COMPRESSED_ISA && mem_rdata_latched.tru<`2`>() == u(0b11)) {
+                    compressed_instr = true
+                    decoded_rd = u0()
+                    decoded_rs1 = u0()
+                    decoded_rs2 = u0()
+
+                    decoded_imm_j_scrambled = cat(mem_rdata_latched.slice<`11`>(2), false).sext()
+                    decoded_imm_j[0] = decoded_imm_j_scrambled[0]
+                    decoded_imm_j[5] = decoded_imm_j_scrambled[1]
+                    decoded_imm_j[1] = decoded_imm_j_scrambled.slice<`3`>(2)
+                    decoded_imm_j[7] = decoded_imm_j_scrambled[5]
+                    decoded_imm_j[6] = decoded_imm_j_scrambled[6]
+                    decoded_imm_j[10] = decoded_imm_j_scrambled[7]
+                    decoded_imm_j[8] = decoded_imm_j_scrambled.slice<`2`>(8)
+                    decoded_imm_j[4] = decoded_imm_j_scrambled[10]
+                    decoded_imm_j[11] = decoded_imm_j_scrambled.slice<`21`>(11)
+
+                    when (mem_rdata_latched.tru<`2`>()) {
+                        u(0b00) -> {  // Quadrant 0
+                            when (mem_rdata_latched.slice<`3`>(13)) {
+                                u(0b000) -> { /// C.ADDI4SPN
+                                    is_alu_reg_imm = mem_rdata_latched.slice<`8`>(5).reduceOr()
+                                    decoded_rs1 = u(2).ext()
+                                    decoded_rd = (u(8) + mem_rdata_latched.slice<`3`>(2)).ext()
+                                }
+                                u(0b010) -> { // C.LW
+                                    is_lb_lh_lw_lbu_lhu = true
+                                    decoded_rs1 = (u(8) + mem_rdata_latched.slice<`3`>(7)).ext()
+                                    decoded_rd = (u(8) + mem_rdata_latched.slice<`3`>(2)).ext()
+                                }
+                                u(0b110) -> { // C.SW
+                                    is_sb_sh_sw = true
+                                    decoded_rs1 = (u(8) + mem_rdata_latched.slice<`3`>(7)).ext()
+                                    decoded_rd = (u(8) + mem_rdata_latched.slice<`3`>(2)).ext()
+                                }
+                            }
+                        }
+                        u(0b01) -> {  // Quadrant 1
+                            when(mem_rdata_latched.slice<`3`>(13)) {
+                                u(0b000) -> { // C.NOP / C.ADDI
+                                    is_alu_reg_imm = true
+                                    decoded_rd = mem_rdata_latched.slice<`5`>(7)
+                                }
+                            }
+                        }
+                        u(0b10) -> {  // Quadrant 2
+
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     // Main State Machine
 

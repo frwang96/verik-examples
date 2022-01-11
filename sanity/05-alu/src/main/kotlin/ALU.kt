@@ -104,7 +104,7 @@ fun <N : `*`> rca(a: Ubit<N>, b: Ubit<N>, c: Boolean): Ubit<N> {
 }
 
 fun addSub(a: Ubit<`32`>, b: Ubit<`32`>, isSub: Boolean): Ubit<`32`> {
-    return rca(a, if (isSub) b.invert() else b, isSub)
+    return rca<`32`>(a, if (isSub) b.invert() else b, isSub)
 }
 
 fun alu(a: Ubit<`32`>, b: Ubit<`32`>, func: AluFunc): Ubit<`32`> {
