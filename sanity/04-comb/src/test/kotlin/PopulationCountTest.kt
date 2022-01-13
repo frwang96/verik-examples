@@ -22,7 +22,7 @@ import io.verik.core.*
 object PopulationCountTest : Module() {
 
     fun populationCountReference(a: Ubit<`4`>): Ubit<`3`> {
-        return u(0b000) + a.slice<`1`>(0) + a.slice<`1`>(1) + a.slice<`1`>(2) + a.slice<`1`>(3)
+        return u(0b000) + a.sli<`1`>(0) + a.sli<`1`>(1) + a.sli<`1`>(2) + a.sli<`1`>(3)
     }
 
     @Run

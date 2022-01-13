@@ -71,6 +71,7 @@ object RV32BasicTest : Module() {
     @Make
     val rv32 = RV32<
         TRUE,  // ENABLE_REGS_16_31
+        FALSE, // TWO_CYCLE_ALU
         FALSE, // ENABLE_MUL
         FALSE, // ENABLE_FAST_MUL
         FALSE, // ENABLE_DIV
@@ -84,7 +85,6 @@ object RV32BasicTest : Module() {
         TWO_STAGE_SHIFT = true,
         BARREL_SHIFTER = false,
         TWO_CYCLE_COMPARE = false,
-        TWO_CYCLE_ALU = false,
         COMPRESSED_ISA = false,
         CATCH_MISALIGN = true,
         CATCH_ILLINSN = true,
@@ -147,10 +147,10 @@ object RV32BasicTest : Module() {
                     val index = (mem_addr shr 2).tru<`8`>()
                     mem_ready = true
                     mem_rdata = memory[index]
-                    if (mem_wstrb[0]) memory[index][0] = mem_wdata.slice<`8`>(0)
-                    if (mem_wstrb[1]) memory[index][8] = mem_wdata.slice<`8`>(8)
-                    if (mem_wstrb[2]) memory[index][16] = mem_wdata.slice<`8`>(16)
-                    if (mem_wstrb[3]) memory[index][24] = mem_wdata.slice<`8`>(24)
+                    if (mem_wstrb[0]) memory[index][0] = mem_wdata.sli<`8`>(0)
+                    if (mem_wstrb[1]) memory[index][8] = mem_wdata.sli<`8`>(8)
+                    if (mem_wstrb[2]) memory[index][16] = mem_wdata.sli<`8`>(16)
+                    if (mem_wstrb[3]) memory[index][24] = mem_wdata.sli<`8`>(24)
                 }
                 // add memory-mapped IO here
             }

@@ -58,8 +58,8 @@ class FoldedMultiplier(
             } else {
                 val m = prod add (if (a[0]) b else u0())
                 a = a shr 1
-                tp = cat(m[0], tp.slice<`31`>(1))
-                prod = m.slice(1)
+                tp = cat(m[0], tp.sli<`31`>(1))
+                prod = m.sli(1)
                 i -= u(1)
             }
         }

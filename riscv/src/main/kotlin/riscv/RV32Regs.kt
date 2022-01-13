@@ -37,14 +37,14 @@ class RV32Regs(
     fun seqRegs() {
         on(posedge(clk)) {
             if (wen) {
-                regs[waddr.tru<`5`>().invert()] = wdata
+                regs[waddr.tru<`5`>().inv()] = wdata
             }
         }
     }
 
     @Com
     fun comRdata() {
-        rdata1 = regs[raddr1.tru<`5`>().invert()]
-        rdata2 = regs[raddr2.tru<`5`>().invert()]
+        rdata1 = regs[raddr1.tru<`5`>().inv()]
+        rdata2 = regs[raddr2.tru<`5`>().inv()]
     }
 }

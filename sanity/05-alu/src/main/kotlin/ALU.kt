@@ -39,11 +39,11 @@ enum class AluFunc {
 
 fun barrelRShift(a: Ubit<`32`>, b: Ubit<`5`>, sftOnes: Boolean): Ubit<`32`> {
     var x = a
-    if (b[0]) x = cat(sftOnes.sext<`1`>(), x.slice<`31`>(1))
-    if (b[1]) x = cat(sftOnes.sext<`2`>(), x.slice<`30`>(2))
-    if (b[2]) x = cat(sftOnes.sext<`4`>(), x.slice<`28`>(4))
-    if (b[3]) x = cat(sftOnes.sext<`8`>(), x.slice<`24`>(8))
-    if (b[4]) x = cat(sftOnes.sext<`16`>(), x.slice<`16`>(16))
+    if (b[0]) x = cat(sftOnes.sext<`1`>(), x.sli<`31`>(1))
+    if (b[1]) x = cat(sftOnes.sext<`2`>(), x.sli<`30`>(2))
+    if (b[2]) x = cat(sftOnes.sext<`4`>(), x.sli<`28`>(4))
+    if (b[3]) x = cat(sftOnes.sext<`8`>(), x.sli<`24`>(8))
+    if (b[4]) x = cat(sftOnes.sext<`16`>(), x.sli<`16`>(16))
     return x
 }
 
@@ -52,16 +52,16 @@ fun sr32(a: Ubit<`32`>, b: Ubit<`5`>, arith: Boolean): Ubit<`32`> {
 }
 
 fun sll32(a: Ubit<`32`>, b: Ubit<`5`>): Ubit<`32`> {
-    return barrelRShift(a.reverse(), b, false).reverse()
+    return barrelRShift(a.rev(), b, false).rev()
 }
 
 fun sft32(a: Ubit<`32`>, b: Ubit<`5`>, shiftType: ShiftType): Ubit<`32`> {
     val x = barrelRShift(
-        if (shiftType == ShiftType.LEFT_LOGICAL) a.reverse() else a,
+        if (shiftType == ShiftType.LEFT_LOGICAL) a.rev() else a,
         b,
         if (shiftType == ShiftType.RIGHT_ARITHMETIC) a[31] else false
     )
-    return if (shiftType == ShiftType.LEFT_LOGICAL) x.reverse() else x
+    return if (shiftType == ShiftType.LEFT_LOGICAL) x.rev() else x
 }
 
 fun cmp(a: Boolean, b: Boolean, eq: Boolean, lt: Boolean): Ubit<`2`> {
@@ -104,7 +104,7 @@ fun <N : `*`> rca(a: Ubit<N>, b: Ubit<N>, c: Boolean): Ubit<N> {
 }
 
 fun addSub(a: Ubit<`32`>, b: Ubit<`32`>, isSub: Boolean): Ubit<`32`> {
-    return rca<`32`>(a, if (isSub) b.invert() else b, isSub)
+    return rca<`32`>(a, if (isSub) b.inv() else b, isSub)
 }
 
 fun alu(a: Ubit<`32`>, b: Ubit<`32`>, func: AluFunc): Ubit<`32`> {
