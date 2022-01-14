@@ -137,7 +137,7 @@ class RV32<
     var irq_active: Boolean = nc()
     var irq_mask: Ubit<`32`> = nc()
     var irq_pending: Ubit<`32`> = nc()
-    var irq_timer: Ubit<`32`> = nc()
+    var timer: Ubit<`32`> = nc()
 
     // Internal PCPI Cores
 
@@ -295,7 +295,7 @@ class RV32<
             (COMPRESSED_ISA && mem_xfer && (if (!last_mem_valid) mem_la_firstword else mem_la_firstword_reg) && !mem_la_secondword && mem_rdata_latched.tru<`2`>().andRed())
         )
         mem_la_addr = if (mem_do_prefetch || mem_do_rinst) {
-            cat(next_pc.sli<`30`>(2) + u(mem_la_firstword_xfer), u(0b00))
+            cat(next_pc.sli<`30`>(2) + mem_la_firstword_xfer.toUbit<`1`>(), u(0b00))
         } else cat(reg_op1.sli<`30`>(2), u(0b00))
         mem_rdata_latched_noshuffle = if (mem_xfer || LATCHED_MEM_RDATA) mem_rdata else mem_rdata_q
         mem_rdata_latched = when {
@@ -1245,7 +1245,7 @@ class RV32<
             on(posedge(clk)) {
                 alu_add_sub = if (instr_sub) reg_op1 - reg_op2 else reg_op1 + reg_op2
                 alu_eq = reg_op1 == reg_op2
-                alu_lts = s(reg_op1) < s(reg_op2)
+                alu_lts = reg_op1.toSbit() < reg_op2.toSbit()
                 alu_shl = reg_op1 shl reg_op2.tru<`5`>()
                 alu_shr = if (instr_sra || instr_srai) reg_op1 sshr reg_op2.tru<`5`>() else reg_op1 shr reg_op2.tru<`5`>()
             }
@@ -1257,7 +1257,7 @@ class RV32<
         if (!TWO_CYCLE_ALU) {
             alu_add_sub = if (instr_sub) reg_op1 - reg_op2 else reg_op1 + reg_op2
             alu_eq = reg_op1 == reg_op2
-            alu_lts = s(reg_op1) < s(reg_op2)
+            alu_lts = reg_op1.toSbit() < reg_op2.toSbit()
             alu_shl = reg_op1 shl reg_op2.tru<`5`>()
             alu_shr = if (instr_sra || instr_srai) reg_op1 sshr reg_op2.tru<`5`>() else reg_op1 shr reg_op2.tru<`5`>()
         }
@@ -1277,7 +1277,7 @@ class RV32<
 
         alu_out = when {
             is_lui_auipc_jal_jalr_addi_add_sub -> alu_add_sub
-            is_compare -> alu_out_0.ext()
+            is_compare -> alu_out_0.toUbit()
             instr_xori || instr_xor -> reg_op1 xor reg_op2
             instr_ori || instr_or -> reg_op1 or reg_op2
             instr_andi || instr_and -> reg_op1 and reg_op2
@@ -1320,7 +1320,7 @@ class RV32<
                     cpuregs_write = true
                 }
                 ENABLE_IRQ && irq_state[0] -> {
-                    cpuregs_wrdata = reg_next_pc or latched_compr.ext()
+                    cpuregs_wrdata = reg_next_pc or latched_compr.toUbit()
                     cpuregs_write = true
                 }
                 ENABLE_IRQ && irq_state[1] -> {
@@ -1400,6 +1400,104 @@ class RV32<
                     pcpi_timeout_counter = u1()
                 }
                 pcpi_timeout = !pcpi_timeout_counter
+            }
+
+            if (ENABLE_COUNTERS) {
+                count_cycle = if (resetn) count_cycle + u(1) else u0()
+                if (!ENABLE_COUNTERS64) count_cycle[32] = u0<`32`>()
+            } else {
+                count_cycle = ux()
+                count_instr = ux()
+            }
+
+            next_irq_pending = if (ENABLE_IRQ) irq_pending and LATCHED_IRQ else ux()
+
+            if (ENABLE_IRQ && ENABLE_IRQ_TIMER && timer.neqz()) {
+                timer -= u(1)
+            }
+
+            decoder_trigger = mem_do_rinst && mem_done
+            decoder_trigger_q = decoder_trigger
+            decoder_pseudo_trigger = false
+            decoder_pseudo_trigger_q = decoder_pseudo_trigger
+            do_waitirq = false
+
+            trace_valid = false
+            if (!ENABLE_TRACE)
+                trace_data = ux()
+
+            if (!resetn) {
+                reg_pc = PROGADDR_RESET
+                reg_next_pc = PROGADDR_RESET
+                if (ENABLE_TRACE)
+                    count_instr = u0()
+                latched_store = false
+                latched_stalu = false
+                latched_branch = false
+                latched_trace = false
+                latched_is_lu = false
+                latched_is_lh = false
+                latched_is_lb = false
+                pcpi_valid = false
+                pcpi_timeout = false
+                irq_active = false
+                irq_delay = false
+                irq_mask = u1()
+                next_irq_pending = u0()
+                irq_state = u0()
+                eoi = u0()
+                timer = u0()
+                if (STACKADDR.inv().neqz()) {
+                    latched_store = true
+                    latched_rd = u(2).ext()
+                    reg_out = STACKADDR
+                }
+                cpu_state = CPU_STATE_FETCH
+            }
+
+            when (cpu_state) {
+                CPU_STATE_TRAP -> {
+                    trap = true
+                }
+
+                CPU_STATE_FETCH -> {
+                    mem_do_rinst = !decoder_trigger && !do_waitirq
+                    mem_wordsize = u0()
+                    current_pc = reg_next_pc
+
+                    when {
+                        latched_branch -> {
+                            current_pc = if (latched_store) {
+                                (if (latched_stalu) alu_out_q else reg_out) and u(1).ext<`32`>().inv()
+                            } else reg_next_pc
+                            println("ST_RD 0x$latched_rd 0x${reg_pc + if (latched_compr) u(0x2) else u(0x4)}, BRANCH 0x${current_pc}")
+                        }
+                    }
+                }
+
+                CPU_STATE_LD_RS1 -> {
+
+                }
+
+                CPU_STATE_LD_RS2 -> {
+
+                }
+
+                CPU_STATE_EXEC -> {
+
+                }
+
+                CPU_STATE_SHIFT -> {
+
+                }
+
+                CPU_STATE_STMEM -> {
+
+                }
+
+                CPU_STATE_LDMEM -> {
+
+                }
             }
         }
     }

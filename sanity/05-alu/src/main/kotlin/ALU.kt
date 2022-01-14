@@ -39,11 +39,11 @@ enum class AluFunc {
 
 fun barrelRShift(a: Ubit<`32`>, b: Ubit<`5`>, sftOnes: Boolean): Ubit<`32`> {
     var x = a
-    if (b[0]) x = cat(sftOnes.sext<`1`>(), x.sli<`31`>(1))
-    if (b[1]) x = cat(sftOnes.sext<`2`>(), x.sli<`30`>(2))
-    if (b[2]) x = cat(sftOnes.sext<`4`>(), x.sli<`28`>(4))
-    if (b[3]) x = cat(sftOnes.sext<`8`>(), x.sli<`24`>(8))
-    if (b[4]) x = cat(sftOnes.sext<`16`>(), x.sli<`16`>(16))
+    if (b[0]) x = cat(sftOnes.toSbit<`1`>(), x.sli<`31`>(1))
+    if (b[1]) x = cat(sftOnes.toSbit<`2`>(), x.sli<`30`>(2))
+    if (b[2]) x = cat(sftOnes.toSbit<`4`>(), x.sli<`28`>(4))
+    if (b[3]) x = cat(sftOnes.toSbit<`8`>(), x.sli<`24`>(8))
+    if (b[4]) x = cat(sftOnes.toSbit<`16`>(), x.sli<`16`>(16))
     return x
 }
 

@@ -28,7 +28,7 @@ object AluTest : Module() {
             AluFunc.AND -> a and b
             AluFunc.OR -> a or b
             AluFunc.XOR -> a xor b
-            AluFunc.SLT -> cat(u("31'b0"), s(a) < s(b))
+            AluFunc.SLT -> cat(u("31'b0"), a.toSbit() < b.toSbit())
             AluFunc.SLTU -> cat(u("31'b0"), a < b)
             AluFunc.SLL -> a shl b.tru<`5`>()
             AluFunc.SRL -> a shr b.tru<`5`>()

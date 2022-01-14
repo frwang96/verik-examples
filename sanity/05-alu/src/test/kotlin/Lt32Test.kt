@@ -35,7 +35,7 @@ object Lt32Test : Module() {
                 fatal()
             }
             actual = lt32(a, b, true)
-            expected = (s(a) < s(b))
+            expected = (a.toSbit() < b.toSbit())
             if (actual != expected) {
                 println("lt32: FAILED lt32($a, $b, 1'b1) = $actual")
                 fatal()
@@ -49,7 +49,7 @@ object Lt32Test : Module() {
             val b: Ubit<`32`> = randomUbit()
             val isSigned = randomBoolean()
             val actual = lt32(a, b, isSigned)
-            val expected = if (isSigned) (s(a) < s(b)) else (a < b)
+            val expected = if (isSigned) (a.toSbit() < b.toSbit()) else (a < b)
             if (actual != expected) {
                 println("lt32: FAILED lt32($a, $b, $isSigned) = $actual")
                 fatal()
