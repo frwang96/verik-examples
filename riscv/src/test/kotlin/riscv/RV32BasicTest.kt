@@ -91,7 +91,6 @@ object RV32BasicTest : Module() {
         ENABLE_PCPI = true,
         ENABLE_IRQ_TIMER = true,
         ENABLE_TRACE = false,
-        REGS_INIT_ZERO = false,
         MASKED_IRQ = u("32'h0000_0000"),
         LATCHED_IRQ = u("32'hffff_ffff"),
         PROGADDR_RESET = u("32'h0000_0000"),

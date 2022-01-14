@@ -42,7 +42,6 @@ class RV32<
     val ENABLE_PCPI: Boolean,
     val ENABLE_IRQ_TIMER: Boolean,
     val ENABLE_TRACE: Boolean,
-    val REGS_INIT_ZERO: Boolean,
     val MASKED_IRQ: Ubit<`32`>,
     val LATCHED_IRQ: Ubit<`32`>,
     val PROGADDR_RESET: Ubit<`32`>,
@@ -104,6 +103,10 @@ class RV32<
 
     val WITH_PCPI = ENABLE_PCPI || ENABLE_MUL || ENABLE_FAST_MUL || ENABLE_DIV
 
+    val TRACE_BRANCH: Ubit<`36`> = cat(u(0b0001), u("32'b0"))
+    val TRACE_ADDR: Ubit<`36`>   = cat(u(0b0010), u("32'b0"))
+    val TRACE_IRQ: Ubit<`36`>    = cat(u(0b1000), u("32'b0"))
+
     var count_cycle: Ubit<`64`> = nc()
     var count_instr: Ubit<`64`> = nc()
     var reg_pc: Ubit<`32`> = nc()
@@ -116,14 +119,6 @@ class RV32<
     var next_insn_opcode: Ubit<`32`> = nc()
     var dbg_insn_opcode: Ubit<`32`> = nc()
     var dbg_insn_addr: Ubit<`32`> = nc()
-
-    var dbg_mem_valid: Boolean = nc()
-    var dbg_mem_instr: Boolean = nc()
-    var dbg_mem_ready: Boolean = nc()
-    var dbg_mem_addr: Ubit<`32`> = nc()
-    var dbg_mem_wdata: Ubit<`32`> = nc()
-    var dbg_mem_wstrb: Ubit<`4`> = nc()
-    var dbg_mem_rdata: Ubit<`32`> = nc()
 
     @Com
     fun comPcpiRs() {
@@ -1191,16 +1186,7 @@ class RV32<
 
     // Main State Machine
 
-    val CPU_STATE_TRAP = u("8'b10000000")
-    val CPU_STATE_FETCH = u("8'b01000000")
-    val CPU_STATE_LD_RS1 = u("8'b00100000")
-    val CPU_STATE_LD_RS2 = u("8'b00010000")
-    val CPU_STATE_EXEC = u("8'b00001000")
-    val CPU_STATE_SHIFT = u("8'b00000100")
-    val CPU_STATE_STMEM = u("8'b00000010")
-    val CPU_STATE_LDMEM = u("8'b00000001")
-
-    var cpu_state: Ubit<`8`> = nc()
+    var cpu_state: CpuState = nc()
     var irq_state: Ubit<`2`> = nc()
 
     var set_mem_do_rinst: Boolean = nc()
@@ -1218,6 +1204,11 @@ class RV32<
     var latched_rd: Ubit<REGINDEX_BITS<ENABLE_REGS_16_31, ENABLE_IRQ, ENABLE_IRQ_QREGS>> = nc()
 
     var current_pc: Ubit<`32`> = nc()
+
+    @Com
+    fun comNextPc() {
+        next_pc = if (latched_store && latched_branch) reg_out and u(1).ext<`32`>().inv() else reg_next_pc
+    }
 
     var pcpi_timeout_counter: Ubit<`4`> = nc()
     var pcpi_timeout: Boolean = nc()
@@ -1309,7 +1300,7 @@ class RV32<
     fun comCpuregsWrite() {
         cpuregs_write = false
         cpuregs_wrdata = ux()
-        if (cpu_state == CPU_STATE_FETCH) {
+        if (cpu_state == CpuState.CPU_STATE_FETCH) {
             when {
                 latched_branch -> {
                     cpuregs_wrdata = reg_pc + if (latched_compr) u(0x2) else u(0x4)
@@ -1334,20 +1325,20 @@ class RV32<
     var cpuregs_rdata1: Ubit<`32`> = nc()
     var cpuregs_rdata2: Ubit<`32`> = nc()
 
-    var cpuregs_waddr: Ubit<`6`> = nc()
-    var cpuregs_raddr1: Ubit<`6`> = nc()
-    var cpuregs_raddr2: Ubit<`6`> = nc()
+    @Com var cpuregs_waddr: Ubit<`6`> = latched_rd.ext()
+    @Com var cpuregs_raddr1: Ubit<`6`> = if (ENABLE_REGS_DUALPORT) decoded_rs1.ext() else decoded_rs.ext()
+    @Com var cpuregs_raddr2: Ubit<`6`> = if (ENABLE_REGS_DUALPORT) decoded_rs2.ext() else u0()
 
     @Make
     val cpuregs = RV32Regs(
         clk = clk,
-        wen = false,
-        waddr = u0(),
-        raddr1 = u0(),
-        raddr2 = u0(),
-        wdata = u0(),
-        rdata1 = nc(),
-        rdata2 = nc()
+        wen = resetn && cpuregs_write && latched_rd.neqz(),
+        waddr = cpuregs_waddr,
+        raddr1 = cpuregs_raddr1,
+        raddr2 = cpuregs_raddr2,
+        wdata = cpuregs_wrdata,
+        rdata1 = cpuregs_rdata1,
+        rdata2 = cpuregs_rdata2
     )
 
     @Com
@@ -1357,7 +1348,7 @@ class RV32<
             cpuregs_rs1 = if (decoded_rs1.orRed()) cpuregs_rdata1 else u0()
             cpuregs_rs2 = if (decoded_rs2.orRed()) cpuregs_rdata2 else u0()
         } else {
-            decoded_rs = if (cpu_state == CPU_STATE_LD_RS2) decoded_rs2 else decoded_rs1
+            decoded_rs = if (cpu_state == CpuState.CPU_STATE_LD_RS2) decoded_rs2 else decoded_rs1
             cpuregs_rs1 = if (decoded_rs.orRed()) cpuregs_rdata1 else u0()
             cpuregs_rs2 = cpuregs_rs1
         }
@@ -1365,7 +1356,7 @@ class RV32<
 
     @Com
     fun comLaunchNextInsn() {
-        launch_next_insn = (cpu_state == CPU_STATE_FETCH) && decoder_trigger &&
+        launch_next_insn = (cpu_state == CpuState.CPU_STATE_FETCH) && decoder_trigger &&
             (!ENABLE_IRQ || irq_delay || irq_active || !(irq_pending and irq_mask.inv()))
     }
 
@@ -1452,15 +1443,13 @@ class RV32<
                     latched_rd = u(2).ext()
                     reg_out = STACKADDR
                 }
-                cpu_state = CPU_STATE_FETCH
-            }
-
-            when (cpu_state) {
-                CPU_STATE_TRAP -> {
+                cpu_state = CpuState.CPU_STATE_FETCH
+            } else when (cpu_state) {
+                CpuState.CPU_STATE_TRAP -> {
                     trap = true
                 }
 
-                CPU_STATE_FETCH -> {
+                CpuState.CPU_STATE_FETCH -> {
                     mem_do_rinst = !decoder_trigger && !do_waitirq
                     mem_wordsize = u0()
                     current_pc = reg_next_pc
@@ -1470,35 +1459,481 @@ class RV32<
                             current_pc = if (latched_store) {
                                 (if (latched_stalu) alu_out_q else reg_out) and u(1).ext<`32`>().inv()
                             } else reg_next_pc
-                            println("ST_RD 0x$latched_rd 0x${reg_pc + if (latched_compr) u(0x2) else u(0x4)}, BRANCH 0x${current_pc}")
+                            println("ST_RD: ${latched_rd.toDecString()} 0x${reg_pc + if (latched_compr) u(0x2) else u(0x4)}, BRANCH 0x${current_pc}")
+                        }
+                        latched_store -> {
+                            println("ST_RD: ${latched_rd.toDecString()} 0x${if (latched_stalu) alu_out_q else reg_out}")
+                        }
+                        ENABLE_IRQ && irq_state[0] -> {
+                            current_pc = PROGADDR_IRQ
+                            irq_active = true
+                            mem_do_rinst = true
+                        }
+                        ENABLE_IRQ && irq_state[1] -> {
+                            eoi = irq_pending and irq_mask.inv()
+                            next_irq_pending = next_irq_pending and irq_mask
+                        }
+                    }
+
+                    if (ENABLE_TRACE && latched_trace) {
+                        latched_trace = false
+                        trace_valid = true
+                        trace_data = if (latched_branch) {
+                            (if (irq_active) TRACE_IRQ else u0()) or TRACE_BRANCH or (current_pc and u("32'hfffffffe")).ext()
+                        } else  {
+                            (if (irq_active) TRACE_IRQ else u0()) or (if (latched_stalu) alu_out_q else reg_out).ext()
+                        }
+                    }
+
+                    reg_pc = current_pc
+                    reg_next_pc = current_pc
+
+                    latched_store = false
+                    latched_stalu = false
+                    latched_branch = false
+                    latched_is_lu = false
+                    latched_is_lh = false
+                    latched_is_lb = false
+                    latched_rd = decoded_rd
+                    latched_compr = compressed_instr
+
+                    if (ENABLE_IRQ && ((decoder_trigger && !irq_active && !irq_delay && (irq_pending and irq_mask.inv()).orRed()) || irq_state.neqz())) {
+                        irq_state = when (irq_state) {
+                            u(0x00) -> u(0x01)
+                            u(0x01) -> u(0x10)
+                            else -> u(0x00)
+                        }
+                        latched_compr = latched_compr
+                        latched_rd = if (ENABLE_IRQ_QREGS) {
+                            IRQREGS_OFFSET or irq_state[0].toUbit()
+                        } else {
+                            if (irq_state[0]) u(0x4).ext() else u(0x3).ext()
+                        }
+                    } else if (ENABLE_IRQ && (decoder_trigger || do_waitirq) && instr_waitirq) {
+                        if (irq_pending.neqz()) {
+                            latched_store = true
+                            reg_out = irq_pending
+                            reg_next_pc = current_pc + if (compressed_instr) u(0x2) else u(0x4)
+                            mem_do_rinst = true
+                        } else {
+                            do_waitirq = true
+                        }
+                    } else if (decoder_trigger) {
+                        println("-- ${time()}")
+                        irq_delay = irq_active
+                        reg_next_pc = current_pc + if (compressed_instr) u(0x2) else u(0x4)
+                        if (ENABLE_TRACE)
+                            latched_trace = true
+                        if (ENABLE_COUNTERS) {
+                            count_instr += u(1)
+                            if (!ENABLE_COUNTERS64) count_instr[32] = u0<`32`>()
+                        }
+                        if (instr_jal) {
+                            mem_do_rinst = true
+                            reg_next_pc = current_pc + decoded_imm_j
+                            latched_branch = true
+                        } else {
+                            mem_do_rinst = false
+                            mem_do_prefetch = !instr_jalr && !instr_retirq
+                            cpu_state = CpuState.CPU_STATE_LD_RS1
                         }
                     }
                 }
 
-                CPU_STATE_LD_RS1 -> {
+                CpuState.CPU_STATE_LD_RS1 -> {
+                    reg_op1 = ux()
+                    reg_op2 = ux()
 
+                    when {
+                        (CATCH_ILLINSN || WITH_PCPI) && instr_trap -> {
+                            if (WITH_PCPI) {
+                                println("LD_RS1: ${decoded_rs1.toDecString()} 0x$cpuregs_rs1")
+                                reg_op1 = cpuregs_rs1
+                                dbg_rs1val = cpuregs_rs1
+                                dbg_rs1val_valid = true
+                                if (ENABLE_REGS_DUALPORT) {
+                                    pcpi_valid = true
+                                    println("LD_RS2: ${decoded_rs2.toDecString()} 0x$cpuregs_rs2")
+                                    reg_sh = cpuregs_rs2.tru()
+                                    reg_op2 = cpuregs_rs2
+                                    dbg_rs2val = cpuregs_rs2
+                                    dbg_rs2val_valid = true
+                                    if (pcpi_int_ready) {
+                                        mem_do_rinst = true
+                                        pcpi_valid = false
+                                        reg_out = pcpi_int_rd
+                                        latched_store = pcpi_int_wr
+                                        cpu_state = CpuState.CPU_STATE_FETCH
+                                    } else if (CATCH_ILLINSN && (pcpi_timeout || instr_ecall_ebreak)) {
+                                        pcpi_valid = false
+                                        println("EBREAK OR UNSUPPORTED INSN AT 0x$reg_pc")
+                                        if (ENABLE_IRQ && !irq_mask[IRQ_EBREAK] && !irq_active) {
+                                            next_irq_pending[IRQ_EBREAK] = true
+                                            cpu_state = CpuState.CPU_STATE_FETCH
+                                        } else {
+                                            cpu_state = CpuState.CPU_STATE_TRAP
+                                        }
+                                    }
+                                } else {
+                                    cpu_state = CpuState.CPU_STATE_LD_RS2
+                                }
+                            } else {
+                                println("EBREAK OR UNSUPPORTED INSN AT 0x$reg_pc")
+                                if (ENABLE_IRQ && !irq_mask[IRQ_EBREAK] && !irq_active) {
+                                    next_irq_pending[IRQ_EBREAK] = true
+                                    cpu_state = CpuState.CPU_STATE_FETCH
+                                } else {
+                                    cpu_state = CpuState.CPU_STATE_TRAP
+                                }
+                            }
+                        }
+                        ENABLE_COUNTERS && is_rdcycle_rdcycleh_rdinstr_rdinstrh -> {
+                            reg_out = when {
+                                instr_rdcycle -> count_cycle.tru()
+                                instr_rdcycleh && ENABLE_COUNTERS64 -> count_cycle.sli(32)
+                                instr_rdinstr -> count_instr.tru()
+                                instr_rdinstrh && ENABLE_COUNTERS64 -> count_instr.sli(32)
+                                else -> ux()
+                            }
+                            latched_store = true
+                            cpu_state = CpuState.CPU_STATE_FETCH
+                        }
+                        is_lui_auipc_jal -> {
+                            reg_op1 = if (instr_lui) u0() else reg_pc
+                            reg_op2 = decoded_imm
+                            if (TWO_CYCLE_ALU)
+                                alu_wait = true
+                            else
+                                mem_do_rinst = mem_do_prefetch
+                            cpu_state = CpuState.CPU_STATE_EXEC
+                        }
+                        ENABLE_IRQ && ENABLE_IRQ_QREGS && instr_getq -> {
+                            println("LD_RS1: ${decoded_rs1.toDecString()} 0x$cpuregs_rs1")
+                            reg_out = cpuregs_rs1
+                            dbg_rs1val = cpuregs_rs1
+                            dbg_rs1val_valid = true
+                            latched_store = true
+                            cpu_state = CpuState.CPU_STATE_FETCH
+                        }
+                        ENABLE_IRQ && ENABLE_IRQ_QREGS && instr_setq -> {
+                            println("LD_RS1: ${decoded_rs1.toDecString()} 0x$cpuregs_rs1")
+                            reg_out = cpuregs_rs1
+                            dbg_rs1val = cpuregs_rs1
+                            dbg_rs1val_valid = true
+                            latched_rd = latched_rd or IRQREGS_OFFSET
+                            latched_store = true
+                            cpu_state = CpuState.CPU_STATE_FETCH
+                        }
+                        ENABLE_IRQ && instr_retirq -> {
+                            eoi = u0()
+                            irq_active = false
+                            latched_branch = true
+                            latched_store = true
+                            println("LD_RS1: ${decoded_rs1.toDecString()} 0x$cpuregs_rs1")
+                            reg_out = if (CATCH_MISALIGN) cpuregs_rs1 and u("32'hfffffffe") else cpuregs_rs1
+                            dbg_rs1val = cpuregs_rs1
+                            dbg_rs1val_valid = true
+                            cpu_state = CpuState.CPU_STATE_FETCH
+                        }
+                        ENABLE_IRQ && instr_maskirq -> {
+                            latched_store = true
+                            reg_out = irq_mask
+                            println("LD_RS1: ${decoded_rs1.toDecString()} 0x$cpuregs_rs1")
+                            irq_mask = cpuregs_rs1 or MASKED_IRQ
+                            dbg_rs1val = cpuregs_rs1
+                            dbg_rs1val_valid = true
+                            cpu_state = CpuState.CPU_STATE_FETCH
+                        }
+                        ENABLE_IRQ && ENABLE_IRQ_TIMER && instr_timer -> {
+                            latched_store = true
+                            reg_out = timer
+                            println("LD_RS1: ${decoded_rs1.toDecString()} 0x$cpuregs_rs1")
+                            timer = cpuregs_rs1
+                            dbg_rs1val = cpuregs_rs1
+                            dbg_rs1val_valid = true
+                            cpu_state = CpuState.CPU_STATE_FETCH
+                        }
+                        is_lb_lh_lw_lbu_lhu && !instr_trap -> {
+                            println("LD_RS1: ${decoded_rs1.toDecString()} 0x$cpuregs_rs1")
+                            reg_op1 = cpuregs_rs1
+                            dbg_rs1val = cpuregs_rs1
+                            dbg_rs1val_valid = true
+                            cpu_state = CpuState.CPU_STATE_LDMEM
+                            mem_do_rinst = true
+                        }
+                        is_slli_srli_srai && !BARREL_SHIFTER -> {
+                            println("LD_RS1: ${decoded_rs1.toDecString()} 0x$cpuregs_rs1")
+                            reg_op1 = cpuregs_rs1
+                            dbg_rs1val = cpuregs_rs1
+                            dbg_rs1val_valid = true
+                            reg_sh = decoded_rs2
+                            cpu_state = CpuState.CPU_STATE_SHIFT
+                        }
+                        is_jalr_addi_slti_sltiu_xori_ori_andi || (is_slli_srli_srai && BARREL_SHIFTER) -> {
+                            println("LD_RS1: ${decoded_rs1.toDecString()} 0x$cpuregs_rs1")
+                            reg_op1 = cpuregs_rs1
+                            dbg_rs1val = cpuregs_rs1
+                            dbg_rs1val_valid = true
+                            reg_op2 = if (is_slli_srli_srai && BARREL_SHIFTER) decoded_rs2.ext() else decoded_imm
+                            if (TWO_CYCLE_ALU)
+                                alu_wait = true
+                            else
+                                mem_do_rinst = mem_do_prefetch
+                            cpu_state = CpuState.CPU_STATE_EXEC
+                        }
+                        else -> {
+                            println("LD_RS1: ${decoded_rs1.toDecString()} 0x$cpuregs_rs1")
+                            reg_op1 = cpuregs_rs1
+                            dbg_rs1val = cpuregs_rs1
+                            dbg_rs1val_valid = true
+                            if (ENABLE_REGS_DUALPORT) {
+                                println("LD_RS2: ${decoded_rs2.toDecString()} 0x$cpuregs_rs2")
+                                reg_sh = cpuregs_rs2.tru()
+                                reg_op2 = cpuregs_rs2
+                                dbg_rs2val = cpuregs_rs2
+                                dbg_rs2val_valid = true
+                                when {
+                                    is_sb_sh_sw -> {
+                                        cpu_state = CpuState.CPU_STATE_STMEM
+                                        mem_do_rinst = true
+                                    }
+                                    is_sll_srl_sra && !BARREL_SHIFTER -> {
+                                        cpu_state = CpuState.CPU_STATE_SHIFT
+                                    }
+                                    else -> {
+                                        if (TWO_CYCLE_ALU || (TWO_CYCLE_COMPARE && is_beq_bne_blt_bge_bltu_bgeu)) {
+                                            alu_wait_2 = TWO_CYCLE_ALU && (TWO_CYCLE_COMPARE && is_beq_bne_blt_bge_bltu_bgeu)
+                                            alu_wait = true
+                                        } else {
+                                            mem_do_rinst = mem_do_prefetch
+                                        }
+                                        cpu_state = CpuState.CPU_STATE_EXEC
+                                    }
+                                }
+                            } else {
+                                cpu_state = CpuState.CPU_STATE_LD_RS2
+                            }
+                        }
+                    }
                 }
 
-                CPU_STATE_LD_RS2 -> {
+                CpuState.CPU_STATE_LD_RS2 -> {
+                    println("LD_RS2: ${decoded_rs2.toDecString()} $cpuregs_rs2")
+                    reg_sh = cpuregs_rs2.tru()
+                    reg_op2 = cpuregs_rs2
+                    dbg_rs2val = cpuregs_rs2
+                    dbg_rs2val_valid = true
 
+                    when {
+                        WITH_PCPI && instr_trap -> {
+                            pcpi_valid = true
+                            if (pcpi_int_ready) {
+                                mem_do_rinst = true
+                                pcpi_valid = false
+                                reg_out = pcpi_int_rd
+                                latched_store = pcpi_int_wr
+                                cpu_state = CpuState.CPU_STATE_FETCH
+                            } else if (CATCH_ILLINSN && (pcpi_timeout || instr_ecall_ebreak)) {
+                                pcpi_valid = false
+                                println("EBREAK OR UNSUPPORTED INSN AT 0x$reg_pc")
+                                if (ENABLE_IRQ && !irq_mask[IRQ_EBREAK] && !irq_active) {
+                                    next_irq_pending[IRQ_EBREAK] = true
+                                    cpu_state = CpuState.CPU_STATE_FETCH
+                                } else {
+                                    cpu_state = CpuState.CPU_STATE_TRAP
+                                }
+                            }
+                        }
+                        is_sb_sh_sw -> {
+                            cpu_state = CpuState.CPU_STATE_STMEM
+                            mem_do_rinst = true
+                        }
+                        is_sll_srl_sra && !BARREL_SHIFTER -> {
+                            cpu_state = CpuState.CPU_STATE_SHIFT
+                        }
+                        else -> {
+                            if (TWO_CYCLE_ALU || (TWO_CYCLE_COMPARE && is_beq_bne_blt_bge_bltu_bgeu)) {
+                                alu_wait_2 = TWO_CYCLE_ALU && (TWO_CYCLE_COMPARE && is_beq_bne_blt_bge_bltu_bgeu)
+                                alu_wait = true
+                            } else {
+                                mem_do_rinst = mem_do_prefetch
+                            }
+                            cpu_state = CpuState.CPU_STATE_EXEC
+                        }
+                    }
                 }
 
-                CPU_STATE_EXEC -> {
-
+                CpuState.CPU_STATE_EXEC -> {
+                    reg_out = reg_pc + decoded_imm
+                    if ((TWO_CYCLE_ALU || TWO_CYCLE_COMPARE) && (alu_wait || alu_wait_2)) {
+                        mem_do_rinst = mem_do_prefetch && !alu_wait_2
+                        alu_wait = alu_wait_2
+                    } else if (is_beq_bne_blt_bge_bltu_bgeu) {
+                        latched_rd = u0()
+                        latched_store = if (TWO_CYCLE_COMPARE) alu_out_0_q else alu_out_0
+                        latched_branch = if (TWO_CYCLE_COMPARE) alu_out_0_q else alu_out_0
+                        if (mem_done)
+                            cpu_state = CpuState.CPU_STATE_FETCH
+                        if (if (TWO_CYCLE_COMPARE) alu_out_0_q else alu_out_0) {
+                            decoder_trigger = false
+                            set_mem_do_rinst = true
+                        }
+                    } else {
+                        latched_branch = instr_jalr
+                        latched_store = true
+                        latched_stalu = true
+                        cpu_state = CpuState.CPU_STATE_FETCH
+                    }
                 }
 
-                CPU_STATE_SHIFT -> {
-
+                CpuState.CPU_STATE_SHIFT -> {
+                    latched_store = true
+                    if (reg_sh.eqz()) {
+                        reg_out = reg_op1
+                        mem_do_rinst = mem_do_prefetch
+                        cpu_state = CpuState.CPU_STATE_FETCH
+                    } else if (TWO_STAGE_SHIFT && reg_sh >= u(4).ext()) {
+                        reg_op1 = when {
+                            instr_slli || instr_sll -> reg_op1 shl 4
+                            instr_srli || instr_srl -> reg_op1 shr 4
+                            instr_srai || instr_sra -> reg_op1 sshr 4
+                            else -> ux()
+                        }
+                        reg_sh -= u(4)
+                    } else {
+                        reg_op1 = when {
+                            instr_slli || instr_sll -> reg_op1 shl 1
+                            instr_srli || instr_srl -> reg_op1 shr 1
+                            instr_srai || instr_sra -> reg_op1 sshr 1
+                            else -> ux()
+                        }
+                        reg_sh -= u(1)
+                    }
                 }
 
-                CPU_STATE_STMEM -> {
-
+                CpuState.CPU_STATE_STMEM -> {
+                    if (ENABLE_TRACE)
+                        reg_out = reg_op2
+                    if (!mem_do_prefetch || mem_done) {
+                        if (!mem_do_wdata) {
+                            mem_wordsize = when {
+                                instr_sb -> u(0b10)
+                                instr_sh -> u(0b01)
+                                instr_sw -> u(0b00)
+                                else -> ux()
+                            }
+                            if (ENABLE_TRACE) {
+                                trace_valid = true
+                                trace_data = (if (irq_active) TRACE_IRQ else u0()) or TRACE_ADDR or ((reg_op1 + decoded_imm) and u1<`32`>()).ext()
+                            }
+                            reg_op1 += decoded_imm
+                            set_mem_do_wdata = true
+                        }
+                        if (!mem_do_prefetch && mem_done) {
+                            cpu_state = CpuState.CPU_STATE_FETCH
+                            decoder_trigger = true
+                            decoder_pseudo_trigger = true
+                        }
+                    }
                 }
 
-                CPU_STATE_LDMEM -> {
-
+                CpuState.CPU_STATE_LDMEM -> {
+                    latched_store = true
+                    if (!mem_do_prefetch || mem_done) {
+                        if (!mem_do_rdata) {
+                            mem_wordsize = when {
+                                instr_lb -> u(0b10)
+                                instr_lh -> u(0b01)
+                                instr_lw -> u(0b00)
+                                else -> ux()
+                            }
+                            latched_is_lu = is_lbu_lhu_lw
+                            latched_is_lh = instr_lh
+                            latched_is_lb = instr_lb
+                            if (ENABLE_TRACE) {
+                                trace_valid = true
+                                trace_data = (if (irq_active) TRACE_IRQ else u0()) or TRACE_ADDR or ((reg_op1 + decoded_imm) and u1<`32`>()).ext()
+                            }
+                            reg_op1 += decoded_imm
+                            set_mem_do_rdata = true
+                        }
+                        if (!mem_do_prefetch && mem_done) {
+                            reg_out = when {
+                                latched_is_lu -> mem_rdata_word
+                                latched_is_lh -> mem_rdata_word.tru<`16`>().sext()
+                                latched_is_lb -> mem_rdata_word.tru<`8`>().sext()
+                                else -> ux()
+                            }
+                            decoder_trigger = true
+                            decoder_pseudo_trigger = true
+                            cpu_state = CpuState.CPU_STATE_FETCH
+                        }
+                    }
                 }
             }
+
+            if (ENABLE_IRQ) {
+                next_irq_pending = next_irq_pending or irq
+                if (ENABLE_IRQ_TIMER && timer.neqz()) {
+                    if (timer - u(1) == u0<`*`>()) {
+                        next_irq_pending[IRQ_TIMER] = true
+                    }
+                }
+            }
+
+            if (CATCH_MISALIGN && resetn && (mem_do_rdata || mem_do_wdata)) {
+                if (mem_wordsize == u(0b00) && reg_op1.tru<`2`>().neqz()) {
+                    println("MISALIGNED WORD: 0x$reg_op1")
+                    if (ENABLE_IRQ && !irq_mask[IRQ_BUSERROR] && !irq_active)
+                        next_irq_pending[IRQ_BUSERROR] = true
+                    else
+                        cpu_state = CpuState.CPU_STATE_TRAP
+                }
+                if (mem_wordsize == u(0b01) && reg_op1[0]) {
+                    println("MISALIGNED HALFWORD: 0x$reg_op1")
+                    if (ENABLE_IRQ && !irq_mask[IRQ_BUSERROR] && !irq_active)
+                        next_irq_pending[IRQ_BUSERROR] = true
+                    else
+                        cpu_state = CpuState.CPU_STATE_TRAP
+                }
+            }
+            if (CATCH_MISALIGN && resetn && mem_do_rinst && (if (COMPRESSED_ISA) reg_pc[0] else reg_pc.tru<`2`>().orRed())) {
+                println("MISALIGNED INSTRUCTION: 0x$reg_pc")
+                if (ENABLE_IRQ && !irq_mask[IRQ_BUSERROR] && !irq_active)
+                    next_irq_pending[IRQ_BUSERROR] = true
+                else
+                    cpu_state = CpuState.CPU_STATE_TRAP
+            }
+            if (!CATCH_ILLINSN && decoder_trigger_q && !decoder_pseudo_trigger_q && instr_ecall_ebreak) {
+                cpu_state = CpuState.CPU_STATE_TRAP
+            }
+
+            if (!resetn || mem_done) {
+                mem_do_prefetch = false
+                mem_do_rinst = false
+                mem_do_rdata = false
+                mem_do_wdata = false
+            }
+
+            if (set_mem_do_rinst)
+                mem_do_rinst = true
+            if (set_mem_do_rdata)
+                mem_do_rdata = true
+            if (set_mem_do_wdata)
+                mem_do_wdata = true
+
+            irq_pending = next_irq_pending and MASKED_IRQ.inv()
+
+            if (!CATCH_MISALIGN) {
+                if (COMPRESSED_ISA) {
+                    reg_pc[0] = false
+                    reg_next_pc[0] = false
+                } else {
+                    reg_pc[0] = u(0b00)
+                    reg_next_pc[0] = u(0b00)
+                }
+            }
+            current_pc = ux()
         }
     }
 }
