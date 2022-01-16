@@ -20,6 +20,9 @@ package riscv
 
 import io.verik.core.*
 
+/**
+ * RISC-V RV32IMC core based on the PicoRV32 project.
+ */
 class RV32<
     ENABLE_REGS_16_31 : `*`,
     TWO_CYCLE_ALU : `*`,
@@ -1842,8 +1845,8 @@ class RV32<
                     if (!mem_do_prefetch || mem_done) {
                         if (!mem_do_rdata) {
                             mem_wordsize = when {
-                                instr_lb -> u(0b10)
-                                instr_lh -> u(0b01)
+                                instr_lb || instr_lbu -> u(0b10)
+                                instr_lh || instr_lhu -> u(0b01)
                                 instr_lw -> u(0b00)
                                 else -> ux()
                             }
