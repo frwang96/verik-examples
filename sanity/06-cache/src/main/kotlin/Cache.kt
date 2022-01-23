@@ -106,10 +106,10 @@ class Cache(
     }
 
     private fun getTag(addr: UbitAddr): UbitTag {
-        return addr.sli(i<ADDR_WIDTH>() - i<TAG_WIDTH>())
+        return addr[i<ADDR_WIDTH>() - 1, i<ADDR_WIDTH>() - i<TAG_WIDTH>()]
     }
 
     private fun getIndex(addr: UbitAddr): UbitIndex {
-        return addr.sli(0)
+        return addr.tru()
     }
 }

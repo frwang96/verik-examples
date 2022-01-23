@@ -39,11 +39,11 @@ enum class AluFunc {
 
 fun barrelRShift(a: Ubit<`32`>, b: Ubit<`5`>, sftOnes: Boolean): Ubit<`32`> {
     var x = a
-    if (b[0]) x = cat(sftOnes.toSbit<`1`>(), x.sli<`31`>(1))
-    if (b[1]) x = cat(sftOnes.toSbit<`2`>(), x.sli<`30`>(2))
-    if (b[2]) x = cat(sftOnes.toSbit<`4`>(), x.sli<`28`>(4))
-    if (b[3]) x = cat(sftOnes.toSbit<`8`>(), x.sli<`24`>(8))
-    if (b[4]) x = cat(sftOnes.toSbit<`16`>(), x.sli<`16`>(16))
+    if (b[0]) x = cat(sftOnes.toSbit<`1`>(), x[31, 1])
+    if (b[1]) x = cat(sftOnes.toSbit<`2`>(), x[31, 2])
+    if (b[2]) x = cat(sftOnes.toSbit<`4`>(), x[31, 4])
+    if (b[3]) x = cat(sftOnes.toSbit<`8`>(), x[31, 8])
+    if (b[4]) x = cat(sftOnes.toSbit<`16`>(), x[31, 16])
     return x
 }
 
@@ -65,7 +65,7 @@ fun sft32(a: Ubit<`32`>, b: Ubit<`5`>, shiftType: ShiftType): Ubit<`32`> {
 }
 
 fun cmp(a: Boolean, b: Boolean, eq: Boolean, lt: Boolean): Ubit<`2`> {
-    val ret: Ubit<`2`> = u0()
+    var ret: Ubit<`2`> = u0()
     ret[0] = (!a && b) || ((a == b) && lt)
     ret[1] = (a == b) && eq
     return ret
@@ -86,7 +86,7 @@ fun lt32(a: Ubit<`32`>, b: Ubit<`32`>, isSigned: Boolean): Boolean {
 }
 
 fun fa(a: Boolean, b: Boolean, c: Boolean): Ubit<`2`> {
-    val ret: Ubit<`2`> = u0()
+    var ret: Ubit<`2`> = u0()
     ret[0] = a xor b xor c
     ret[1] = (a && b) || (a && c) || (b && c)
     return ret

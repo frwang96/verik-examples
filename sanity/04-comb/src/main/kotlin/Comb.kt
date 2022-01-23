@@ -49,15 +49,15 @@ fun eq2(a: Ubit<`2`>, b: Ubit<`2`>): Boolean {
 }
 
 fun equal(a: Ubit<`4`>, b: Ubit<`4`>): Boolean {
-    return and1(eq2(a.sli(0), b.sli(0)), eq2(a.sli(2), b.sli(2)))
+    return and1(eq2(a[1, 0], b[1, 0]), eq2(a[3, 2], b[3, 2]))
 }
 
 fun vectorEqual(a: Ubit<`16`>, b: Ubit<`16`>): Ubit<`4`> {
     return cat(
-        equal(a.sli(12), b.sli(12)),
-        equal(a.sli(8), b.sli(8)),
-        equal(a.sli(4), b.sli(4)),
-        equal(a.sli(0), b.sli(0))
+        equal(a[15, 12], b[15, 12]),
+        equal(a[11, 8], b[11, 8]),
+        equal(a[7, 4], b[7, 4]),
+        equal(a[3, 0], b[3, 0])
     )
 }
 

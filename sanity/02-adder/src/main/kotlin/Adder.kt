@@ -25,7 +25,7 @@ class Adder<X : `*`>(
 ) : Module() {
 
     fun fullAdder(a: Boolean, b: Boolean, c: Boolean): Ubit<`2`> {
-        val x: Ubit<`2`> = u0()
+        var x: Ubit<`2`> = u0()
         x[0] = a xor b xor c
         x[1] = (a && b) || (a && c) || (b && c)
         return x

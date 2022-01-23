@@ -146,10 +146,10 @@ object RV32BasicTest : Module() {
                     val index = (mem_addr shr 2).tru<`8`>()
                     mem_ready = true
                     mem_rdata = memory[index]
-                    if (mem_wstrb[0]) memory[index][0] = mem_wdata.sli<`8`>(0)
-                    if (mem_wstrb[1]) memory[index][8] = mem_wdata.sli<`8`>(8)
-                    if (mem_wstrb[2]) memory[index][16] = mem_wdata.sli<`8`>(16)
-                    if (mem_wstrb[3]) memory[index][24] = mem_wdata.sli<`8`>(24)
+                    if (mem_wstrb[0]) memory[index][7, 0] = mem_wdata[7, 0]
+                    if (mem_wstrb[1]) memory[index][15, 8] = mem_wdata[15, 8]
+                    if (mem_wstrb[2]) memory[index][23, 16] = mem_wdata[23, 16]
+                    if (mem_wstrb[3]) memory[index][31, 24] = mem_wdata[31, 24]
                 }
                 // add memory-mapped IO here
             }

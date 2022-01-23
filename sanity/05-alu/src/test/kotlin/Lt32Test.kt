@@ -26,8 +26,8 @@ object Lt32Test : Module() {
         println("lt32: Running exhaustive 4-bit inputs")
         var x: Ubit<`8`> = u0()
         for (i in 0 until 256) {
-            val a: Ubit<`32`> = x.sli<`4`>(0).sext()
-            val b: Ubit<`32`> = x.sli<`4`>(4).sext()
+            val a: Ubit<`32`> = x[3, 0].sext()
+            val b: Ubit<`32`> = x[7, 4].sext()
             var actual = lt32(a, b, false)
             var expected = (a < b)
             if (actual != expected) {

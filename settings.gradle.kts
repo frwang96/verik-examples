@@ -29,6 +29,7 @@ include("sanity:03-multiplier")
 include("sanity:04-comb")
 include("sanity:05-alu")
 include("sanity:06-cache")
+include("sanity:07-import-div")
 
 include("uvmprimer:02-tests")
 include("uvmprimer:03-interfaces")
