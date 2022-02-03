@@ -2,11 +2,14 @@
 
 Example projects for [Verik](https://github.com/frwang96/verik). Refer to
 [template](https://github.com/frwang96/verik-template) for a template project.
-Compiling the example projects requires a local build of the Verik toolchain.
+Compiling the example projects may require a local build of the Verik toolchain.
+
+<!--- examples --->
 
 ## riscv
 
 RISC-V core based on the [PicoRV32](https://github.com/YosysHQ/picorv32) project.
+This example project demonstrates substantial parameterization, assertions, and test bench code.
 
 ## sanity
 
@@ -23,7 +26,7 @@ Miscellaneous projects that demonstrate various aspects of the language.
 ## uvmprimer
 
 Projects adapted from [The UVM Primer](https://sites.google.com/view/uvmprimer-com/home) that demonstrate OOP testbench
-functionalities.
+functionality.
 
 - `02-tests`: Conventional testbench for an ALU.
 - `03-interfaces`: Interfaces and bus functional models for an ALU.
