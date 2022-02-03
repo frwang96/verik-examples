@@ -94,7 +94,7 @@ fun fa(a: Boolean, b: Boolean, c: Boolean): Ubit<`2`> {
 
 fun <N : `*`> rca(a: Ubit<N>, b: Ubit<N>, c: Boolean): Ubit<N> {
     var carry = c
-    val ret: Ubit<N> = u0()
+    var ret: Ubit<N> = u0()
     for (i in 0 until i<N>()) {
         val faResult = fa(a[i], b[i], carry)
         carry = faResult[1]

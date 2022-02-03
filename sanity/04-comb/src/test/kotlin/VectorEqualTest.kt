@@ -27,7 +27,7 @@ object VectorEqualTest : Module() {
         var error = false
         do {
             val a: Ubit<`16`> = randomUbit()
-            val b: Ubit<`16`> = a
+            var b: Ubit<`16`> = a
 
             if (!expected[0])
                 b[0] = !b[0]

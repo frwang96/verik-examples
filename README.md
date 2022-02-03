@@ -2,6 +2,7 @@
 
 Example projects for [Verik](https://github.com/frwang96/verik). Refer to
 [template](https://github.com/frwang96/verik-template) for a template project.
+Compiling the example projects requires a local build of the Verik toolchain.
 
 ## riscv
 
@@ -17,6 +18,7 @@ Miscellaneous projects that demonstrate various aspects of the language.
 - `04-comb`: Various combinational logic.
 - `05-alu`: Arithmetic logic unit.
 - `06-cache`: Direct mapped cache.
+- `07-import-div` : Import and simulate a divide module.
 
 ## uvmprimer
 
