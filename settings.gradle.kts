@@ -38,6 +38,7 @@ include("uvmprimer:06-polymorphism")
 include("uvmprimer:07-objects")
 include("uvmprimer:08-type-parameters")
 include("uvmprimer:09-factory-pattern")
-include("uvmprimer:10-oop-tests")
+include("uvmprimer:10-oop-test")
+include("uvmprimer:11-uvm-test")
 
 include("riscv")
