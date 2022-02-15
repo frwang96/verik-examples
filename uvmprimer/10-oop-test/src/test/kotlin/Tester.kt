@@ -27,8 +27,7 @@ class Tester(val bfm: TinyAluBfm) {
             val a = getData()
             val b = getData()
             val op = getOp()
-            val result = bfm.sendOp(a, b, op)
-            println("$a $op $b = $result")
+            bfm.sendOp(a, b, op)
         }
         delay(100)
         finish()

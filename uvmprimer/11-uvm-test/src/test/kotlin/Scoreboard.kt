@@ -18,37 +18,25 @@
 
 import io.verik.core.*
 
-open class RandomTester(val bfm: TinyAluBfm) {
-
-    open fun getOp(): Op {
-        return when (random(6)) {
-            0 -> Op.NOP
-            1 -> Op.ADD
-            2 -> Op.AND
-            3 -> Op.XOR
-            4 -> Op.MUL
-            else -> Op.RST
-        }
-    }
-
-    fun getData(): Ubit<`8`> {
-        return when (random(4)) {
-            0 -> u(0x00)
-            1 -> u(0xff)
-            else -> randomUbit<`8`>()
-        }
-    }
+class Scoreboard(val bfm: TinyAluBfm) {
 
     @Task
     fun execute() {
-        bfm.resetAlu()
-        repeat(10) {
-            val a = getData()
-            val b = getData()
-            val op = getOp()
-            bfm.sendOp(a, b, op)
+        forever {
+            wait(posedge(bfm.done))
+            delay(1)
+            val predicted_result = when (bfm.op) {
+                Op.ADD -> (bfm.a add bfm.b).ext()
+                Op.AND -> (bfm.a and bfm.b).ext()
+                Op.XOR -> (bfm.a xor bfm.b).ext()
+                Op.MUL -> bfm.a mul bfm.b
+                else -> u0()
+            }
+            if (bfm.op != Op.NOP && bfm.op != Op.RST) {
+                assert(predicted_result == bfm.result) {
+                    error("FAILED: a=${bfm.a} b=${bfm.b} op=${bfm.op} result=${bfm.result}")
+                }
+            }
         }
-        delay(100)
-        finish()
     }
 }
