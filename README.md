@@ -39,3 +39,4 @@ To import the [`UVM`](https://github.com/accellera/uvm) define the environment v
 - `09-factory-pattern`: Factory pattern for object instantiation.
 - `10-oop-test`: Basic OOP testbench.
 - `11-uvm-test`: Basic UVM testbench.
+- `12-uvm-components`: UVM components.
