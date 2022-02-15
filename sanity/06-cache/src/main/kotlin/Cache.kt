@@ -18,7 +18,6 @@
 
 import io.verik.core.*
 
-@SynthTop
 class Cache(
     @In var clk: Boolean,
     val if_rx: TxnIf.TxnRx,

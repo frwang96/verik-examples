@@ -18,7 +18,7 @@
 
 import io.verik.core.*
 
-@SimTop
+@EntryPoint
 object Ltu32Test : Module() {
 
     @Run

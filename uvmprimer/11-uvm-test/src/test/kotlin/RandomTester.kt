@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Francis Wang
+ * Copyright (c) 2022 Francis Wang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,25 +18,16 @@
 
 import io.verik.core.*
 
-@EntryPoint
-object CmpTest : Module() {
+class RandomTester(val bfm: TinyAluBfm) {
 
-    @Run
-    fun test() {
-        println("cmp: Running tests")
-        var a: Ubit<`4`> = u0()
-        for (i in 0 until 12) {
-            val actual = cmp(a[0], a[1], a[2], a[3])
-            val expected = cat(
-                (a[0] == a[1]) && a[2],
-                (!a[0] && a[1]) || ((a[0] == a[1]) && a[3])
-            )
-            if (actual != expected) {
-                println("cmp: FAILED cmp(${a[0]}, ${a[1]}, ${a[2]}, ${a[3]}) = $actual")
-                fatal()
-            }
-            a++
+    fun getOp(): Op {
+        return when (random(6)) {
+            0 -> Op.NOP
+            1 -> Op.ADD
+            2 -> Op.AND
+            3 -> Op.XOR
+            4 -> Op.MUL
+            else -> Op.RST
         }
-        println("cmp: PASSED")
     }
 }

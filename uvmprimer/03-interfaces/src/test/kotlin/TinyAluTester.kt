@@ -21,7 +21,7 @@ import io.verik.core.*
 class TinyAluTester(val bfm: TinyAluBfm) : Module() {
 
     fun randomOp(): Op {
-        return when (random(5)) {
+        return when (random(6)) {
             0 -> Op.NOP
             1 -> Op.ADD
             2 -> Op.AND

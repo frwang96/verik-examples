@@ -18,7 +18,6 @@
 
 import io.verik.core.*
 
-@SynthTop
 class TinyAlu(
     @In var clk: Boolean,
     @In var rst_n: Boolean,

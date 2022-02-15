@@ -18,7 +18,7 @@
 
 import io.verik.core.*
 
-@SimTop
+@EntryPoint
 object MultiplyModuleTest : Module() {
 
     val NUM_TESTS = 128

@@ -18,7 +18,7 @@
 
 import io.verik.core.*
 
-@SimTop
+@EntryPoint
 object TbTop : Module() {
 
     var clk: Boolean = nc()
@@ -104,7 +104,7 @@ object TbTop : Module() {
     }
 
     fun randomOp(): Op {
-        return when (random(5)) {
+        return when (random(6)) {
             0 -> Op.NOP
             1 -> Op.ADD
             2 -> Op.AND

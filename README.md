@@ -21,7 +21,7 @@ Miscellaneous projects that demonstrate various aspects of the language.
 - `04-comb`: Various combinational logic.
 - `05-alu`: Arithmetic logic unit.
 - `06-cache`: Direct mapped cache.
-- `07-import-div` : Import and simulate a divide module.
+- `07-import-div` : Import and simulate the PicoRV32 PCPI divide module.
 
 ## [uvmprimer](https://github.com/frwang96/verik-examples/tree/main/uvmprimer)
 

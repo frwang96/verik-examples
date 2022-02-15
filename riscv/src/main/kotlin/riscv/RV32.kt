@@ -1269,7 +1269,7 @@ class RV32<
     }
 
     @Seq
-    var clear_prefetched_high_word_q = onr(posedge(clk)) { clear_prefetched_high_word }
+    var clear_prefetched_high_word_q = oni(posedge(clk)) { clear_prefetched_high_word }
 
     @Com
     fun comClearPrefetchedHighWord() {

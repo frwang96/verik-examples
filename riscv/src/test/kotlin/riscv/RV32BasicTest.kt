@@ -20,7 +20,7 @@ package riscv
 
 import io.verik.core.*
 
-@SimTop
+@EntryPoint
 object RV32BasicTest : Module() {
 
     var clk: Boolean = nc()

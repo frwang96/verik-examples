@@ -20,7 +20,7 @@ import io.verik.core.*
 
 typealias WIDTH = `8`
 
-@SimTop
+@EntryPoint
 object Count : Module() {
 
     var clk: Boolean = nc()

@@ -18,7 +18,7 @@
 
 import io.verik.core.*
 
-@SimTop
+@EntryPoint
 object LogPowerOfTwoTest : Module() {
 
     fun logPowerOfTwoReference(a: Ubit<`4`>): Ubit<`2`> {

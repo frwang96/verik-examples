@@ -43,7 +43,7 @@ class Tester(val bfm: TinyAluBfm) {
     }
 
     private fun getOp(): Op {
-        return when (random(5)) {
+        return when (random(6)) {
             0 -> Op.NOP
             1 -> Op.ADD
             2 -> Op.AND

@@ -18,7 +18,7 @@
 
 import io.verik.core.*
 
-@SimTop
+@EntryPoint
 object PopulationCountTest : Module() {
 
     fun populationCountReference(a: Ubit<`4`>): Ubit<`3`> {

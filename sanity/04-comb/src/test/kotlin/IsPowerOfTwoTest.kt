@@ -18,7 +18,7 @@
 
 import io.verik.core.*
 
-@SimTop
+@EntryPoint
 object IsPowerOfTwoTest : Module() {
 
     fun ifPowerOfTwoReference(a: Ubit<`4`>): Boolean {

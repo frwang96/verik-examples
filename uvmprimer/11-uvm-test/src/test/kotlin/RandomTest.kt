@@ -16,31 +16,31 @@
 
 @file:Verik
 
-import imported.uvm_pkg.run_test
+import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_config_db
+import imported.uvm_pkg.uvm_phase
+import imported.uvm_pkg.uvm_test
 import io.verik.core.*
 
 @EntryPoint
-object Top : Module() {
+class RandomTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
 
-    @Make
-    val bfm = TinyAluBfm()
+    @Inject
+    val header = """
+        import uvm_pkg::*;
+        `include "uvm_macros.svh"
+        `uvm_component_utils(RandomTest);
+    """.trimIndent()
 
-    @Make
-    val tiny_alu = TinyAlu(
-        clk = bfm.clk,
-        rst_n = bfm.rst_n,
-        a = bfm.a,
-        b = bfm.b,
-        op = bfm.op,
-        start = bfm.start,
-        done = bfm.done,
-        result = bfm.result
-    )
+    val bfm: TinyAluBfm = nc()
 
-    @Run
-    fun run() {
-        uvm_config_db.set<TinyAluBfm>(null, "*", "bfm", bfm)
-        run_test()
+    init{
+        if (!uvm_config_db.get<TinyAluBfm>(null, "*", "bfm", bfm)) fatal("Failed to get BFM")
+    }
+
+    @Task
+    override fun run_phase(phase: uvm_phase?) {
+        phase!!.raise_objection(this)
+        phase.drop_objection(this)
     }
 }
