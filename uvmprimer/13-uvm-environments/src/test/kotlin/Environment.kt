@@ -17,25 +17,24 @@
 @file:Verik
 
 import imported.uvm_pkg.uvm_component
+import imported.uvm_pkg.uvm_env
 import imported.uvm_pkg.uvm_phase
-import imported.uvm_pkg.uvm_test
 import io.verik.core.*
 
-@EntryPoint
-class AddTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
+class Environment(name: String, parent: uvm_component?) : uvm_env(name, parent) {
 
     @Inject
     val header = """
         import uvm_pkg::*;
         `include "uvm_macros.svh"
-        `uvm_component_utils(${t<AddTest>()});
+        `uvm_component_utils(${t<Environment>()});
     """.trimIndent()
 
-    var tester: AddTester = nc()
-    var scoreboard: Scoreboard = nc()
+    lateinit var tester: BaseTester
+    lateinit var scoreboard: Scoreboard
 
     override fun build_phase(phase: uvm_phase?) {
-        tester = AddTester("tester_h", this)
-        scoreboard = Scoreboard("scoreboard_h", this)
+        inject("$tester = ${t<BaseTester>()}::type_id::create(${"tester"}, $this);")
+        inject("$scoreboard = ${t<Scoreboard>()}::type_id::create(${"scoreboard"}, $this);")
     }
 }

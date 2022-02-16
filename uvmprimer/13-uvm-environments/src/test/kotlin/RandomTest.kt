@@ -22,20 +22,19 @@ import imported.uvm_pkg.uvm_test
 import io.verik.core.*
 
 @EntryPoint
-class AddTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
+class RandomTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
 
     @Inject
     val header = """
         import uvm_pkg::*;
         `include "uvm_macros.svh"
-        `uvm_component_utils(${t<AddTest>()});
+        `uvm_component_utils(${t<RandomTest>()});
     """.trimIndent()
 
-    var tester: AddTester = nc()
-    var scoreboard: Scoreboard = nc()
+    lateinit var environment: Environment
 
     override fun build_phase(phase: uvm_phase?) {
-        tester = AddTester("tester_h", this)
-        scoreboard = Scoreboard("scoreboard_h", this)
+        inject("${t<BaseTester>()}::type_id::set_type_override(${t<RandomTester>()}::get_type());")
+        inject("$environment = ${t<Environment>()}::type_id::create(${"environment"}, $this);")
     }
 }

@@ -29,7 +29,7 @@ class RandomTest(name: String, parent: uvm_component?) : uvm_test(name, parent) 
     val header = """
         import uvm_pkg::*;
         `include "uvm_macros.svh"
-        `uvm_component_utils(RandomTest);
+        `uvm_component_utils(${t<RandomTest>()});
     """.trimIndent()
 
     val bfm: TinyAluBfm = nc()

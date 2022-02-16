@@ -16,26 +16,31 @@
 
 @file:Verik
 
-import imported.uvm_pkg.uvm_component
-import imported.uvm_pkg.uvm_phase
-import imported.uvm_pkg.uvm_test
+import imported.uvm_pkg.run_test
+import imported.uvm_pkg.uvm_config_db
 import io.verik.core.*
 
 @EntryPoint
-class AddTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
+object Top : Module() {
 
-    @Inject
-    val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<AddTest>()});
-    """.trimIndent()
+    @Make
+    val bfm = TinyAluBfm()
 
-    var tester: AddTester = nc()
-    var scoreboard: Scoreboard = nc()
+    @Make
+    val tiny_alu = TinyAlu(
+        clk = bfm.clk,
+        rst_n = bfm.rst_n,
+        a = bfm.a,
+        b = bfm.b,
+        op = bfm.op,
+        start = bfm.start,
+        done = bfm.done,
+        result = bfm.result
+    )
 
-    override fun build_phase(phase: uvm_phase?) {
-        tester = AddTester("tester_h", this)
-        scoreboard = Scoreboard("scoreboard_h", this)
+    @Run
+    fun run() {
+        uvm_config_db.set<TinyAluBfm>(null, "*", "bfm", bfm)
+        run_test()
     }
 }

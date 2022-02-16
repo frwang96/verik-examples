@@ -17,25 +17,33 @@
 @file:Verik
 
 import imported.uvm_pkg.uvm_component
-import imported.uvm_pkg.uvm_phase
-import imported.uvm_pkg.uvm_test
 import io.verik.core.*
 
-@EntryPoint
-class AddTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
+open class RandomTester(name: String, parent: uvm_component?) : BaseTester(name, parent) {
 
     @Inject
-    val header = """
+    private val header = """
         import uvm_pkg::*;
         `include "uvm_macros.svh"
-        `uvm_component_utils(${t<AddTest>()});
+        `uvm_component_utils(${t<RandomTester>()});
     """.trimIndent()
 
-    var tester: AddTester = nc()
-    var scoreboard: Scoreboard = nc()
+    override fun getData(): Ubit<`8`> {
+        return when (random(4)) {
+            0 -> u(0x00)
+            1 -> u(0xff)
+            else -> randomUbit<`8`>()
+        }
+    }
 
-    override fun build_phase(phase: uvm_phase?) {
-        tester = AddTester("tester_h", this)
-        scoreboard = Scoreboard("scoreboard_h", this)
+    override fun getOp(): Op {
+        return when (random(6)) {
+            0 -> Op.NOP
+            1 -> Op.ADD
+            2 -> Op.AND
+            3 -> Op.XOR
+            4 -> Op.MUL
+            else -> Op.RST
+        }
     }
 }

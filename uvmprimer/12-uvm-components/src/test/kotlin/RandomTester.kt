@@ -27,7 +27,7 @@ open class RandomTester(name: String, parent: uvm_component?) : uvm_component(na
     private val header = """
         import uvm_pkg::*;
         `include "uvm_macros.svh"
-        `uvm_component_utils(RandomTester);
+        `uvm_component_utils(${t<RandomTester>()});
     """.trimIndent()
 
     lateinit var bfm: TinyAluBfm

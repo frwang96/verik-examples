@@ -17,25 +17,44 @@
 @file:Verik
 
 import imported.uvm_pkg.uvm_component
+import imported.uvm_pkg.uvm_config_db
 import imported.uvm_pkg.uvm_phase
-import imported.uvm_pkg.uvm_test
 import io.verik.core.*
 
-@EntryPoint
-class AddTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
+open class BaseTester(name: String, parent: uvm_component?) : uvm_component(name, parent) {
 
     @Inject
-    val header = """
+    private val header = """
         import uvm_pkg::*;
         `include "uvm_macros.svh"
-        `uvm_component_utils(${t<AddTest>()});
+        `uvm_component_utils(${t<BaseTester>()});
     """.trimIndent()
 
-    var tester: AddTester = nc()
-    var scoreboard: Scoreboard = nc()
+    lateinit var bfm: TinyAluBfm
 
     override fun build_phase(phase: uvm_phase?) {
-        tester = AddTester("tester_h", this)
-        scoreboard = Scoreboard("scoreboard_h", this)
+        if (!uvm_config_db.get<TinyAluBfm>(null, "*", "bfm", bfm)) fatal("Failed to get BFM")
+    }
+
+    @Task
+    override fun run_phase(phase: uvm_phase?) {
+        phase!!.raise_objection(this)
+        bfm.resetAlu()
+        repeat(10) {
+            val a = getData()
+            val b = getData()
+            val op = getOp()
+            bfm.sendOp(a, b, op)
+        }
+        delay(100)
+        phase.drop_objection(this)
+    }
+
+    open fun getOp(): Op {
+        return Op.NOP
+    }
+
+    open fun getData(): Ubit<`8`> {
+        return u0()
     }
 }

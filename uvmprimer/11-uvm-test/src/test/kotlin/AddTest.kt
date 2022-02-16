@@ -29,7 +29,7 @@ class AddTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
     val header = """
         import uvm_pkg::*;
         `include "uvm_macros.svh"
-        `uvm_component_utils(AddTest);
+        `uvm_component_utils(${t<AddTest>()});
     """.trimIndent()
 
     val bfm: TinyAluBfm = nc()
