@@ -18,7 +18,7 @@
 
 import io.verik.core.*
 
-@EntryPoint
+@Entry
 object TbTop : Module() {
 
     var clk: Boolean = nc()

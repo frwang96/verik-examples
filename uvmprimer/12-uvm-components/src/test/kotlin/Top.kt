@@ -20,7 +20,7 @@ import imported.uvm_pkg.run_test
 import imported.uvm_pkg.uvm_config_db
 import io.verik.core.*
 
-@EntryPoint
+@Entry
 object Top : Module() {
 
     @Make

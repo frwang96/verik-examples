@@ -18,7 +18,7 @@
 
 import io.verik.core.*
 
-@EntryPoint
+@Entry
 object Sr32Test : Module() {
 
     @Run

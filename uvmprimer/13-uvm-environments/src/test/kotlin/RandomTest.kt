@@ -21,10 +21,10 @@ import imported.uvm_pkg.uvm_phase
 import imported.uvm_pkg.uvm_test
 import io.verik.core.*
 
-@EntryPoint
+@Entry
 class RandomTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
 
-    @Inject
+    @Inj
     val header = """
         import uvm_pkg::*;
         `include "uvm_macros.svh"
@@ -34,7 +34,7 @@ class RandomTest(name: String, parent: uvm_component?) : uvm_test(name, parent) 
     lateinit var environment: Environment
 
     override fun build_phase(phase: uvm_phase?) {
-        inject("${t<BaseTester>()}::type_id::set_type_override(${t<RandomTester>()}::get_type());")
-        inject("$environment = ${t<Environment>()}::type_id::create(${"environment"}, $this);")
+        inj("${t<BaseTester>()}::type_id::set_type_override(${t<RandomTester>()}::get_type());")
+        environment = inji("${t<Environment>()}::type_id::create(${"environment"}, $this);")
     }
 }

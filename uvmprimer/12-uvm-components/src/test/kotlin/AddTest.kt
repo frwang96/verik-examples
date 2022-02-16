@@ -21,10 +21,10 @@ import imported.uvm_pkg.uvm_phase
 import imported.uvm_pkg.uvm_test
 import io.verik.core.*
 
-@EntryPoint
+@Entry
 class AddTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
 
-    @Inject
+    @Inj
     val header = """
         import uvm_pkg::*;
         `include "uvm_macros.svh"

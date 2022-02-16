@@ -21,9 +21,9 @@ import imported.uvm_pkg.uvm_config_db
 import imported.uvm_pkg.uvm_phase
 import io.verik.core.*
 
-open class BaseTester(name: String, parent: uvm_component?) : uvm_component(name, parent) {
+abstract class BaseTester(name: String, parent: uvm_component?) : uvm_component(name, parent) {
 
-    @Inject
+    @Inj
     private val header = """
         import uvm_pkg::*;
         `include "uvm_macros.svh"
@@ -50,11 +50,7 @@ open class BaseTester(name: String, parent: uvm_component?) : uvm_component(name
         phase.drop_objection(this)
     }
 
-    open fun getOp(): Op {
-        return Op.NOP
-    }
+    abstract fun getOp(): Op
 
-    open fun getData(): Ubit<`8`> {
-        return u0()
-    }
+    abstract fun getData(): Ubit<`8`>
 }

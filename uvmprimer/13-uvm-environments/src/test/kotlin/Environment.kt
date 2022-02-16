@@ -23,7 +23,7 @@ import io.verik.core.*
 
 class Environment(name: String, parent: uvm_component?) : uvm_env(name, parent) {
 
-    @Inject
+    @Inj
     val header = """
         import uvm_pkg::*;
         `include "uvm_macros.svh"
@@ -34,7 +34,7 @@ class Environment(name: String, parent: uvm_component?) : uvm_env(name, parent) 
     lateinit var scoreboard: Scoreboard
 
     override fun build_phase(phase: uvm_phase?) {
-        inject("$tester = ${t<BaseTester>()}::type_id::create(${"tester"}, $this);")
-        inject("$scoreboard = ${t<Scoreboard>()}::type_id::create(${"scoreboard"}, $this);")
+        tester = inji("${t<BaseTester>()}::type_id::create(${"tester"}, $this);")
+        scoreboard = inji("${t<Scoreboard>()}::type_id::create(${"scoreboard"}, $this);")
     }
 }

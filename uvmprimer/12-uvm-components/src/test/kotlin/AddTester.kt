@@ -21,7 +21,7 @@ import io.verik.core.*
 
 class AddTester(name: String, parent: uvm_component?) : RandomTester(name, parent) {
 
-    @Inject
+    @Inj
     private val header = """
         import uvm_pkg::*;
         `include "uvm_macros.svh"
