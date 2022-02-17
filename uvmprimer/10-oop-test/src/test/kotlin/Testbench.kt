@@ -18,7 +18,7 @@
 
 import io.verik.core.*
 
-class Testbench(val bfm: TinyAluBfm) {
+class Testbench(val bfm: TinyAluBfm) : Class() {
 
     @Task
     fun execute() {

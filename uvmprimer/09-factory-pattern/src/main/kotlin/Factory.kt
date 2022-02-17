@@ -48,7 +48,7 @@ object FactoryTop : Module() {
     }
 }
 
-abstract class Animal(val age: Int, val name: String) {
+abstract class Animal(val age: Int, val name: String) : Class() {
 
     abstract fun makeSound()
 }
@@ -67,7 +67,7 @@ class Chicken(age: Int, name: String) : Animal(age, name) {
     }
 }
 
-class AnimalCage<A : Animal> {
+class AnimalCage<A : Animal> : Class() {
 
     private val cage = ArrayList<A>()
 
@@ -80,7 +80,7 @@ class AnimalCage<A : Animal> {
     }
 }
 
-object AnimalFactory {
+object AnimalFactory : Class() {
 
     fun makeAnimal(species: String, age: Int, name: String): Animal {
         return when (species) {

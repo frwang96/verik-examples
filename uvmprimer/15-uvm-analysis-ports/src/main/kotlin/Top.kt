@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Francis Wang
+ * Copyright (c) 2022 Francis Wang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,14 @@
 
 @file:Verik
 
+import imported.uvm_pkg.run_test
 import io.verik.core.*
 
 @Entry
-object ClassesTop : Module() {
+class Top : Class() {
 
     @Run
     fun run() {
-        val rectangle = Rectangle(50, 20)
-        println("Rectangle area: ${rectangle.area()}")
-        val square = Square(50)
-        println("Square area: ${square.area()}")
+        run_test()
     }
 }
-
-open class Rectangle(val width: Int, val length: Int) : Class() {
-
-    fun area(): Int {
-        return width * length
-    }
-}
-
-class Square(side: Int) : Rectangle(side, side)

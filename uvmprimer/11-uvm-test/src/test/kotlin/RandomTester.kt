@@ -18,7 +18,7 @@
 
 import io.verik.core.*
 
-open class RandomTester(val bfm: TinyAluBfm) {
+open class RandomTester(val bfm: TinyAluBfm) : Class() {
 
     open fun getOp(): Op {
         return when (random(6)) {

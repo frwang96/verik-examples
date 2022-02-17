@@ -30,11 +30,11 @@ object StaticMethodsTop : Module() {
     }
 }
 
-abstract class Animal
+abstract class Animal : Class()
 
 class Lion(val name: String) : Animal()
 
-object LionCage {
+object LionCage : Class() {
 
     val cage = ArrayList<Lion>()
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Francis Wang
+ * Copyright (c) 2022 Francis Wang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,18 @@
 
 @file:Verik
 
+package dice
+
+import imported.uvm_pkg.uvm_component
+import imported.uvm_pkg.uvm_subscriber
 import io.verik.core.*
 
-@Entry
-object ClassesTop : Module() {
+class Histogram(name: String, parent: uvm_component?) : uvm_subscriber<Int>(name, parent) {
 
-    @Run
-    fun run() {
-        val rectangle = Rectangle(50, 20)
-        println("Rectangle area: ${rectangle.area()}")
-        val square = Square(50)
-        println("Square area: ${square.area()}")
-    }
+    @Inj
+    val header = """
+        import uvm_pkg::*;
+        `include "uvm_macros.svh"
+        `uvm_component_utils(${t<Histogram>()});
+    """.trimIndent()
 }
-
-open class Rectangle(val width: Int, val length: Int) : Class() {
-
-    fun area(): Int {
-        return width * length
-    }
-}
-
-class Square(side: Int) : Rectangle(side, side)

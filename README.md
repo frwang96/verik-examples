@@ -40,4 +40,5 @@ To import the [`UVM`](https://github.com/accellera/uvm) define the environment v
 - `10-oop-test`: Basic OOP testbench.
 - `11-uvm-test`: Basic UVM testbench.
 - `12-uvm-components`: UVM components.
-- `12-uvm-environments`: UVM environments.
+- `13-uvm-environments`: UVM environments.
+- `15-uvm-analysis-ports`: UVM analysis ports.

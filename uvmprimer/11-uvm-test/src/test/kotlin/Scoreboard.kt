@@ -18,7 +18,7 @@
 
 import io.verik.core.*
 
-class Scoreboard(val bfm: TinyAluBfm) {
+class Scoreboard(val bfm: TinyAluBfm) : Class() {
 
     @Task
     fun execute() {

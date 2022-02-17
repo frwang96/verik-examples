@@ -39,7 +39,7 @@ object ClassesTop : Module() {
     }
 }
 
-abstract class Animal(val age: Int) {
+abstract class Animal(val age: Int) : Class() {
 
     abstract fun makeSound()
 }

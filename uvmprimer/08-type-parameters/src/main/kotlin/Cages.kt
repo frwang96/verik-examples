@@ -38,13 +38,13 @@ object CagesTop : Module() {
     }
 }
 
-abstract class Animal(val name: String)
+abstract class Animal(val name: String) : Class()
 
 class Lion(name: String) : Animal(name)
 
 class Chicken(name: String): Animal(name)
 
-class AnimalCage<A : Animal> {
+class AnimalCage<A : Animal> : Class() {
 
     private val cage = ArrayList<A>()
 

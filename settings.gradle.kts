@@ -42,5 +42,6 @@ include("uvmprimer:10-oop-test")
 include("uvmprimer:11-uvm-test")
 include("uvmprimer:12-uvm-components")
 include("uvmprimer:13-uvm-environments")
+include("uvmprimer:15-uvm-analysis-ports")
 
 include("riscv")
