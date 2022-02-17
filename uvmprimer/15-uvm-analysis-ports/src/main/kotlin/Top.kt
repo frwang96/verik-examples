@@ -20,7 +20,12 @@ import imported.uvm_pkg.run_test
 import io.verik.core.*
 
 @Entry
-class Top : Class() {
+class Top : Module() {
+
+    @Inj
+    val header = """
+        import dice_pkg::*;
+    """.trimIndent()
 
     @Run
     fun run() {

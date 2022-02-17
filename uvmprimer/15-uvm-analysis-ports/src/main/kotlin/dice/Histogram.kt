@@ -19,6 +19,7 @@
 package dice
 
 import imported.uvm_pkg.uvm_component
+import imported.uvm_pkg.uvm_phase
 import imported.uvm_pkg.uvm_subscriber
 import io.verik.core.*
 
@@ -30,4 +31,18 @@ class Histogram(name: String, parent: uvm_component?) : uvm_subscriber<Int>(name
         `include "uvm_macros.svh"
         `uvm_component_utils(${t<Histogram>()});
     """.trimIndent()
+
+    val rolls: Unpacked<`12`, Int> = nc()
+
+    override fun write(t: Int) {
+        rolls[t - 1]++
+    }
+
+    override fun report_phase(phase: uvm_phase?) {
+        for (i in 0 until 12) {
+            print("${i+1} : ")
+            repeat(rolls[i]) { print("#") }
+            println()
+        }
+    }
 }

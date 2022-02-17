@@ -20,10 +20,11 @@ package dice
 
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_phase
+import imported.uvm_pkg.uvm_test
 import io.verik.core.*
 
 @Entry
-class DiceTest(name: String, parent: uvm_component?) : uvm_component(name, parent) {
+class DiceTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
 
     @Inj
     val header = """

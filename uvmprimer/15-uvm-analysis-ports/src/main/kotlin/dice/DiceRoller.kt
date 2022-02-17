@@ -34,7 +34,30 @@ class DiceRoller(name: String, parent: uvm_component?) : uvm_component(name, par
 
     lateinit var roll_ap: uvm_analysis_port<Int>
 
+    @Rand
+    var die1: Int = 0
+
+    @Rand
+    var die2: Int = 0
+
+    @Cons
+    var cons1 = cons(die1 >= 1, die1 <= 6)
+
+    @Cons
+    var cons2 = cons(die2 >= 1, die2 <= 6)
+
     override fun build_phase(phase: uvm_phase?) {
         roll_ap = uvm_analysis_port("roll_ap", this)
+    }
+
+    @Task
+    override fun run_phase(phase: uvm_phase?) {
+        phase!!.raise_objection(this)
+        repeat(60) {
+            randomize()
+            val roll = die1 + die2
+            roll_ap.write(roll)
+        }
+        phase.drop_objection(this)
     }
 }
