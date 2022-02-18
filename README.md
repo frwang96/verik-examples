@@ -41,4 +41,6 @@ To import the [`UVM`](https://github.com/accellera/uvm) define the environment v
 - `11-uvm-test`: Basic UVM testbench.
 - `12-uvm-components`: UVM components.
 - `13-uvm-environments`: UVM environments.
-- `15-uvm-analysis-ports`: UVM analysis ports.
+- `15-analysis-ports`: UVM analysis ports.
+- `16-analysis-ports-test`: UVM analysis ports testbench.
+- `17-communication`: UVM put and get ports for interthread communication.
