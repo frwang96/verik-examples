@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Francis Wang
+ * Copyright (c) 2022 Francis Wang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-plugins {
-    kotlin("jvm")
-    id("io.verik.verik-plugin")
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
+dependencies {
+    implementation(project(":uvmprimer:00-common"))
 }

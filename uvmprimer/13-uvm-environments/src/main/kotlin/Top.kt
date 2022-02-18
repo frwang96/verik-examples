@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Francis Wang
+ * Copyright (c) 2022 Francis Wang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,34 @@
  * limitations under the License.
  */
 
-subprojects {
-    apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "io.verik.verik-plugin")
-    repositories {
-        mavenLocal()
-        mavenCentral()
+@file:Verik
+
+import dut.TinyAlu
+import imported.uvm_pkg.run_test
+import imported.uvm_pkg.uvm_config_db
+import io.verik.core.*
+
+@Entry
+object Top : Module() {
+
+    @Make
+    val bfm = TinyAluBfm()
+
+    @Make
+    val tiny_alu = TinyAlu(
+        clk = bfm.clk,
+        rst_n = bfm.rst_n,
+        a = bfm.a,
+        b = bfm.b,
+        op = bfm.op,
+        start = bfm.start,
+        done = bfm.done,
+        result = bfm.result
+    )
+
+    @Run
+    fun run() {
+        uvm_config_db.set<TinyAluBfm>(null, "*", "bfm", bfm)
+        run_test()
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Francis Wang
+ * Copyright (c) 2022 Francis Wang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-plugins {
-    kotlin("jvm")
-    id("io.verik.verik-plugin")
-}
+import java.nio.file.Paths
 
-repositories {
-    mavenLocal()
-    mavenCentral()
+verikImport {
+    importedFiles = listOf(Paths.get("${System.getenv("UVM_HOME")}/uvm.sv"))
+    includeDirs = listOf(Paths.get(System.getenv("UVM_HOME")))
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Francis Wang
+ * Copyright (c) 2022 Francis Wang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,22 @@
  * limitations under the License.
  */
 
-plugins {
-    kotlin("jvm")
-    id("io.verik.verik-plugin")
-}
+@file:Verik
 
-repositories {
-    mavenLocal()
-    mavenCentral()
+import dut.Op
+import imported.uvm_pkg.uvm_component
+import io.verik.core.*
+
+class AddTester(name: String, parent: uvm_component?) : RandomTester(name, parent) {
+
+    @Inj
+    private val header = """
+        import uvm_pkg::*;
+        `include "uvm_macros.svh"
+        `uvm_component_utils(${t<AddTester>()});
+    """.trimIndent()
+
+    override fun getOp(): Op {
+        return Op.ADD
+    }
 }

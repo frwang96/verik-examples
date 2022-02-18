@@ -18,6 +18,7 @@ import io.verik.plugin.VerikImporterPluginExtension
 import java.nio.file.Files
 
 subprojects {
+    apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "io.verik.verik-plugin")
     val verikImporterPluginExtension = extensions.getByType(VerikImporterPluginExtension::class)
     val verilogSrcDir = projectDir.resolve("src/main/verilog").toPath()
