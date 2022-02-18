@@ -14,13 +14,24 @@
  * limitations under the License.
  */
 
-import java.nio.file.Paths
+@file:Verik
 
-dependencies {
-    implementation(project(":uvmprimer:00-common"))
-}
+package tb
 
-verikImport {
-    importedFiles = listOf(Paths.get("${System.getenv("UVM_HOME")}/uvm.sv"))
-    includeDirs = listOf(Paths.get(System.getenv("UVM_HOME")))
+import dut.Op
+import imported.uvm_pkg.uvm_component
+import io.verik.core.*
+
+class AddTester(name: String, parent: uvm_component?) : RandomTester(name, parent) {
+
+    @Inj
+    private val header = """
+        import uvm_pkg::*;
+        `include "uvm_macros.svh"
+        `uvm_component_utils(${t<AddTester>()});
+    """.trimIndent()
+
+    override fun getOp(): Op {
+        return Op.ADD
+    }
 }

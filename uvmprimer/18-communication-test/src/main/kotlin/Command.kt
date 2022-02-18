@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-import java.nio.file.Paths
+@file:Verik
 
-dependencies {
-    implementation(project(":uvmprimer:00-common"))
-}
+package tb
 
-verikImport {
-    importedFiles = listOf(Paths.get("${System.getenv("UVM_HOME")}/uvm.sv"))
-    includeDirs = listOf(Paths.get(System.getenv("UVM_HOME")))
-}
+import dut.Op
+import io.verik.core.*
+
+class Command(
+    val a: Ubit<`8`>,
+    val b: Ubit<`8`>,
+    val op: Op
+) : Struct()
