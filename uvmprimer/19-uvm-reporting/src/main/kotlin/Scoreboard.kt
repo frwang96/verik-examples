@@ -16,20 +16,18 @@
 
 @file:Verik
 
-package tb
-
 import dut.Op
-import imported.uvm_pkg.*
+import imported.uvm_pkg.uvm_component
+import imported.uvm_pkg.uvm_phase
+import imported.uvm_pkg.uvm_subscriber
+import imported.uvm_pkg.uvm_tlm_analysis_fifo
+import imported.uvm_pkg.uvm_verbosity.UVM_MEDIUM
 import io.verik.core.*
 
 class Scoreboard(name: String, parent: uvm_component?) : uvm_subscriber<Ubit<`16`>>(name, parent) {
 
     @Inj
-    val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<Scoreboard>()});
-    """.trimIndent()
+    val header = "`uvm_component_utils(${t<Scoreboard>()});"
 
     lateinit var cmd_fifo: uvm_tlm_analysis_fifo<Command>
 
@@ -54,7 +52,7 @@ class Scoreboard(name: String, parent: uvm_component?) : uvm_subscriber<Ubit<`16
         if (predicted_result != t) {
             inj("`uvm_error(${"SCOREBOARD"}, ${"FAIL: $result_string"})")
         } else {
-            inj("`uvm_info(${"SCOREBOARD"}, ${"PASS: $result_string"}, ${uvm_verbosity.UVM_MEDIUM})")
+            inj("`uvm_info(${"SCOREBOARD"}, ${"PASS: $result_string"}, $UVM_MEDIUM)")
         }
     }
 }

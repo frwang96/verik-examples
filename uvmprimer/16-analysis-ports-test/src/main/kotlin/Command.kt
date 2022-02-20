@@ -16,24 +16,11 @@
 
 @file:Verik
 
-package tb
-
-import imported.uvm_pkg.uvm_component
-import imported.uvm_pkg.uvm_phase
+import dut.Op
 import io.verik.core.*
 
-@Entry
-class AddTest(name: String, parent: uvm_component?) : RandomTest(name, parent) {
-
-    @Inj
-    private val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<AddTest>()});
-    """.trimIndent()
-
-    override fun build_phase(phase: uvm_phase?) {
-        inj("${t<RandomTester>()}::type_id::set_type_override(${t<AddTester>()}::get_type());")
-        super.build_phase(phase)
-    }
-}
+class Command(
+    val a: Ubit<`8`>,
+    val b: Ubit<`8`>,
+    val op: Op
+) : Struct()

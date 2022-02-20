@@ -16,26 +16,16 @@
 
 @file:Verik
 
-package tb
-
+import dut.Op
 import imported.uvm_pkg.uvm_component
-import imported.uvm_pkg.uvm_phase
-import imported.uvm_pkg.uvm_test
 import io.verik.core.*
 
-@Entry
-open class RandomTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
+class AddTester(name: String, parent: uvm_component?) : RandomTester(name, parent) {
 
     @Inj
-    private val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<RandomTest>()});
-    """.trimIndent()
+    private val header = "`uvm_component_utils(${t<AddTester>()});"
 
-    lateinit var environment: Environment
-
-    override fun build_phase(phase: uvm_phase?) {
-        environment = inji("${t<Environment>()}::type_id::create(${"environment"}, $this);")
+    override fun getOp(): Op {
+        return Op.ADD
     }
 }

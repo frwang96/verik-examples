@@ -25,11 +25,7 @@ import io.verik.core.*
 class AddTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
 
     @Inj
-    val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<AddTest>()});
-    """.trimIndent()
+    val header = "`uvm_component_utils(${t<AddTest>()});"
 
     lateinit var environment: Environment
 

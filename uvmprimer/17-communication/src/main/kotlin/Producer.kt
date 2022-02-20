@@ -24,11 +24,7 @@ import io.verik.core.*
 class Producer(name: String, parent: uvm_component?) : uvm_component(name, parent) {
 
     @Inj
-    val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<Producer>()});
-    """.trimIndent()
+    val header = "`uvm_component_utils(${t<Producer>()});"
 
     lateinit var put_port: uvm_put_port<Int>
     var result = 0

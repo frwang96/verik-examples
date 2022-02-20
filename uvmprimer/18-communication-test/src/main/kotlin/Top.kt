@@ -16,8 +16,6 @@
 
 @file:Verik
 
-package tb
-
 import dut.TinyAlu
 import imported.uvm_pkg.run_test
 import imported.uvm_pkg.uvm_config_db

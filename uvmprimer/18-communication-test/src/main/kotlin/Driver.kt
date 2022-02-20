@@ -16,8 +16,6 @@
 
 @file:Verik
 
-package tb
-
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_config_db
 import imported.uvm_pkg.uvm_get_port
@@ -27,11 +25,7 @@ import io.verik.core.*
 class Driver(name: String, parent: uvm_component?) : uvm_component(name, parent) {
 
     @Inj
-    val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<Driver>()});
-    """.trimIndent()
+    val header = "`uvm_component_utils(${t<Driver>()});"
 
     lateinit var bfm: TinyAluBfm
     lateinit var command_port: uvm_get_port<Command>

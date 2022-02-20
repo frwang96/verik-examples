@@ -16,25 +16,23 @@
 
 @file:Verik
 
-package tb
-
 import dut.Op
-import imported.uvm_pkg.*
+import imported.uvm_pkg.uvm_analysis_port
+import imported.uvm_pkg.uvm_component
+import imported.uvm_pkg.uvm_config_db
+import imported.uvm_pkg.uvm_phase
+import imported.uvm_pkg.uvm_verbosity.UVM_MEDIUM
 import io.verik.core.*
 
 class CommandMonitor(name: String, parent: uvm_component?) : uvm_component(name, parent) {
 
     @Inj
-    val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<CommandMonitor>()});
-    """.trimIndent()
+    val header = "`uvm_component_utils(${t<CommandMonitor>()});"
 
     lateinit var ap: uvm_analysis_port<Command>
 
     fun write(a: Ubit<`8`>, b: Ubit<`8`>, op: Op) {
-        inj("`uvm_info(${"COMMAND MONITOR"}, ${"a=$a b=$b op=$op"}, ${uvm_verbosity.UVM_MEDIUM})")
+        inj("`uvm_info(${"COMMAND MONITOR"}, ${"a=$a b=$b op=$op"}, $UVM_MEDIUM)")
         ap.write(Command(a, b, op))
     }
 

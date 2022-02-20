@@ -26,15 +26,11 @@ import io.verik.core.*
 class AddTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
 
     @Inj
-    val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<AddTest>()});
-    """.trimIndent()
+    val header = "`uvm_component_utils(${t<AddTest>()});"
 
     val bfm: TinyAluBfm = nc()
 
-    init{
+    init {
         if (!uvm_config_db.get<TinyAluBfm>(null, "*", "bfm", bfm)) fatal("Failed to get BFM")
     }
 

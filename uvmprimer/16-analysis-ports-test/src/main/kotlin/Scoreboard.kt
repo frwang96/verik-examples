@@ -16,8 +16,6 @@
 
 @file:Verik
 
-package tb
-
 import dut.Op
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_phase
@@ -28,11 +26,7 @@ import io.verik.core.*
 class Scoreboard(name: String, parent: uvm_component?) : uvm_subscriber<Ubit<`16`>>(name, parent) {
 
     @Inj
-    val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<Scoreboard>()});
-    """.trimIndent()
+    val header = "`uvm_component_utils(${t<Scoreboard>()});"
 
     lateinit var cmd_fifo: uvm_tlm_analysis_fifo<Command>
 

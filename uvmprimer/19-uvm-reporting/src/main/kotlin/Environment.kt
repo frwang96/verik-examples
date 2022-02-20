@@ -16,19 +16,18 @@
 
 @file:Verik
 
-package tb
-
-import imported.uvm_pkg.*
+import imported.uvm_pkg.uvm_action_type.UVM_NO_ACTION
+import imported.uvm_pkg.uvm_component
+import imported.uvm_pkg.uvm_env
+import imported.uvm_pkg.uvm_phase
+import imported.uvm_pkg.uvm_severity_type.UVM_ERROR
+import imported.uvm_pkg.uvm_tlm_fifo
 import io.verik.core.*
 
 class Environment(name: String, parent: uvm_component?) : uvm_env(name, parent) {
 
     @Inj
-    val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<Environment>()});
-    """.trimIndent()
+    val header = "`uvm_component_utils(${t<Environment>()});"
 
     lateinit var random_tester: RandomTester
     lateinit var driver: Driver
@@ -49,7 +48,7 @@ class Environment(name: String, parent: uvm_component?) : uvm_env(name, parent) 
     }
 
     override fun end_of_elaboration_phase(phase: uvm_phase?) {
-        scoreboard.set_report_severity_action_hier(inji("${uvm_severity_type.UVM_ERROR}"), inji("${uvm_action_type.UVM_NO_ACTION}"))
+        scoreboard.set_report_severity_action_hier(inji("$UVM_ERROR"), inji("$UVM_NO_ACTION"))
     }
 
     override fun connect_phase(phase: uvm_phase?) {

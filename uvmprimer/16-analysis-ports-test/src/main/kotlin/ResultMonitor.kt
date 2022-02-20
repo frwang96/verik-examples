@@ -16,8 +16,6 @@
 
 @file:Verik
 
-package tb
-
 import imported.uvm_pkg.uvm_analysis_port
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_config_db
@@ -27,11 +25,7 @@ import io.verik.core.*
 class ResultMonitor(name: String, parent: uvm_component?) : uvm_component(name, parent) {
 
     @Inj
-    val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<ResultMonitor>()});
-    """.trimIndent()
+    val header = "`uvm_component_utils(${t<ResultMonitor>()});"
 
     lateinit var ap: uvm_analysis_port<Ubit<`16`>>
 
@@ -44,7 +38,6 @@ class ResultMonitor(name: String, parent: uvm_component?) : uvm_component(name, 
         val bfm: TinyAluBfm = nc()
         if (!uvm_config_db.get<TinyAluBfm>(null, "*", "bfm", bfm)) fatal("Failed to get BFM")
         bfm.result_monitor = this
-        // TODO fix type resolution
         ap = uvm_analysis_port<Ubit<`16`>>("ap", this)
     }
 }

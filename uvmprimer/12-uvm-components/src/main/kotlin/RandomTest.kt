@@ -25,11 +25,7 @@ import io.verik.core.*
 class RandomTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
 
     @Inj
-    val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<RandomTest>()});
-    """.trimIndent()
+    val header = "`uvm_component_utils(${t<RandomTest>()});"
 
     lateinit var tester: RandomTester
     lateinit var scoreboard: Scoreboard

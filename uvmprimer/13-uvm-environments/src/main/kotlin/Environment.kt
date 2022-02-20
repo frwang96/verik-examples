@@ -24,11 +24,7 @@ import io.verik.core.*
 class Environment(name: String, parent: uvm_component?) : uvm_env(name, parent) {
 
     @Inj
-    val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<Environment>()});
-    """.trimIndent()
+    val header = "`uvm_component_utils(${t<Environment>()});"
 
     lateinit var tester: BaseTester
     lateinit var scoreboard: Scoreboard

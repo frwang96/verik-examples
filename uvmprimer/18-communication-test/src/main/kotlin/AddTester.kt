@@ -16,8 +16,6 @@
 
 @file:Verik
 
-package tb
-
 import dut.Op
 import imported.uvm_pkg.uvm_component
 import io.verik.core.*
@@ -25,11 +23,7 @@ import io.verik.core.*
 class AddTester(name: String, parent: uvm_component?) : RandomTester(name, parent) {
 
     @Inj
-    private val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<AddTester>()});
-    """.trimIndent()
+    private val header = "`uvm_component_utils(${t<AddTester>()});"
 
     override fun getOp(): Op {
         return Op.ADD

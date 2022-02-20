@@ -16,13 +16,11 @@
 
 @file:Verik
 
-package tb
-
-import dut.Op
 import io.verik.core.*
 
-class Command(
-    val a: Ubit<`8`>,
-    val b: Ubit<`8`>,
-    val op: Op
-) : Struct()
+@Inj
+val header = """
+    import uvm_pkg::*;
+    
+    `include "uvm_macros.svh"
+""".trimIndent()

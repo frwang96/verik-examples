@@ -16,8 +16,6 @@
 
 @file:Verik
 
-package tb
-
 import dut.Op
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_config_db
@@ -27,11 +25,7 @@ import io.verik.core.*
 abstract class BaseTester(name: String, parent: uvm_component?) : uvm_component(name, parent) {
 
     @Inj
-    private val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<BaseTester>()});
-    """.trimIndent()
+    private val header = "`uvm_component_utils(${t<BaseTester>()});"
 
     lateinit var bfm: TinyAluBfm
 

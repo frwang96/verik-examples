@@ -16,8 +16,6 @@
 
 @file:Verik
 
-package tb
-
 import dut.Op
 import io.verik.core.*
 

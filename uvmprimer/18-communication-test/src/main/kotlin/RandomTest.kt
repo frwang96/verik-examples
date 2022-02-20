@@ -16,8 +16,6 @@
 
 @file:Verik
 
-package tb
-
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_phase
 import imported.uvm_pkg.uvm_test
@@ -27,11 +25,7 @@ import io.verik.core.*
 open class RandomTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
 
     @Inj
-    private val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<RandomTest>()});
-    """.trimIndent()
+    private val header = "`uvm_component_utils(${t<RandomTest>()});"
 
     lateinit var environment: Environment
 

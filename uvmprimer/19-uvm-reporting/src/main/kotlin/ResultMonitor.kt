@@ -16,24 +16,22 @@
 
 @file:Verik
 
-package tb
-
-import imported.uvm_pkg.*
+import imported.uvm_pkg.uvm_analysis_port
+import imported.uvm_pkg.uvm_component
+import imported.uvm_pkg.uvm_config_db
+import imported.uvm_pkg.uvm_phase
+import imported.uvm_pkg.uvm_verbosity.UVM_MEDIUM
 import io.verik.core.*
 
 class ResultMonitor(name: String, parent: uvm_component?) : uvm_component(name, parent) {
 
     @Inj
-    val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<ResultMonitor>()});
-    """.trimIndent()
+    val header = "`uvm_component_utils(${t<ResultMonitor>()});"
 
     lateinit var ap: uvm_analysis_port<Ubit<`16`>>
 
     fun write(result: Ubit<`16`>) {
-        inj("`uvm_info(${"RESULT MONITOR"}, ${"result=$result"}, ${uvm_verbosity.UVM_MEDIUM})")
+        inj("`uvm_info(${"RESULT MONITOR"}, ${"result=$result"}, $UVM_MEDIUM)")
         ap.write(result)
     }
 
@@ -43,7 +41,6 @@ class ResultMonitor(name: String, parent: uvm_component?) : uvm_component(name, 
             inj("`uvm_fatal(${"COMMAND MONITOR"}, ${"Failed to get BFM"})")
         }
         bfm.result_monitor = this
-        // TODO fix type resolution
         ap = uvm_analysis_port<Ubit<`16`>>("ap", this)
     }
 }

@@ -23,11 +23,7 @@ import io.verik.core.*
 open class RandomTester(name: String, parent: uvm_component?) : BaseTester(name, parent) {
 
     @Inj
-    private val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<RandomTester>()});
-    """.trimIndent()
+    private val header = "`uvm_component_utils(${t<RandomTester>()});"
 
     override fun getData(): Ubit<`8`> {
         return when (random(4)) {

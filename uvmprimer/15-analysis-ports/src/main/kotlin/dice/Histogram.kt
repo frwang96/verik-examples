@@ -26,11 +26,7 @@ import io.verik.core.*
 class Histogram(name: String, parent: uvm_component?) : uvm_subscriber<Int>(name, parent) {
 
     @Inj
-    val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<Histogram>()});
-    """.trimIndent()
+    val header = "`uvm_component_utils(${t<Histogram>()});"
 
     val rolls: Unpacked<`12`, Int> = nc()
 

@@ -26,11 +26,7 @@ import io.verik.core.*
 class CommunicationTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
 
     @Inj
-    val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<CommunicationTest>()});
-    """.trimIndent()
+    val header = "`uvm_component_utils(${t<CommunicationTest>()});"
 
     lateinit var producer: Producer
     lateinit var consumer: Consumer

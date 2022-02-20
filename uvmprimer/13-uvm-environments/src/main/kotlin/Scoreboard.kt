@@ -25,11 +25,7 @@ import io.verik.core.*
 class Scoreboard(name: String, parent: uvm_component?) : uvm_component(name, parent) {
 
     @Inj
-    val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<Scoreboard>()});
-    """.trimIndent()
+    val header = "`uvm_component_utils(${t<Scoreboard>()});"
 
     lateinit var bfm: TinyAluBfm
 

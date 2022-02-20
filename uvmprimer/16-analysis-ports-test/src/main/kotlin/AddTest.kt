@@ -16,35 +16,18 @@
 
 @file:Verik
 
-package tb
-
-import dut.Op
-import imported.uvm_pkg.uvm_analysis_port
 import imported.uvm_pkg.uvm_component
-import imported.uvm_pkg.uvm_config_db
 import imported.uvm_pkg.uvm_phase
 import io.verik.core.*
 
-class CommandMonitor(name: String, parent: uvm_component?) : uvm_component(name, parent) {
+@Entry
+class AddTest(name: String, parent: uvm_component?) : RandomTest(name, parent) {
 
     @Inj
-    val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<CommandMonitor>()});
-    """.trimIndent()
-
-    lateinit var ap: uvm_analysis_port<Command>
-
-    fun write(a: Ubit<`8`>, b: Ubit<`8`>, op: Op) {
-        println("COMMAND MONITOR: a=$a b=$b op=$op")
-        ap.write(Command(a, b, op))
-    }
+    private val header = "`uvm_component_utils(${t<AddTest>()});"
 
     override fun build_phase(phase: uvm_phase?) {
-        val bfm: TinyAluBfm = nc()
-        if (!uvm_config_db.get<TinyAluBfm>(null, "*", "bfm", bfm)) fatal("Failed to get BFM")
-        bfm.command_monitor = this
-        ap = uvm_analysis_port("ap", this)
+        inj("${t<RandomTester>()}::type_id::set_type_override(${t<AddTester>()}::get_type());")
+        super.build_phase(phase)
     }
 }

@@ -18,26 +18,11 @@
 
 package dice
 
-import imported.uvm_pkg.uvm_component
-import imported.uvm_pkg.uvm_phase
-import imported.uvm_pkg.uvm_test
 import io.verik.core.*
 
-@Entry
-class DiceTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
-
-    @Inj
-    val header = "`uvm_component_utils(${t<DiceTest>()});"
-
-    lateinit var dice_roller: DiceRoller
-    lateinit var histogram: Histogram
-
-    override fun build_phase(phase: uvm_phase?) {
-        dice_roller = DiceRoller("dice_roller", this)
-        histogram = Histogram("histogram", this)
-    }
-
-    override fun connect_phase(phase: uvm_phase?) {
-        dice_roller.roll_ap.connect(histogram.analysis_export)
-    }
-}
+@Inj
+val header = """
+    import uvm_pkg::*;
+    
+    `include "uvm_macros.svh"
+""".trimIndent()

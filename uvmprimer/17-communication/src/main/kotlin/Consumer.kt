@@ -25,11 +25,7 @@ import io.verik.core.*
 class Consumer(name: String, parent: uvm_component?) : uvm_component(name, parent) {
 
     @Inj
-    val header = """
-        import uvm_pkg::*;
-        `include "uvm_macros.svh"
-        `uvm_component_utils(${t<Consumer>()});
-    """.trimIndent()
+    val header = "`uvm_component_utils(${t<Consumer>()});"
 
     lateinit var get_port: uvm_get_port<Int>
     lateinit var clk_bfm: ClkBfm
