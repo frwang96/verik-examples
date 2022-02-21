@@ -6,23 +6,6 @@ Compiling the example projects requires a local build of the Verik toolchain.
 
 <!--- examples --->
 
-## [riscv](https://github.com/frwang96/verik-examples/tree/main/riscv)
-
-RISC-V core based on the [PicoRV32](https://github.com/YosysHQ/picorv32) project.
-This example project demonstrates substantial parameterization, assertions, and test bench code.
-
-## [sanity](https://github.com/frwang96/verik-examples/tree/main/sanity)
-
-Miscellaneous projects that demonstrate various aspects of the language.
-
-- `01-count`: Counter module.
-- `02-adder`: Adder module.
-- `03-multiplier`: Multiplier module.
-- `04-comb`: Various combinational logic.
-- `05-alu`: Arithmetic logic unit.
-- `06-cache`: Direct mapped cache.
-- `07-import-div` : Import and simulate the PicoRV32 PCPI divide module.
-
 ## [uvmprimer](https://github.com/frwang96/verik-examples/tree/main/uvmprimer)
 
 Projects adapted from [The UVM Primer](https://sites.google.com/view/uvmprimer-com/home) that demonstrate OOP testbench
@@ -48,3 +31,20 @@ To import the [`UVM`](https://github.com/accellera/uvm) define the environment v
 - `19-uvm-reporting`: UVM reporting macros.
 - `20-deep-operations`: Deep copy and to string operations.
 - `21-deep-operations`: UVM transactions.
+
+## [riscv](https://github.com/frwang96/verik-examples/tree/main/riscv)
+
+RISC-V core based on the [PicoRV32](https://github.com/YosysHQ/picorv32) project.
+This example project demonstrates substantial parameterization, assertions, and test bench code.
+
+## [sanity](https://github.com/frwang96/verik-examples/tree/main/sanity)
+
+Miscellaneous projects that demonstrate various aspects of the language.
+
+- `01-count`: Counter module.
+- `02-adder`: Adder module.
+- `03-multiplier`: Multiplier module.
+- `04-comb`: Various combinational logic.
+- `05-alu`: Arithmetic logic unit.
+- `06-cache`: Direct mapped cache.
+- `07-import-div` : Import and simulate the PicoRV32 PCPI divide module.
