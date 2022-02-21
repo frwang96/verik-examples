@@ -48,5 +48,6 @@ include("uvmprimer:16-analysis-ports-test")
 include("uvmprimer:17-communication")
 include("uvmprimer:18-communication-test")
 include("uvmprimer:19-uvm-reporting")
+include("uvmprimer:20-deep-operations")
 
 include("riscv")

@@ -45,3 +45,5 @@ To import the [`UVM`](https://github.com/accellera/uvm) define the environment v
 - `16-analysis-ports-test`: UVM analysis ports testbench.
 - `17-communication`: UVM put and get ports for interthread communication.
 - `18-communication-test`: UVM testbench with put and get ports.
+- `19-uvm-reporting`: UVM reporting macros.
+- `20-deep-operations`: Deep copy and to string operations.
