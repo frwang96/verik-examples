@@ -101,9 +101,11 @@ class TinyAluBfm : ModuleInterface() {
         }
     }
 
-    @Seq
+    @Run
     fun monitorResult() {
-        on(posedge(clk)) {
+        forever {
+            wait(posedge(clk))
+            delay(1)
             if (done) result_monitor.write(result)
         }
     }

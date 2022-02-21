@@ -16,18 +16,32 @@
 
 @file:Verik
 
+import dut.TinyAlu
+import imported.uvm_pkg.run_test
+import imported.uvm_pkg.uvm_config_db
 import io.verik.core.*
 
 @Entry
-class Top : Module() {
+object Top : Module() {
+
+    @Make
+    val bfm = TinyAluBfm()
+
+    @Make
+    val tiny_alu = TinyAlu(
+        clk = bfm.clk,
+        rst_n = bfm.rst_n,
+        a = bfm.a,
+        b = bfm.b,
+        op = bfm.op,
+        start = bfm.start,
+        done = bfm.done,
+        result = bfm.result
+    )
 
     @Run
     fun run() {
-        val circus_lion1 = CircusLion(2, true, "Agnes", 2)
-        val circus_lion2 = CircusLion(3, false, "Simba", 0)
-        println("Lion 1: $circus_lion1")
-        println("Lion 2 before copy: $circus_lion2")
-        circus_lion2.copyFrom(circus_lion1)
-        println("Lion 2 after copy: $circus_lion2")
+        uvm_config_db.set<TinyAluBfm>(null, "*", "bfm", bfm)
+        run_test()
     }
 }

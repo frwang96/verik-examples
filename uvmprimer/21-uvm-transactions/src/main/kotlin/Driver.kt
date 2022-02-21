@@ -16,44 +16,33 @@
 
 @file:Verik
 
-package dice
-
-import imported.uvm_pkg.uvm_analysis_port
 import imported.uvm_pkg.uvm_component
+import imported.uvm_pkg.uvm_config_db
+import imported.uvm_pkg.uvm_get_port
 import imported.uvm_pkg.uvm_phase
 import io.verik.core.*
 
-class DiceRoller(name: String, parent: uvm_component?) : uvm_component(name, parent) {
+class Driver(name: String, parent: uvm_component?) : uvm_component(name, parent) {
 
     @Inj
-    val header = "`uvm_component_utils(${t<DiceRoller>()});"
+    val header = "`uvm_component_utils(${t<Driver>()});"
 
-    lateinit var roll_ap: uvm_analysis_port<Int>
-
-    @Rand
-    var die1: Int = 0
-
-    @Rand
-    var die2: Int = 0
-
-    @Cons
-    var cons1 = c(die1 >= 1, die1 <= 6)
-
-    @Cons
-    var cons2 = c(die2 >= 1, die2 <= 6)
+    lateinit var bfm: TinyAluBfm
+    lateinit var command_port: uvm_get_port<CommandTransaction>
 
     override fun build_phase(phase: uvm_phase?) {
-        roll_ap = uvm_analysis_port("roll_ap", this)
+        if (!uvm_config_db.get<TinyAluBfm>(null, "*", "bfm", bfm)) {
+            inj("`uvm_fatal(${"COMMAND MONITOR"}, ${"Failed to get BFM"})")
+        }
+        command_port = uvm_get_port("command_port", this)
     }
 
     @Task
     override fun run_phase(phase: uvm_phase?) {
-        phase!!.raise_objection(this)
-        repeat(60) {
-            randomize()
-            val roll = die1 + die2
-            roll_ap.write(roll)
+        forever {
+            var command: CommandTransaction = nc()
+            command_port.get(command)
+            bfm.sendOp(command.a, command.b, command.op)
         }
-        phase.drop_objection(this)
     }
 }

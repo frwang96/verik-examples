@@ -24,8 +24,8 @@ abstract class Animal(var age: Int) : Class() {
         return "age=$age"
     }
 
-    open fun copyTo(animal: Animal) {
-        animal.age = age
+    open fun copyFrom(animal: Animal) {
+        age = animal.age
     }
 }
 
@@ -39,9 +39,9 @@ open class Lion(
         return "${super.toString()} gender=$gender"
     }
 
-    override fun copyTo(animal: Animal) {
-        super.copyTo(animal)
-        if (animal is Lion) animal.isFemale = isFemale
+    override fun copyFrom(animal: Animal) {
+        super.copyFrom(animal)
+        if (animal is Lion) isFemale = animal.isFemale
     }
 }
 
@@ -55,9 +55,9 @@ open class CaptiveLion(
         return "${super.toString()} name=$name"
     }
 
-    override fun copyTo(animal: Animal) {
-        super.copyTo(animal)
-        if (animal is CaptiveLion) animal.name = name
+    override fun copyFrom(animal: Animal) {
+        super.copyFrom(animal)
+        if (animal is CaptiveLion) name = animal.name
     }
 }
 
@@ -72,8 +72,8 @@ class CircusLion(
         return "${super.toString()} numTricks=$numTricks"
     }
 
-    override fun copyTo(animal: Animal) {
-        super.copyTo(animal)
-        if (animal is CircusLion) animal.numTricks = numTricks
+    override fun copyFrom(animal: Animal) {
+        super.copyFrom(animal)
+        if (animal is CircusLion) numTricks = animal.numTricks
     }
 }

@@ -16,18 +16,18 @@
 
 @file:Verik
 
+import imported.uvm_pkg.uvm_component
+import imported.uvm_pkg.uvm_phase
 import io.verik.core.*
 
 @Entry
-class Top : Module() {
+class AddTest(name: String, parent: uvm_component?) : RandomTest(name, parent) {
 
-    @Run
-    fun run() {
-        val circus_lion1 = CircusLion(2, true, "Agnes", 2)
-        val circus_lion2 = CircusLion(3, false, "Simba", 0)
-        println("Lion 1: $circus_lion1")
-        println("Lion 2 before copy: $circus_lion2")
-        circus_lion2.copyFrom(circus_lion1)
-        println("Lion 2 after copy: $circus_lion2")
+    @Inj
+    private val header = "`uvm_component_utils(${t<AddTest>()});"
+
+    override fun build_phase(phase: uvm_phase?) {
+        inj("${t<CommandTransaction>()}::type_id::set_type_override(${t<AddTransaction>()}::get_type());")
+        super.build_phase(phase)
     }
 }

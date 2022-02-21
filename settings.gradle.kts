@@ -49,5 +49,6 @@ include("uvmprimer:17-communication")
 include("uvmprimer:18-communication-test")
 include("uvmprimer:19-uvm-reporting")
 include("uvmprimer:20-deep-operations")
+include("uvmprimer:21-uvm-transactions")
 
 include("riscv")

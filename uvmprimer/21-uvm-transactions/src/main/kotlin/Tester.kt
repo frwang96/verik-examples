@@ -16,44 +16,35 @@
 
 @file:Verik
 
-package dice
-
-import imported.uvm_pkg.uvm_analysis_port
+import dut.Op
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_phase
+import imported.uvm_pkg.uvm_put_port
 import io.verik.core.*
 
-class DiceRoller(name: String, parent: uvm_component?) : uvm_component(name, parent) {
+class Tester(name: String, parent: uvm_component?) : uvm_component(name, parent) {
 
     @Inj
-    val header = "`uvm_component_utils(${t<DiceRoller>()});"
+    private val header = "`uvm_component_utils(${t<Tester>()});"
 
-    lateinit var roll_ap: uvm_analysis_port<Int>
-
-    @Rand
-    var die1: Int = 0
-
-    @Rand
-    var die2: Int = 0
-
-    @Cons
-    var cons1 = c(die1 >= 1, die1 <= 6)
-
-    @Cons
-    var cons2 = c(die2 >= 1, die2 <= 6)
+    lateinit var command_port: uvm_put_port<CommandTransaction>
 
     override fun build_phase(phase: uvm_phase?) {
-        roll_ap = uvm_analysis_port("roll_ap", this)
+        command_port = uvm_put_port("command_port", this)
     }
 
     @Task
     override fun run_phase(phase: uvm_phase?) {
         phase!!.raise_objection(this)
-        repeat(60) {
-            randomize()
-            val roll = die1 + die2
-            roll_ap.write(roll)
+        var command = CommandTransaction("command")
+        command.op = Op.RST
+        command_port.put(command)
+        repeat(100) {
+            command = inji("${t<CommandTransaction>()}::type_id::create(${"command"})")
+            command.randomize()
+            command_port.put(command)
         }
+        delay(100)
         phase.drop_objection(this)
     }
 }
