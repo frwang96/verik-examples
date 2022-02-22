@@ -25,14 +25,6 @@ pluginManagement {
 
 include("riscv")
 
-include("sanity:01-count")
-include("sanity:02-adder")
-include("sanity:03-multiplier")
-include("sanity:04-comb")
-include("sanity:05-alu")
-include("sanity:06-cache")
-include("sanity:07-import-div")
-
 include("uvmprimer:00-common")
 include("uvmprimer:02-tests")
 include("uvmprimer:03-interfaces")
@@ -54,3 +46,13 @@ include("uvmprimer:20-deep-operations")
 include("uvmprimer:21-uvm-transactions")
 include("uvmprimer:22-uvm-agents")
 include("uvmprimer:23-uvm-sequences")
+
+include("vkprimer:00-common")
+
+include("sanity:01-count")
+include("sanity:02-adder")
+include("sanity:03-multiplier")
+include("sanity:04-comb")
+include("sanity:05-alu")
+include("sanity:06-cache")
+include("sanity:07-import-div")

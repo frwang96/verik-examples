@@ -1,17 +1,26 @@
 # Verik Examples
 
-Example projects for [Verik](https://github.com/frwang96/verik). Refer to
-[template](https://github.com/frwang96/verik-template) for a template project.
-Compiling the example projects requires a local build of the Verik toolchain.
+Examples for [Verik](https://github.com/frwang96/verik).
+Refer to [template](https://github.com/frwang96/verik-template) for a template project.
+Compiling the examples requires a local build of the Verik toolchain.
 
 <!--- examples --->
 
+## [riscv](https://github.com/frwang96/verik-examples/tree/main/riscv)
+
+RISC-V core based on the [PicoRV32](https://github.com/YosysHQ/picorv32) project.
+PicoRV32 is a CPU core that implements the RV32IMC instruction set.
+It is configurable with an optional interrupt controller, single or two-cycle ALU, and single or dual-port register
+file.
+This example demonstrates substantial parameterization, assertions, and test bench code.
+
 ## [uvmprimer](https://github.com/frwang96/verik-examples/tree/main/uvmprimer)
 
-Projects adapted from [The UVM Primer](https://sites.google.com/view/uvmprimer-com/home) that demonstrate OOP testbench
+Examples adapted from [The UVM Primer](https://sites.google.com/view/uvmprimer-com/home) that demonstrate OOP testbench
 functionality.
-To import the [`UVM`](https://github.com/accellera/uvm) define the environment variable `UVM_HOME` and point it to
-`uvm/distrib/src`.
+These examples import from the [`UVM`](https://github.com/accellera/uvm) and are written to follow SystemVerilog
+naming conventions.
+To compile these examples define the environment variable `UVM_HOME` and point it to `uvm/distrib/src`.
 
 - `02-tests`: Conventional testbench for an ALU.
 - `03-interfaces`: Interfaces and bus functional models for an ALU.
@@ -33,15 +42,15 @@ To import the [`UVM`](https://github.com/accellera/uvm) define the environment v
 - `21-uvm-transactions`: UVM transactions.
 - `22-uvm-agents`: UVM agents.
 - `23-uvm-sequences`: UVM sequences.
+ 
+## [vkprimer](https://github.com/frwang96/verik-examples/tree/main/vkprimer)
 
-## [riscv](https://github.com/frwang96/verik-examples/tree/main/riscv)
-
-RISC-V core based on the [PicoRV32](https://github.com/YosysHQ/picorv32) project.
-This example project demonstrates substantial parameterization, assertions, and test bench code.
+Examples from `uvmprimer` rewritten to follow the code style and naming conventions of idiomatic Verik.
+These examples do not import from the UVM and implement the equivalent functionality directly in Verik.
 
 ## [sanity](https://github.com/frwang96/verik-examples/tree/main/sanity)
 
-Miscellaneous projects that demonstrate various aspects of the language.
+Miscellaneous examples that demonstrate various aspects of the language.
 
 - `01-count`: Counter module.
 - `02-adder`: Adder module.
