@@ -22,7 +22,7 @@ These examples import from the [`UVM`](https://github.com/accellera/uvm) and are
 naming conventions.
 To compile these examples define the environment variable `UVM_HOME` and point it to `uvm/distrib/src`.
 
-- `02-tests`: Conventional testbench for an ALU.
+- `02-conventional-test`: Conventional testbench for an ALU.
 - `03-interfaces`: Interfaces and bus functional models for an ALU.
 - `05-classes`: Classes and inheritance.
 - `06-polymorphism`: Polymorphic types.

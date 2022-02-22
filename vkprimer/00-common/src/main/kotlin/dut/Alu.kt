@@ -20,9 +20,9 @@ package dut
 
 import io.verik.core.*
 
-class TinyAlu(
+class Alu(
     @In var clk: Boolean,
-    @In var rst_n: Boolean,
+    @In var reset_n: Boolean,
     @In var a: Ubit<`8`>,
     @In var b: Ubit<`8`>,
     @In var op: Op,
@@ -31,34 +31,34 @@ class TinyAlu(
     @Out var result: Ubit<`16`>
 ) : Module() {
 
-    var done_aax: Boolean = nc()
-    var done_mult: Boolean = nc()
-    var result_aax: Ubit<`16`> = nc()
-    var result_mult: Ubit<`16`> = nc()
+    var done_single: Boolean = nc()
+    var done_multi: Boolean = nc()
+    var result_single: Ubit<`16`> = nc()
+    var result_multi: Ubit<`16`> = nc()
     var start_single: Boolean = nc()
-    var start_mult: Boolean = nc()
+    var start_multi: Boolean = nc()
 
     @Make
-    val single_cycle = SingleCycleAlu(
+    val single_cycle_alu = SingleCycleAlu(
         clk = clk,
-        rst_n = rst_n,
+        reset_n = reset_n,
         a = a,
         b = b,
         op = op,
         start = start_single,
-        done_aax = done_aax,
-        result_aax = result_aax
+        done = done_single,
+        result = result_single
     )
 
     @Make
-    val three_cycle = ThreeCycleAlu(
+    val multi_cycle_alu = MultiCycleAlu(
         clk = clk,
-        rst_n = rst_n,
+        reset_n = reset_n,
         a = a,
         b = b,
-        start = start_mult,
-        done_mult = done_mult,
-        result_mult = result_mult
+        start = start_multi,
+        done = done_multi,
+        result = result_multi
     )
 
     @Com
@@ -66,11 +66,11 @@ class TinyAlu(
         when (op) {
             Op.MUL -> {
                 start_single = false
-                start_mult = start
+                start_multi = start
             }
             else -> {
                 start_single = start
-                start_mult = false
+                start_multi = false
             }
         }
     }
@@ -79,12 +79,12 @@ class TinyAlu(
     fun mux() {
         when (op) {
             Op.MUL -> {
-                done = done_mult
-                result = result_mult
+                done = done_multi
+                result = result_multi
             }
             else -> {
-                done = done_aax
-                result = result_aax
+                done = done_single
+                result = result_single
             }
         }
     }

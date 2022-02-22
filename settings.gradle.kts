@@ -26,7 +26,7 @@ pluginManagement {
 include("riscv")
 
 include("uvmprimer:00-common")
-include("uvmprimer:02-tests")
+include("uvmprimer:02-conventional-test")
 include("uvmprimer:03-interfaces")
 include("uvmprimer:05-classes")
 include("uvmprimer:06-polymorphism")
@@ -48,6 +48,7 @@ include("uvmprimer:22-uvm-agents")
 include("uvmprimer:23-uvm-sequences")
 
 include("vkprimer:00-common")
+include("vkprimer:02-conventional-test")
 
 include("sanity:01-count")
 include("sanity:02-adder")
