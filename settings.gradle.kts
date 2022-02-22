@@ -23,6 +23,8 @@ pluginManagement {
     }
 }
 
+include("riscv")
+
 include("sanity:01-count")
 include("sanity:02-adder")
 include("sanity:03-multiplier")
@@ -51,5 +53,4 @@ include("uvmprimer:19-uvm-reporting")
 include("uvmprimer:20-deep-operations")
 include("uvmprimer:21-uvm-transactions")
 include("uvmprimer:22-uvm-agents")
-
-include("riscv")
+include("uvmprimer:23-uvm-sequences")

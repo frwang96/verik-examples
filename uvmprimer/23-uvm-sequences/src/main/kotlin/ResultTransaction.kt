@@ -16,38 +16,33 @@
 
 @file:Verik
 
-import dut.Op
 import imported.uvm_pkg.uvm_comparer
 import imported.uvm_pkg.uvm_object
 import imported.uvm_pkg.uvm_transaction
 import io.verik.core.*
 
-open class CommandTransaction(name: String = "") : uvm_transaction(name, null) {
+open class ResultTransaction(name: String = "") : uvm_transaction(name, null) {
 
     @Inj
-    private val header = "`uvm_object_utils(${t<CommandTransaction>()});"
+    private val header = "`uvm_object_utils(${t<ResultTransaction>()});"
 
-    @Rand var a: Ubit<`8`> = u0()
-    @Rand var b: Ubit<`8`> = u0()
-    @Rand var op: Op = Op.RST
+    var result: Ubit<`16`> = u0()
 
     override fun do_copy(rhs: uvm_object?) {
         super.do_copy(rhs)
-        if (rhs !is CommandTransaction) {
-            inj("`uvm_fatal(${"COMMAND TRANSACTION"}, ${"Argument is of wrong type"})")
+        if (rhs !is ResultTransaction) {
+            inj("`uvm_fatal(${"RESULT TRANSACTION"}, ${"Argument is of wrong type"})")
             return
         }
-        a = rhs.a
-        b = rhs.b
-        op = rhs.op
+        result = rhs.result
     }
 
     override fun do_compare(rhs: uvm_object?, comparer: uvm_comparer?): Boolean {
-        return if (rhs !is CommandTransaction) false
-        else super.do_compare(rhs, comparer) && (rhs.a == a) && (rhs.b == b) && (rhs.op == op)
+        return if (rhs !is ResultTransaction) false
+        else super.do_compare(rhs, comparer) && (rhs.result == result)
     }
 
     override fun toString(): String {
-        return "a=$a b=$b op=$op"
+        return "result=$result"
     }
 }

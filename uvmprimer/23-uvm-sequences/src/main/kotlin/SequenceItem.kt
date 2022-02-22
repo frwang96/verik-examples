@@ -19,21 +19,23 @@
 import dut.Op
 import imported.uvm_pkg.uvm_comparer
 import imported.uvm_pkg.uvm_object
-import imported.uvm_pkg.uvm_transaction
+import imported.uvm_pkg.uvm_sequence_item
 import io.verik.core.*
 
-open class CommandTransaction(name: String = "") : uvm_transaction(name, null) {
+class SequenceItem(name: String = "") : uvm_sequence_item(name) {
 
     @Inj
-    private val header = "`uvm_object_utils(${t<CommandTransaction>()});"
+    private val header = "`uvm_object_utils(${t<SequenceItem>()});"
 
     @Rand var a: Ubit<`8`> = u0()
     @Rand var b: Ubit<`8`> = u0()
     @Rand var op: Op = Op.RST
 
+    var result: Ubit<`16`> = u0()
+
     override fun do_copy(rhs: uvm_object?) {
         super.do_copy(rhs)
-        if (rhs !is CommandTransaction) {
+        if (rhs !is SequenceItem) {
             inj("`uvm_fatal(${"COMMAND TRANSACTION"}, ${"Argument is of wrong type"})")
             return
         }
@@ -43,7 +45,7 @@ open class CommandTransaction(name: String = "") : uvm_transaction(name, null) {
     }
 
     override fun do_compare(rhs: uvm_object?, comparer: uvm_comparer?): Boolean {
-        return if (rhs !is CommandTransaction) false
+        return if (rhs !is SequenceItem) false
         else super.do_compare(rhs, comparer) && (rhs.a == a) && (rhs.b == b) && (rhs.op == op)
     }
 

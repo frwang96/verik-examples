@@ -30,7 +30,9 @@ To import the [`UVM`](https://github.com/accellera/uvm) define the environment v
 - `18-communication-test`: UVM testbench with put and get ports.
 - `19-uvm-reporting`: UVM reporting macros.
 - `20-deep-operations`: Deep copy and to string operations.
-- `21-deep-operations`: UVM transactions.
+- `21-uvm-transactions`: UVM transactions.
+- `22-uvm-agents`: UVM agents.
+- `23-uvm-sequences`: UVM sequences.
 
 ## [riscv](https://github.com/frwang96/verik-examples/tree/main/riscv)
 
