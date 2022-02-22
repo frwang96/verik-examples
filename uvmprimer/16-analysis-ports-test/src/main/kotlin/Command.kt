@@ -16,11 +16,11 @@
 
 @file:Verik
 
-import dut.Op
+import dut.operation_t
 import io.verik.core.*
 
 class Command(
     val a: Ubit<`8`>,
     val b: Ubit<`8`>,
-    val op: Op
+    val op: operation_t
 ) : Struct()

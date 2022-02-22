@@ -16,7 +16,7 @@
 
 @file:Verik
 
-import dut.Op
+import dut.operation_t
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_config_db
 import imported.uvm_pkg.uvm_phase
@@ -39,13 +39,13 @@ class Scoreboard(name: String, parent: uvm_component?) : uvm_component(name, par
             wait(posedge(bfm.done))
             delay(1)
             val predicted_result = when (bfm.op) {
-                Op.ADD -> (bfm.a add bfm.b).ext()
-                Op.AND -> (bfm.a and bfm.b).ext()
-                Op.XOR -> (bfm.a xor bfm.b).ext()
-                Op.MUL -> bfm.a mul bfm.b
+                operation_t.add_op -> (bfm.a add bfm.b).ext()
+                operation_t.and_op -> (bfm.a and bfm.b).ext()
+                operation_t.xor_op -> (bfm.a xor bfm.b).ext()
+                operation_t.mul_op -> bfm.a mul bfm.b
                 else -> u0()
             }
-            if (bfm.op != Op.NOP && bfm.op != Op.RST) {
+            if (bfm.op != operation_t.no_op && bfm.op != operation_t.rst_op) {
                 assert(predicted_result == bfm.result) {
                     error("FAILED: a=${bfm.a} b=${bfm.b} op=${bfm.op} result=${bfm.result}")
                 }

@@ -16,7 +16,7 @@
 
 @file:Verik
 
-import dut.Op
+import dut.operation_t
 import imported.uvm_pkg.uvm_component
 import io.verik.core.*
 
@@ -25,7 +25,7 @@ class AddTester(name: String, parent: uvm_component?) : RandomTester(name, paren
     @Inj
     private val header = "`uvm_component_utils(${t<AddTester>()});"
 
-    override fun getOp(): Op {
-        return Op.ADD
+    override fun getOp(): operation_t {
+        return operation_t.add_op
     }
 }

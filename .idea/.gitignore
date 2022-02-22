@@ -9,6 +9,7 @@
 !copyright/profiles_settings.xml
 !fileTemplates/internal/*.kt
 !inspectionProfiles/Project_Default.xml
+!scopes/uvmprimer.xml
 !codeInsightSettings.xml
 !externalDependencies.xml
 !misc.xml

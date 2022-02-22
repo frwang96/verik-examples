@@ -16,7 +16,7 @@
 
 @file:Verik
 
-import dut.Op
+import dut.operation_t
 import imported.uvm_pkg.uvm_comparer
 import imported.uvm_pkg.uvm_object
 import imported.uvm_pkg.uvm_transaction
@@ -29,7 +29,7 @@ open class CommandTransaction(name: String = "") : uvm_transaction(name, null) {
 
     @Rand var a: Ubit<`8`> = u0()
     @Rand var b: Ubit<`8`> = u0()
-    @Rand var op: Op = Op.RST
+    @Rand var op: operation_t = operation_t.rst_op
 
     override fun do_copy(rhs: uvm_object?) {
         super.do_copy(rhs)

@@ -16,7 +16,7 @@
 
 @file:Verik
 
-import dut.Op
+import dut.operation_t
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_phase
 import imported.uvm_pkg.uvm_subscriber
@@ -39,13 +39,13 @@ class Scoreboard(name: String, parent: uvm_component?) : uvm_subscriber<Ubit<`16
         var cmd: Command = nc()
         do {
             if (!cmd_fifo.try_get(cmd)) inj("`uvm_fatal(${"SCOREBOARD"}, ${"Mising command in checker"})")
-        } while (cmd.op == Op.NOP || cmd.op == Op.RST)
+        } while (cmd.op == operation_t.no_op || cmd.op == operation_t.rst_op)
 
         val predicted_result = when (cmd.op) {
-            Op.ADD -> (cmd.a add cmd.b).ext()
-            Op.AND -> (cmd.a and cmd.b).ext()
-            Op.XOR -> (cmd.a xor cmd.b).ext()
-            Op.MUL -> cmd.a mul cmd.b
+            operation_t.add_op -> (cmd.a add cmd.b).ext()
+            operation_t.and_op -> (cmd.a and cmd.b).ext()
+            operation_t.xor_op -> (cmd.a xor cmd.b).ext()
+            operation_t.mul_op -> cmd.a mul cmd.b
             else -> u0()
         }
         val result_string = "a=${cmd.a} b=${cmd.b} op=${cmd.op} actual=$t expected=$predicted_result"

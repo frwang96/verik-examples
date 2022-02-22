@@ -16,7 +16,7 @@
 
 @file:Verik
 
-import dut.TinyAlu
+import dut.tinyalu
 import imported.uvm_pkg.run_test
 import imported.uvm_pkg.uvm_config_db
 import io.verik.core.*
@@ -28,12 +28,12 @@ object Top : Module() {
     val class_bfm = TinyAluBfm()
 
     @Make
-    val class_dut = TinyAlu(
+    val class_dut = tinyalu(
+        A = class_bfm.a,
+        B = class_bfm.b,
         clk = class_bfm.clk,
-        rst_n = class_bfm.rst_n,
-        a = class_bfm.a,
-        b = class_bfm.b,
-        op = class_bfm.op,
+        op = class_bfm.op.value,
+        reset_n = class_bfm.rst_n,
         start = class_bfm.start,
         done = class_bfm.done,
         result = class_bfm.result
@@ -43,12 +43,12 @@ object Top : Module() {
     val module_bfm = TinyAluBfm()
 
     @Make
-    val module_dut = TinyAlu(
+    val module_dut = tinyalu(
+        A = module_bfm.a,
+        B = module_bfm.b,
         clk = module_bfm.clk,
-        rst_n = module_bfm.rst_n,
-        a = module_bfm.a,
-        b = module_bfm.b,
-        op = module_bfm.op,
+        op = module_bfm.op.value,
+        reset_n = module_bfm.rst_n,
         start = module_bfm.start,
         done = module_bfm.done,
         result = module_bfm.result

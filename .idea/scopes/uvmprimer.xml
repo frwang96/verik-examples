@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="uvmprimer" pattern="src[verik-examples.uvmprimer*]:*..*||src[verik-examples.uvmprimer.*.main]:*" />
+</component>

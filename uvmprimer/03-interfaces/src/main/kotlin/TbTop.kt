@@ -16,7 +16,7 @@
 
 @file:Verik
 
-import dut.TinyAlu
+import dut.tinyalu
 import io.verik.core.*
 
 @Entry
@@ -26,12 +26,12 @@ object TbTop : Module() {
     val bfm = TinyAluBfm()
 
     @Make
-    val tiny_alu = TinyAlu(
+    val tiny_alu = tinyalu(
+        A = bfm.a,
+        B = bfm.b,
         clk = bfm.clk,
-        rst_n = bfm.rst_n,
-        a = bfm.a,
-        b = bfm.b,
-        op = bfm.op,
+        op = bfm.op.value,
+        reset_n = bfm.rst_n,
         start = bfm.start,
         done = bfm.done,
         result = bfm.result

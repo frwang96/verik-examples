@@ -16,8 +16,8 @@
 
 @file:Verik
 
-import dut.Op
-import dut.TinyAlu
+import dut.operation_t
+import dut.tinyalu
 import io.verik.core.*
 
 @Entry
@@ -27,18 +27,18 @@ object TbTop : Module() {
     var rst_n: Boolean = nc()
     var a: Ubit<`8`> = nc()
     var b: Ubit<`8`> = nc()
-    var op: Op = nc()
+    var op: operation_t = nc()
     var start: Boolean = nc()
     var done: Boolean = nc()
     var result: Ubit<`16`> = nc()
 
     @Make
-    val tiny_alu = TinyAlu(
+    val tiny_alu = tinyalu(
+        A = a,
+        B = b,
         clk = clk,
-        rst_n = rst_n,
-        a = a,
-        b = b,
-        op = op,
+        op = op.value,
+        reset_n = rst_n,
         start = start,
         done = done,
         result = result
@@ -50,6 +50,7 @@ object TbTop : Module() {
         repeat(2) { wait(negedge(clk)) }
         rst_n = true
         start = false
+        op = operation_t.no_op
         repeat(100) {
             wait(negedge(clk))
             a = randomData()
@@ -57,11 +58,11 @@ object TbTop : Module() {
             op = randomOp()
             start = true
             when (op) {
-                Op.NOP -> {
+                operation_t.no_op -> {
                     wait(posedge(clk))
                     start = false
                 }
-                Op.RST -> {
+                operation_t.rst_op -> {
                     rst_n = false
                     start = false
                     wait(negedge(clk))
@@ -91,13 +92,13 @@ object TbTop : Module() {
     fun scoreboard() {
         on(posedge(done)) {
             val expected: Ubit<`16`> = when(op) {
-                Op.ADD -> (a add b).ext()
-                Op.AND -> (a and b).ext()
-                Op.XOR -> (a xor b).ext()
-                Op.MUL -> a mul b
+                operation_t.add_op -> (a add b).ext()
+                operation_t.and_op -> (a and b).ext()
+                operation_t.xor_op -> (a xor b).ext()
+                operation_t.mul_op -> a mul b
                 else -> u0()
             }
-            if (op != Op.NOP && op != Op.RST) {
+            if (op != operation_t.no_op && op != operation_t.rst_op) {
                 print("[${time()}] ")
                 if (expected != result) print("FAIL ") else print("PASS ")
                 println("a=$a b=$b op=$op result=$result expected=$expected")
@@ -105,14 +106,14 @@ object TbTop : Module() {
         }
     }
 
-    fun randomOp(): Op {
+    fun randomOp(): operation_t {
         return when (random(6)) {
-            0 -> Op.NOP
-            1 -> Op.ADD
-            2 -> Op.AND
-            3 -> Op.XOR
-            4 -> Op.MUL
-            else -> Op.RST
+            0 -> operation_t.no_op
+            1 -> operation_t.add_op
+            2 -> operation_t.and_op
+            3 -> operation_t.xor_op
+            4 -> operation_t.mul_op
+            else -> operation_t.rst_op
         }
     }
 

@@ -16,12 +16,12 @@
 
 @file:Verik
 
-import dut.Op
+import dut.operation_t
 import io.verik.core.*
 
 class AddTester(bfm: TinyAluBfm) : RandomTester(bfm) {
 
-    override fun getOp(): Op {
-        return Op.ADD
+    override fun getOp(): operation_t {
+        return operation_t.add_op
     }
 }

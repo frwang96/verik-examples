@@ -16,7 +16,7 @@
 
 @file:Verik
 
-import dut.Op
+import dut.operation_t
 import imported.uvm_pkg.uvm_sequence
 import io.verik.core.*
 
@@ -29,7 +29,7 @@ open class MaxMultSequence(name: String = "") : uvm_sequence<SequenceItem, Seque
     override fun body() {
         val command: SequenceItem = inji("${t<SequenceItem>()}::type_id::create(${"command"})")
         start_item(command)
-        command.op = Op.MUL
+        command.op = operation_t.mul_op
         command.a = u(0xff)
         command.b = u(0xff)
         finish_item(command)

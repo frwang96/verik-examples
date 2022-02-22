@@ -16,7 +16,7 @@
 
 @file:Verik
 
-import dut.Op
+import dut.operation_t
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_config_db
 import imported.uvm_pkg.uvm_phase
@@ -47,7 +47,7 @@ abstract class BaseTester(name: String, parent: uvm_component?) : uvm_component(
         phase.drop_objection(this)
     }
 
-    abstract fun getOp(): Op
+    abstract fun getOp(): operation_t
 
     abstract fun getData(): Ubit<`8`>
 }

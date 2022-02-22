@@ -16,7 +16,7 @@
 
 @file:Verik
 
-import dut.Op
+import dut.operation_t
 import io.verik.core.*
 
 class AddTransaction(name: String = "") : CommandTransaction(name) {
@@ -25,5 +25,5 @@ class AddTransaction(name: String = "") : CommandTransaction(name) {
     private val header = "`uvm_object_utils(${t<AddTransaction>()});"
 
     @Cons
-    val cons_op = c(op == Op.ADD)
+    val cons_op = c(op == operation_t.add_op)
 }

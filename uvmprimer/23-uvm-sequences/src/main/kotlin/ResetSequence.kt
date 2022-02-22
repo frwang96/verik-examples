@@ -16,7 +16,7 @@
 
 @file:Verik
 
-import dut.Op
+import dut.operation_t
 import imported.uvm_pkg.uvm_sequence
 import io.verik.core.*
 
@@ -29,7 +29,7 @@ open class ResetSequence(name: String = "") : uvm_sequence<SequenceItem, Sequenc
     override fun body() {
         val command: SequenceItem = inji("${t<SequenceItem>()}::type_id::create(${"command"})")
         start_item(command)
-        command.op = Op.RST
+        command.op = operation_t.rst_op
         finish_item(command)
     }
 }

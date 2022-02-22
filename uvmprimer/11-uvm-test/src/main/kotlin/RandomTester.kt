@@ -16,19 +16,19 @@
 
 @file:Verik
 
-import dut.Op
+import dut.operation_t
 import io.verik.core.*
 
 open class RandomTester(val bfm: TinyAluBfm) : Class() {
 
-    open fun getOp(): Op {
+    open fun getOp(): operation_t {
         return when (random(6)) {
-            0 -> Op.NOP
-            1 -> Op.ADD
-            2 -> Op.AND
-            3 -> Op.XOR
-            4 -> Op.MUL
-            else -> Op.RST
+            0 -> operation_t.no_op
+            1 -> operation_t.add_op
+            2 -> operation_t.and_op
+            3 -> operation_t.xor_op
+            4 -> operation_t.mul_op
+            else -> operation_t.rst_op
         }
     }
 

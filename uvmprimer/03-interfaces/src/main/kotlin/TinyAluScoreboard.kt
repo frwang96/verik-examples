@@ -16,7 +16,7 @@
 
 @file:Verik
 
-import dut.Op
+import dut.operation_t
 import io.verik.core.*
 
 class TinyAluScoreboard(val bfm: TinyAluBfm) : Module() {
@@ -25,13 +25,13 @@ class TinyAluScoreboard(val bfm: TinyAluBfm) : Module() {
     fun check() {
         on(posedge(bfm.done)) {
             val expected: Ubit<`16`> = when(bfm.op) {
-                Op.ADD -> (bfm.a add bfm.b).ext()
-                Op.AND -> (bfm.a and bfm.b).ext()
-                Op.XOR -> (bfm.a xor bfm.b).ext()
-                Op.MUL -> (bfm.a mul bfm.b).ext()
+                operation_t.add_op -> (bfm.a add bfm.b).ext()
+                operation_t.and_op -> (bfm.a and bfm.b).ext()
+                operation_t.xor_op -> (bfm.a xor bfm.b).ext()
+                operation_t.mul_op -> (bfm.a mul bfm.b).ext()
                 else -> u0()
             }
-            if (bfm.op != Op.NOP && bfm.op != Op.RST) {
+            if (bfm.op != operation_t.no_op && bfm.op != operation_t.rst_op) {
                 print("[${time()}] ")
                 if (expected != bfm.result) print("FAIL ") else print("PASS ")
                 println("a=${bfm.a} b=${bfm.b} op=${bfm.op} result=${bfm.result} expected=$expected")

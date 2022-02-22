@@ -16,7 +16,7 @@
 
 @file:Verik
 
-import dut.Op
+import dut.operation_t
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_phase
 import imported.uvm_pkg.uvm_put_port
@@ -37,7 +37,7 @@ class Tester(name: String, parent: uvm_component?) : uvm_component(name, parent)
     override fun run_phase(phase: uvm_phase?) {
         phase!!.raise_objection(this)
         var command = CommandTransaction("command")
-        command.op = Op.RST
+        command.op = operation_t.rst_op
         command_port.put(command)
         repeat(100) {
             command = inji("${t<CommandTransaction>()}::type_id::create(${"command"})")

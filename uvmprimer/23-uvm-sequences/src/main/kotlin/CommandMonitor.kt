@@ -16,7 +16,7 @@
 
 @file:Verik
 
-import dut.Op
+import dut.operation_t
 import imported.uvm_pkg.uvm_analysis_port
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_config_db
@@ -31,7 +31,7 @@ class CommandMonitor(name: String, parent: uvm_component?) : uvm_component(name,
 
     lateinit var ap: uvm_analysis_port<SequenceItem>
 
-    fun write(a: Ubit<`8`>, b: Ubit<`8`>, op: Op) {
+    fun write(a: Ubit<`8`>, b: Ubit<`8`>, op: operation_t) {
         inj("`uvm_info(${"COMMAND MONITOR"}, ${"a=$a b=$b op=$op"}, $UVM_MEDIUM)")
         val cmd = SequenceItem("cmd")
         cmd.a = a

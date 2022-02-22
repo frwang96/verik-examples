@@ -16,7 +16,7 @@
 
 @file:Verik
 
-import dut.Op
+import dut.operation_t
 import imported.uvm_pkg.uvm_sequence
 import imported.uvm_pkg.uvm_verbosity.UVM_MEDIUM
 import io.verik.core.*
@@ -30,7 +30,7 @@ open class FibonacciSequence(name: String = "fibonacci") : uvm_sequence<Sequence
     override fun body() {
         val command: SequenceItem = inji("${t<SequenceItem>()}::type_id::create(${"command"})")
         start_item(command)
-        command.op = Op.RST
+        command.op = operation_t.rst_op
         finish_item(command)
 
         var n_minus_2 = u(0x00)
@@ -41,7 +41,7 @@ open class FibonacciSequence(name: String = "fibonacci") : uvm_sequence<Sequence
             start_item(command)
             command.a = n_minus_2
             command.b = n_minus_1
-            command.op = Op.ADD
+            command.op = operation_t.add_op
             finish_item(command)
             n_minus_2 = n_minus_1
             n_minus_1 = command.result.tru()

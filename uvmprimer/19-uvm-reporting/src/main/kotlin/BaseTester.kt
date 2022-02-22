@@ -16,7 +16,7 @@
 
 @file:Verik
 
-import dut.Op
+import dut.operation_t
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_phase
 import imported.uvm_pkg.uvm_put_port
@@ -36,7 +36,7 @@ abstract class BaseTester(name: String, parent: uvm_component?) : uvm_component(
     @Task
     override fun run_phase(phase: uvm_phase?) {
         phase!!.raise_objection(this)
-        command_port.put(Command(u0(), u0(), Op.RST))
+        command_port.put(Command(u0(), u0(), operation_t.rst_op))
         repeat(100) {
             val a = getData()
             val b = getData()
@@ -47,7 +47,7 @@ abstract class BaseTester(name: String, parent: uvm_component?) : uvm_component(
         phase.drop_objection(this)
     }
 
-    abstract fun getOp(): Op
+    abstract fun getOp(): operation_t
 
     abstract fun getData(): Ubit<`8`>
 }

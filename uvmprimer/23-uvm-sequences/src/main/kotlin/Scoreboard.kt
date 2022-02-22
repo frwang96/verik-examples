@@ -16,7 +16,7 @@
 
 @file:Verik
 
-import dut.Op
+import dut.operation_t
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_phase
 import imported.uvm_pkg.uvm_subscriber
@@ -39,7 +39,7 @@ class Scoreboard(name: String, parent: uvm_component?) : uvm_subscriber<ResultTr
         var command: SequenceItem = nc()
         do {
             if (!cmd_fifo.try_get(command)) inj("`uvm_fatal(${"SCOREBOARD"}, ${"Mising command in checker"})")
-        } while (command.op == Op.NOP || command.op == Op.RST)
+        } while (command.op == operation_t.no_op || command.op == operation_t.rst_op)
 
         val predicted = predictResult(command)
         val result_string = "$command ACTUAL $t EXPECTED $predicted"
@@ -53,10 +53,10 @@ class Scoreboard(name: String, parent: uvm_component?) : uvm_subscriber<ResultTr
     private fun predictResult(command: SequenceItem): ResultTransaction {
         val predicted = ResultTransaction("predicted")
         predicted.result = when (command.op) {
-            Op.ADD -> (command.a add command.b).ext()
-            Op.AND -> (command.a and command.b).ext()
-            Op.XOR -> (command.a xor command.b).ext()
-            Op.MUL -> command.a mul command.b
+            operation_t.add_op -> (command.a add command.b).ext()
+            operation_t.and_op -> (command.a and command.b).ext()
+            operation_t.xor_op -> (command.a xor command.b).ext()
+            operation_t.mul_op -> command.a mul command.b
             else -> u0()
         }
         return predicted
