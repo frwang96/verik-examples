@@ -41,7 +41,7 @@ object top : Module() {
     }
 
     @Make
-    val tiny_alu = tinyalu(
+    val DUT = tinyalu(
         A = A,
         B = B,
         clk = clk,

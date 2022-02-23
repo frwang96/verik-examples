@@ -18,27 +18,6 @@
 
 import io.verik.core.*
 
-@Entry
-object ClassesTop : Module() {
-
-    @Run
-    fun run() {
-        val lion = Lion(15)
-        lion.makeSound()
-        println("The Lion is ${lion.age} years old")
-        val chicken = Chicken(1)
-        chicken.makeSound()
-        println("The Chicken is ${chicken.age} years old")
-
-        var animal: Animal = lion
-        animal.makeSound()
-        println("The animal is ${animal.age} years old")
-        animal = chicken
-        animal.makeSound()
-        println("The animal is ${animal.age} years old")
-    }
-}
-
 abstract class Animal(val age: Int) : Class() {
 
     abstract fun makeSound()
@@ -47,13 +26,34 @@ abstract class Animal(val age: Int) : Class() {
 class Lion(age: Int) : Animal(age) {
 
     override fun makeSound() {
-        println("The Lion says ROAR")
+        println("The lion says ROAR")
     }
 }
 
 class Chicken(age: Int) : Animal(age) {
 
     override fun makeSound() {
-        println("The Chicken says BECAWW")
+        println("The chicken says BECAWW")
+    }
+}
+
+@Entry
+object Top : Module() {
+
+    @Run
+    fun run() {
+        val lion = Lion(15)
+        lion.makeSound()
+        println("The lion is ${lion.age} years old")
+        val chicken = Chicken(1)
+        chicken.makeSound()
+        println("The chicken is ${chicken.age} years old")
+
+        var animal: Animal = lion
+        animal.makeSound()
+        println("The animal is ${animal.age} years old")
+        animal = chicken
+        animal.makeSound()
+        println("The animal is ${animal.age} years old")
     }
 }

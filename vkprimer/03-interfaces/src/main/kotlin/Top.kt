@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Francis Wang
+ * Copyright (c) 2022 Francis Wang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,30 @@
 
 @file:Verik
 
+import dut.Alu
 import io.verik.core.*
 
 @Entry
-object ClassesTop : Module() {
+object Top : Module() {
 
-    @Run
-    fun run() {
-        val rectangle = Rectangle(50, 20)
-        println("Rectangle area: ${rectangle.area()}")
-        val square = Square(50)
-        println("Square area: ${square.area()}")
-    }
+    @Make
+    val bfm = AluBfm()
+
+    @Make
+    val tester = AluTester(bfm)
+
+    @Make
+    val scoreboard = AluScoreboard(bfm)
+
+    @Make
+    val alu = Alu(
+        clk = bfm.clk,
+        reset_n = bfm.reset_n,
+        a = bfm.a,
+        b = bfm.b,
+        op = bfm.op,
+        start = bfm.start,
+        done = bfm.done,
+        result = bfm.result
+    )
 }
-
-open class Rectangle(val width: Int, val length: Int) : Class() {
-
-    fun area(): Int {
-        return width * length
-    }
-}
-
-class Square(side: Int) : Rectangle(side, side)

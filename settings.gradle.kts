@@ -49,6 +49,9 @@ include("uvmprimer:23-uvm-sequences")
 
 include("vkprimer:00-common")
 include("vkprimer:02-conventional-test")
+include("vkprimer:03-interfaces")
+include("vkprimer:05-classes")
+include("vkprimer:06-polymorphism")
 
 include("sanity:01-count")
 include("sanity:02-adder")
