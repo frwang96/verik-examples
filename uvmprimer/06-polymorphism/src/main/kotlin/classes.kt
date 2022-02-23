@@ -15,24 +15,35 @@
  */
 
 @file:Verik
+@file:Suppress("ConvertSecondaryConstructorToPrimary")
 
 import io.verik.core.*
 
-abstract class animal(val age: Int) : Class() {
+abstract class animal : Class {
+
+    val age: Int
+
+    constructor(a: Int) : super() {
+        age = a
+    }
 
     open fun make_sound() {
         fatal("Generic animals don't have a sound")
     }
 }
 
-class lion(age: Int) : animal(age) {
+class lion : animal {
+
+    constructor(age: Int) : super(age)
 
     override fun make_sound() {
         println("The lion says ROAR")
     }
 }
 
-class chicken(age: Int) : animal(age) {
+class chicken : animal {
+
+    constructor(age: Int) : super(age)
 
     override fun make_sound() {
         println("The chicken says BECAWW")

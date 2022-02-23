@@ -18,21 +18,19 @@
 
 import io.verik.core.*
 
-@Entry
-object StaticMethodsTop : Module() {
+abstract class Animal(
+    @Suppress("unused") val age: Int
+) : Class() {
 
-    @Run
-    fun run() {
-        LionCage.cageLion(Lion("Kimba"))
-        LionCage.cageLion(Lion("Simba"))
-        LionCage.cageLion(Lion("Mustafa"))
-        LionCage.listLions()
-    }
+    abstract fun makeSound()
 }
 
-abstract class Animal : Class()
+class Lion(age: Int, val name: String) : Animal(age) {
 
-class Lion(val name: String) : Animal()
+    override fun makeSound() {
+        println("$name says ROAR")
+    }
+}
 
 object LionCage : Class() {
 
@@ -44,5 +42,17 @@ object LionCage : Class() {
 
     fun listLions() {
         cage.forEach { println(it.name) }
+    }
+}
+
+@Entry
+object Top : Module() {
+
+    @Run
+    fun run() {
+        LionCage.cageLion(Lion(2, "Kimba"))
+        LionCage.cageLion(Lion(3, "Simba"))
+        LionCage.cageLion(Lion(15, "Mustafa"))
+        LionCage.listLions()
     }
 }

@@ -18,15 +18,15 @@ This example demonstrates substantial parameterization, assertions, and test ben
 
 Examples adapted from [The UVM Primer](https://sites.google.com/view/uvmprimer-com/home) that demonstrate OOP testbench
 functionality.
-These examples import from the [`UVM`](https://github.com/accellera/uvm) and are written to follow SystemVerilog
-naming conventions.
+These examples import from the [`UVM`](https://github.com/accellera/uvm) and closely follow the original SystemVerilog
+coding conventions.
 To compile these examples define the environment variable `UVM_HOME` and point it to `uvm/distrib/src`.
 
 - `02-conventional-test`: Conventional testbench for an ALU.
 - `03-interfaces`: Interfaces and bus functional models for an ALU.
 - `05-classes`: Classes and inheritance.
 - `06-polymorphism`: Polymorphic types.
-- `07-objects`: Statically declared objects.
+- `07-static-methods`: Static methods.
 - `08-type-parameters`: Type parameterized classes.
 - `09-factory-pattern`: Factory pattern for object instantiation.
 - `10-oop-test`: Basic OOP testbench.
@@ -45,7 +45,7 @@ To compile these examples define the environment variable `UVM_HOME` and point i
  
 ## [vkprimer](https://github.com/frwang96/verik-examples/tree/main/vkprimer)
 
-Examples from `uvmprimer` rewritten to follow the code style and naming conventions of idiomatic Verik.
+Examples from `uvmprimer` rewritten to follow the coding conventions of idiomatic Verik.
 These examples do not import from the UVM and implement the equivalent functionality directly in Verik.
 
 ## [sanity](https://github.com/frwang96/verik-examples/tree/main/sanity)

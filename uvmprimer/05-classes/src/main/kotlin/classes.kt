@@ -15,17 +15,29 @@
  */
 
 @file:Verik
+@file:Suppress("ConvertSecondaryConstructorToPrimary")
 
 import io.verik.core.*
 
-open class rectangle(val length: Int, val width: Int) : Class() {
+open class rectangle : Class {
+
+    val length: Int
+    val width: Int
+
+    constructor(length: Int, width: Int) : super() {
+        this.length = length
+        this.width = width
+    }
 
     fun area(): Int {
         return length * width
     }
 }
 
-class square(side: Int) : rectangle(side, side)
+class square : rectangle {
+
+    constructor(side: Int) : super(side, side)
+}
 
 @Entry
 object top : Module() {
