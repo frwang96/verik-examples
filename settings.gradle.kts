@@ -53,6 +53,7 @@ include("vkprimer:03-interfaces")
 include("vkprimer:05-classes")
 include("vkprimer:06-polymorphism")
 include("vkprimer:07-static-methods")
+include("vkprimer:08-type-parameters")
 
 include("sanity:01-count")
 include("sanity:02-adder")

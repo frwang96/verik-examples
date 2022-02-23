@@ -7,6 +7,9 @@
       <scope name="uvmprimer" level="WEAK WARNING" enabled="false" />
     </inspection_tool>
     <inspection_tool class="ConstPropertyName" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="ConvertSecondaryConstructorToPrimary" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="uvmprimer" level="WARNING" enabled="false" />
+    </inspection_tool>
     <inspection_tool class="DuplicatedCode" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="EnumEntryName" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <scope name="uvmprimer" level="WEAK WARNING" enabled="false" />
@@ -38,6 +41,9 @@
       <option name="processCode" value="false" />
       <option name="processLiterals" value="true" />
       <option name="processComments" value="true" />
+    </inspection_tool>
+    <inspection_tool class="UnusedSymbol" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="uvmprimer" level="WARNING" enabled="false" />
     </inspection_tool>
   </profile>
 </component>

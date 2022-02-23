@@ -15,7 +15,6 @@
  */
 
 @file:Verik
-@file:Suppress("ConvertSecondaryConstructorToPrimary")
 
 import io.verik.core.*
 
