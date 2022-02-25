@@ -24,11 +24,6 @@ import io.verik.core.*
 @Entry
 object Top : Module() {
 
-    @Inj
-    val header = """
-        import tb_pkg::*;
-    """.trimIndent()
-
     @Make
     val bfm = TinyAluBfm()
 

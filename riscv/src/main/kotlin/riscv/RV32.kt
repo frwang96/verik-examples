@@ -1101,7 +1101,7 @@ class RV32<
                 instr_rdinstr  = (mem_rdata_q[6, 0] == u(0b1110011) && mem_rdata_q[31, 12] == u(0b11000000001000000010)) && ENABLE_COUNTERS
                 instr_rdinstrh = (mem_rdata_q[6, 0] == u(0b1110011) && mem_rdata_q[31, 12] == u(0b11000000001000000010)) && ENABLE_COUNTERS && ENABLE_COUNTERS64
 
-                instr_ecall_ebreak = (mem_rdata_q[6, 0] == u(0b1110011) && mem_rdata_q[31, 21].eqz() && mem_rdata_q[19, 77].eqz()) ||
+                instr_ecall_ebreak = (mem_rdata_q[6, 0] == u(0b1110011) && mem_rdata_q[31, 21].eqz() && mem_rdata_q[19, 7].eqz()) ||
                     (COMPRESSED_ISA && mem_rdata_q[15, 0] == u(0x9002))
 
                 instr_getq    = mem_rdata_q[6, 0] == u(0b0001011) && mem_rdata_q[31, 12] == u(0b0000000) && ENABLE_IRQ && ENABLE_IRQ_QREGS

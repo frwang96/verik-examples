@@ -48,7 +48,7 @@ To compile these examples define the environment variable `UVM_HOME` and point i
 Examples from `uvmprimer` rewritten to follow the coding conventions of idiomatic Verik.
 These examples do not import from the UVM and implement the equivalent functionality directly in Verik.
 
-## [sanity](https://github.com/frwang96/verik-examples/tree/main/sanity)
+## [misc](https://github.com/frwang96/verik-examples/tree/main/misc)
 
 Miscellaneous examples that demonstrate various aspects of the language.
 
