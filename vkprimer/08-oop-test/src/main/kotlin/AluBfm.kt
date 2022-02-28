@@ -16,16 +16,16 @@
 
 @file:Verik
 
-import dut.operation_t
+import dut.Op
 import io.verik.core.*
 
-class TinyAluBfm : ModuleInterface() {
+class AluBfm : ModuleInterface() {
 
     var clk: Boolean = nc()
     var rst_n: Boolean = nc()
     var a: Ubit<`8`> = nc()
     var b: Ubit<`8`> = nc()
-    var op: operation_t = nc()
+    var op: Op = nc()
     var start: Boolean = nc()
     var done: Boolean = nc()
     var result: Ubit<`16`> = nc()
@@ -50,9 +50,9 @@ class TinyAluBfm : ModuleInterface() {
     }
 
     @Task
-    fun sendOp(next_a: Ubit<`8`>, next_b: Ubit<`8`>, next_op: operation_t): Ubit<`16`> {
+    fun sendOp(next_a: Ubit<`8`>, next_b: Ubit<`8`>, next_op: Op): Ubit<`16`> {
         op = next_op
-        if (next_op == operation_t.rst_op) {
+        if (next_op == Op.RST) {
             wait(posedge(clk))
             rst_n = false
             start = false
@@ -64,7 +64,7 @@ class TinyAluBfm : ModuleInterface() {
             a = next_a
             b = next_b
             start = true
-            if (next_op == operation_t.no_op) {
+            if (next_op == Op.NOP) {
                 wait(posedge(clk))
                 delay(1)
             } else {

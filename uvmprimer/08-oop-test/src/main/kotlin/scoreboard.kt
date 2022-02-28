@@ -15,27 +15,34 @@
  */
 
 @file:Verik
+@file:Suppress("NON_EXHAUSTIVE_WHEN")
 
-import dut.operation_t
+import dut.operation_t.*
 import io.verik.core.*
 
-class Scoreboard(val bfm: TinyAluBfm) : Class() {
+class scoreboard : Class {
+
+    val bfm: tinyalu_bfm
+
+    constructor(b: tinyalu_bfm) : super() {
+        bfm = b
+    }
 
     @Task
     fun execute() {
+        var predicted_result: Ubit<`16`> = u0()
         forever {
             wait(posedge(bfm.done))
             delay(1)
-            val predicted_result = when (bfm.op) {
-                operation_t.add_op -> (bfm.a add bfm.b).ext()
-                operation_t.and_op -> (bfm.a and bfm.b).ext()
-                operation_t.xor_op -> (bfm.a xor bfm.b).ext()
-                operation_t.mul_op -> bfm.a mul bfm.b
-                else -> u0()
+            when (bfm.op_set) {
+                add_op -> predicted_result = (bfm.A add bfm.B).ext()
+                and_op -> predicted_result = (bfm.A and bfm.B).ext()
+                xor_op -> predicted_result = (bfm.A xor bfm.B).ext()
+                mul_op -> predicted_result = bfm.A mul bfm.B
             }
-            if (bfm.op != operation_t.no_op && bfm.op != operation_t.rst_op) {
+            if (bfm.op_set != no_op && bfm.op_set != rst_op) {
                 assert(predicted_result == bfm.result) {
-                    error("FAILED: a=${bfm.a} b=${bfm.b} op=${bfm.op} result=${bfm.result}")
+                    error("FAILED: A: ${bfm.A}  b:${bfm.B}  op:bfm.op_set}  result:${bfm.result}")
                 }
             }
         }

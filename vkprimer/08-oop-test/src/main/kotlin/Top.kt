@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Francis Wang
+ * Copyright (c) 2022 Francis Wang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,30 @@
 
 @file:Verik
 
+import dut.Alu
 import io.verik.core.*
 
-class Testbench(val bfm: TinyAluBfm) : Class() {
+@Entry
+object Top : Module() {
 
-    @Task
-    fun execute() {
-        val tester = Tester(bfm)
-        val scoreboard = Scoreboard(bfm)
-        fork { tester.execute() }
-        fork { scoreboard.execute() }
+    @Make
+    val bfm = AluBfm()
+
+    @Make
+    val alu = Alu(
+        clk = bfm.clk,
+        reset_n = bfm.rst_n,
+        a = bfm.a,
+        b = bfm.b,
+        op = bfm.op,
+        start = bfm.start,
+        done = bfm.done,
+        result = bfm.result
+    )
+
+    @Run
+    fun test() {
+        val testbench = Testbench(bfm)
+        testbench.execute()
     }
 }

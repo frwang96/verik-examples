@@ -24,8 +24,8 @@ uvmprimer:07-factory-pattern:
   compileFlags: -compile-top top
   runFlags: -run-top top
 uvmprimer:08-oop-test:
-  compileFlags: -compile-top Top
-  runFlags: -run-top Top
+  compileFlags: -compile-top top
+  runFlags: -run-top top
 uvmprimer:09-uvm-test:
   compileFlags: -compile-top Top -incdir $UVM_HOME/src $UVM_HOME/src/uvm_pkg.sv
   runFlags:
@@ -99,6 +99,9 @@ vkprimer:06-type-parameters:
   compileFlags: -compile-top Top
   runFlags: -run-top Top
 vkprimer:07-factory-pattern:
+  compileFlags: -compile-top Top
+  runFlags: -run-top Top
+vkprimer:08-oop-test:
   compileFlags: -compile-top Top
   runFlags: -run-top Top
 

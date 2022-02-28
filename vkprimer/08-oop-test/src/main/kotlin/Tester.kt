@@ -16,25 +16,23 @@
 
 @file:Verik
 
-import dut.operation_t
+import dut.Op
 import io.verik.core.*
 
-class Tester(val bfm: TinyAluBfm) : Class() {
+class Tester(val bfm: AluBfm) : Class() {
 
-    @Task
-    fun execute() {
-        bfm.resetAlu()
-        repeat(10) {
-            val a = getData()
-            val b = getData()
-            val op = getOp()
-            bfm.sendOp(a, b, op)
+    fun randomOp(): Op {
+        return when (random(6)) {
+            0 -> Op.NOP
+            1 -> Op.ADD
+            2 -> Op.AND
+            3 -> Op.XOR
+            4 -> Op.MUL
+            else -> Op.RST
         }
-        delay(100)
-        finish()
     }
 
-    private fun getData(): Ubit<`8`> {
+    fun randomData(): Ubit<`8`> {
         return when (random(4)) {
             0 -> u(0x00)
             1 -> u(0xff)
@@ -42,14 +40,17 @@ class Tester(val bfm: TinyAluBfm) : Class() {
         }
     }
 
-    private fun getOp(): operation_t {
-        return when (random(6)) {
-            0 -> operation_t.no_op
-            1 -> operation_t.add_op
-            2 -> operation_t.and_op
-            3 -> operation_t.xor_op
-            4 -> operation_t.mul_op
-            else -> operation_t.rst_op
+    @Task
+    fun execute() {
+        bfm.resetAlu()
+        repeat(100) {
+            val a = randomData()
+            val b = randomData()
+            val op = randomOp()
+            val result = bfm.sendOp(a, b, op)
+            println("$a $op $b = $result")
         }
+        delay(100)
+        finish()
     }
 }

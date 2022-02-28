@@ -55,6 +55,7 @@ include("vkprimer:04-polymorphism")
 include("vkprimer:05-static-methods")
 include("vkprimer:06-type-parameters")
 include("vkprimer:07-factory-pattern")
+include("vkprimer:08-oop-test")
 
 include("misc:01-count")
 include("misc:02-adder")

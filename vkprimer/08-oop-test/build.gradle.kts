@@ -14,32 +14,6 @@
  * limitations under the License.
  */
 
-@file:Verik
-
-import dut.tinyalu
-import io.verik.core.*
-
-@Entry
-object Top : Module() {
-
-    @Make
-    val bfm = TinyAluBfm()
-
-    @Make
-    val tiny_alu = tinyalu(
-        A = bfm.a,
-        B = bfm.b,
-        clk = bfm.clk,
-        op = bfm.op.value,
-        reset_n = bfm.rst_n,
-        start = bfm.start,
-        done = bfm.done,
-        result = bfm.result
-    )
-
-    @Run
-    fun test() {
-        val testbench = Testbench(bfm)
-        testbench.execute()
-    }
+dependencies {
+    implementation(project(":vkprimer:00-common"))
 }
