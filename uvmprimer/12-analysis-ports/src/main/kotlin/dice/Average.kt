@@ -20,27 +20,23 @@ package dice
 
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_phase
-import imported.uvm_pkg.uvm_test
+import imported.uvm_pkg.uvm_subscriber
 import io.verik.core.*
 
-@Entry
-class DiceTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
+class Average(name: String, parent: uvm_component?) : uvm_subscriber<Int>(name, parent) {
 
     @Inj
-    val header = "`uvm_component_utils(${t<DiceTest>()});"
+    val header = "`uvm_component_utils(${t<Average>()});"
 
-    lateinit var dice_roller: DiceRoller
-    lateinit var histogram: Histogram
-    lateinit var average: Average
+    var total = 0.0
+    var count = 0
 
-    override fun build_phase(phase: uvm_phase?) {
-        dice_roller = DiceRoller("dice_roller", this)
-        histogram = Histogram("histogram", this)
-        average = Average("average", this)
+    override fun write(t: Int) {
+        total += t
+        count++
     }
 
-    override fun connect_phase(phase: uvm_phase?) {
-        dice_roller.roll_ap.connect(histogram.analysis_export)
-        dice_roller.roll_ap.connect(average.analysis_export)
+    override fun report_phase(phase: uvm_phase?) {
+        println("DICE AVERAGE: ${total / count}")
     }
 }

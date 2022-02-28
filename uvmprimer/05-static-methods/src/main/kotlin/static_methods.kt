@@ -60,8 +60,7 @@ class lion : animal {
 
 object lion_cage : Class() {
 
-    // TODO replace with Queue
-    val cage = ArrayList<lion>()
+    val cage: Queue<lion> = nc()
 
     fun cage_lion(lion: lion) {
         cage.add(lion)

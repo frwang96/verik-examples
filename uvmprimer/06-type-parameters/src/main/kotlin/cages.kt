@@ -59,8 +59,7 @@ class chicken : animal {
 
 class animal_cage<T : animal> : Class() {
 
-    // TODO replace with Queue
-    private val cage = ArrayList<T>()
+    private val cage: Queue<T> = nc()
 
     fun cage_animal(l: T) {
         cage.add(l)
