@@ -54,15 +54,19 @@ object top : Module() {
 
     @Run
     fun run() {
-        val lion_h = lion(15)
+        var lion_h: lion
+        var chicken_h: chicken
+        var animal_h: animal
+
+        lion_h = lion(15)
         lion_h.make_sound()
         println("The lion is ${lion_h.age} years old")
 
-        val chicken_h = chicken(1)
+        chicken_h = chicken(1)
         chicken_h.make_sound()
         println("The chicken is ${chicken_h.age} years old")
 
-        var animal_h: animal = lion_h
+        animal_h = lion_h
         animal_h.make_sound()
         println("The animal is ${animal_h.age} years old")
 

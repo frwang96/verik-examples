@@ -21,8 +21,8 @@ uvmprimer:06-type-parameters:
   compileFlags: -compile-top top
   runFlags: -run-top top
 uvmprimer:07-factory-pattern:
-  compileFlags: -compile-top FactoryTop
-  runFlags: -run-top FactoryTop
+  compileFlags: -compile-top top
+  runFlags: -run-top top
 uvmprimer:08-oop-test:
   compileFlags: -compile-top Top
   runFlags: -run-top Top
@@ -96,6 +96,9 @@ vkprimer:05-static-methods:
   compileFlags: -compile-top Top
   runFlags: -run-top Top
 vkprimer:06-type-parameters:
+  compileFlags: -compile-top Top
+  runFlags: -run-top Top
+vkprimer:07-factory-pattern:
   compileFlags: -compile-top Top
   runFlags: -run-top Top
 

@@ -77,7 +77,8 @@ object top : Module() {
 
     @Run
     fun run() {
-        var lion_h = lion(2, "Kimba")
+        var lion_h: lion
+        lion_h = lion(2, "Kimba")
         lion_cage.cage_lion(lion_h)
         lion_h = lion(3, "Simba")
         lion_cage.cage_lion(lion_h)
