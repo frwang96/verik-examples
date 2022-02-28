@@ -15,12 +15,13 @@
  */
 
 @file:Verik
+@file:Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
 
 import dut.operation_t
 import dut.operation_t.*
 import io.verik.core.*
 
-class tester : Class {
+open class random_tester : Class {
 
     val bfm: tinyalu_bfm
 
@@ -28,7 +29,7 @@ class tester : Class {
         bfm = b
     }
 
-    fun get_op(): operation_t {
+    open fun get_op(): operation_t {
         val op_choice = randomUbit<`3`>()
         when (op_choice) {
             u(0b000) -> return no_op
@@ -56,25 +57,16 @@ class tester : Class {
     fun execute() {
         var iA: Ubit<`8`>
         var iB: Ubit<`8`>
-        var result: Ubit<`16`>
         var op_set: operation_t
+        var result: Ubit<`16`>
         bfm.reset_alu()
-        op_set = rst_op
-        iA = get_data()
-        iB = get_data()
-        bfm.send_op(iA, iB, op_set)
-        op_set = mul_op
-        bfm.send_op(iA, iB, op_set)
-        bfm.send_op(iA, iB, op_set)
-        op_set = rst_op
-        bfm.send_op(iA, iB, op_set)
-        repeat(100) {
+        repeat(10) {
             op_set = get_op()
             iA = get_data()
             iB = get_data()
             result = bfm.send_op(iA, iB, op_set)
-            println("$iA $op_set $iB = $result")
         }
+        delay(100)
         finish()
     }
 }

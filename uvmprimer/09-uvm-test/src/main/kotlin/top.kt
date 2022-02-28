@@ -16,31 +16,32 @@
 
 @file:Verik
 
-import imported.uvm_pkg.uvm_component
+import dut.tinyalu
+import imported.uvm_pkg.run_test
 import imported.uvm_pkg.uvm_config_db
-import imported.uvm_pkg.uvm_phase
-import imported.uvm_pkg.uvm_test
 import io.verik.core.*
 
 @Entry
-class AddTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
+object top : Module() {
 
-    @Inj
-    val header = "`uvm_component_utils(${t<AddTest>()});"
+    @Make
+    val bfm = tinyalu_bfm()
 
-    val bfm: TinyAluBfm = nc()
+    @Make
+    val DUT = tinyalu(
+        A = bfm.A,
+        B = bfm.B,
+        clk = bfm.clk,
+        op = bfm.op,
+        reset_n = bfm.reset_n,
+        start = bfm.start,
+        done = bfm.done,
+        result = bfm.result
+    )
 
-    init {
-        if (!uvm_config_db.get<TinyAluBfm>(null, "*", "bfm", bfm)) fatal("Failed to get BFM")
-    }
-
-    @Task
-    override fun run_phase(phase: uvm_phase?) {
-        phase!!.raise_objection(this)
-        val add_tester = AddTester(bfm)
-        val scoreboard = Scoreboard(bfm)
-        fork { scoreboard.execute() }
-        add_tester.execute()
-        phase.drop_objection(this)
+    @Run
+    fun run() {
+        uvm_config_db.set<tinyalu_bfm>(null, "*", "bfm", bfm)
+        run_test()
     }
 }

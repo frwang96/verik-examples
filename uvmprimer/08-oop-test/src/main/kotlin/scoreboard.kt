@@ -41,8 +41,8 @@ class scoreboard : Class {
                 mul_op -> predicted_result = bfm.A mul bfm.B
             }
             if (bfm.op_set != no_op && bfm.op_set != rst_op) {
-                assert(predicted_result == bfm.result) {
-                    error("FAILED: A: ${bfm.A}  b:${bfm.B}  op:bfm.op_set}  result:${bfm.result}")
+                if (predicted_result != bfm.result) {
+                    error("FAILED: A: ${bfm.A}  b:${bfm.B}  op:${bfm.op_set}  result:${bfm.result}")
                 }
             }
         }

@@ -23,24 +23,30 @@ import imported.uvm_pkg.uvm_test
 import io.verik.core.*
 
 @Entry
-class RandomTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
+class add_test : uvm_test {
 
     @Inj
-    val header = "`uvm_component_utils(${t<RandomTest>()});"
+    val header = "`uvm_component_utils(${t<add_test>()});"
 
-    val bfm: TinyAluBfm = nc()
+    val bfm: tinyalu_bfm = nc()
 
-    init {
-        if (!uvm_config_db.get<TinyAluBfm>(null, "*", "bfm", bfm)) fatal("Failed to get BFM")
+    constructor(name: String, parent: uvm_component?) : super(name, parent) {
+        if (!uvm_config_db.get<tinyalu_bfm>(null, "*", "bfm", bfm)) fatal("Failed to get BFM")
     }
 
     @Task
     override fun run_phase(phase: uvm_phase?) {
+        val add_tester_h: add_tester
+        val scoreboard_h: scoreboard
+
         phase!!.raise_objection(this)
-        val random_tester = RandomTester(bfm)
-        val scoreboard = Scoreboard(bfm)
-        fork { scoreboard.execute() }
-        random_tester.execute()
+
+        add_tester_h = add_tester(bfm)
+        scoreboard_h = scoreboard(bfm)
+
+        fork { scoreboard_h.execute() }
+
+        add_tester_h.execute()
         phase.drop_objection(this)
     }
 }

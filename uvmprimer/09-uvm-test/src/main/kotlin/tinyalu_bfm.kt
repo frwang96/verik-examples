@@ -17,21 +17,29 @@
 @file:Verik
 
 import dut.operation_t
+import dut.operation_t.no_op
+import dut.operation_t.rst_op
 import io.verik.core.*
 
-class TinyAluBfm : ModuleInterface() {
+class tinyalu_bfm : ModuleInterface() {
 
+    var A: Ubit<`8`> = nc()
+    var B: Ubit<`8`> = nc()
     var clk: Boolean = nc()
-    var rst_n: Boolean = nc()
-    var a: Ubit<`8`> = nc()
-    var b: Ubit<`8`> = nc()
-    var op: operation_t = nc()
+    var reset_n: Boolean = nc()
+    var op: Ubit<`3`> = nc()
     var start: Boolean = nc()
     var done: Boolean = nc()
     var result: Ubit<`16`> = nc()
+    var op_set: operation_t = nc()
+
+    @Com
+    fun set_op() {
+        op = op_set.value
+    }
 
     @Run
-    fun runClk() {
+    fun run_clk() {
         clk = false
         repeat(1000) {
             delay(10)
@@ -42,35 +50,37 @@ class TinyAluBfm : ModuleInterface() {
     }
 
     @Task
-    fun resetAlu() {
-        rst_n = false
-        repeat(2) { wait(negedge(clk)) }
-        rst_n = true
+    fun reset_alu() {
+        reset_n = false
+        wait(negedge(clk))
+        wait(negedge(clk))
+        reset_n = true
         start = false
     }
 
     @Task
-    fun sendOp(next_a: Ubit<`8`>, next_b: Ubit<`8`>, next_op: operation_t): Ubit<`16`> {
-        op = next_op
-        if (next_op == operation_t.rst_op) {
+    fun send_op(iA: Ubit<`8`>, iB: Ubit<`8`>, iop: operation_t): Ubit<`16`> {
+        op_set = iop
+        if (iop == rst_op) {
             wait(posedge(clk))
-            rst_n = false
+            reset_n = false
             start = false
             wait(posedge(clk))
             delay(1)
-            rst_n = true
+            reset_n = true
         } else {
             wait(negedge(clk))
-            a = next_a
-            b = next_b
+            A = iA
+            B = iB
             start = true
-            if (next_op == operation_t.no_op) {
+            if (iop == no_op) {
                 wait(posedge(clk))
                 delay(1)
+                start = false
             } else {
                 do { wait(negedge(clk)) } while (!done)
+                start = false
             }
-            start = false
         }
         return result
     }
