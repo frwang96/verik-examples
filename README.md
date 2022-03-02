@@ -48,6 +48,14 @@ To compile these examples define the environment variable `UVM_HOME` and point i
 Examples from `uvmprimer` rewritten to follow the coding conventions of idiomatic Verik.
 These examples do not import from the UVM and implement the equivalent functionality directly in Verik.
 
+## [svverif](https://github.com/frwang96/verik-examples/tree/main/svverif)
+
+Examples adapted from [SystemVerilog for Verification](http://www.chris.spear.net/systemverilog/default.htm) that
+demonstrate more advanced verification features.
+These examples are rewritten to follow the coding conventions of idiomatic Verik.
+
+- `01-arbiter`: Arbiter testbench with module ports and clocking blocks.
+
 ## [misc](https://github.com/frwang96/verik-examples/tree/main/misc)
 
 Miscellaneous examples that demonstrate various aspects of the language.
