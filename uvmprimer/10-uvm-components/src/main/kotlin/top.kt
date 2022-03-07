@@ -16,22 +16,32 @@
 
 @file:Verik
 
-import imported.uvm_pkg.uvm_component
-import imported.uvm_pkg.uvm_phase
-import imported.uvm_pkg.uvm_test
+import dut.tinyalu
+import imported.uvm_pkg.run_test
+import imported.uvm_pkg.uvm_config_db
 import io.verik.core.*
 
 @Entry
-class AddTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
+object top : Module() {
 
-    @Inj
-    val header = "`uvm_component_utils(${t<AddTest>()});"
+    @Make
+    val bfm = tinyalu_bfm()
 
-    var tester: AddTester = nc()
-    var scoreboard: Scoreboard = nc()
+    @Make
+    val DUT = tinyalu(
+        A = bfm.A,
+        B = bfm.B,
+        op = bfm.op,
+        clk = bfm.clk,
+        reset_n = bfm.reset_n,
+        start = bfm.start,
+        done = bfm.done,
+        result = bfm.result
+    )
 
-    override fun build_phase(phase: uvm_phase?) {
-        tester = AddTester("tester_h", this)
-        scoreboard = Scoreboard("scoreboard_h", this)
+    @Run
+    fun run() {
+        uvm_config_db.set<tinyalu_bfm>(null, "*", "bfm", bfm)
+        run_test()
     }
 }

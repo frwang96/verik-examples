@@ -17,11 +17,17 @@
 @file:Verik
 
 import dut.operation_t
+import imported.uvm_pkg.uvm_component
+import imported.uvm_pkg.uvm_config_db
+import imported.uvm_pkg.uvm_phase
 import io.verik.core.*
 
-class coverage : Class {
+class coverage : uvm_component {
 
-    val bfm: tinyalu_bfm
+    @Inj
+    val header: String = "`uvm_component_utils(${t<coverage>()});"
+
+    val bfm: tinyalu_bfm = nc()
 
     var A: Ubit<`8`> = nc()
     var B: Ubit<`8`> = nc()
@@ -30,14 +36,17 @@ class coverage : Class {
     var op_cov_i: op_cov
     var zeros_or_ones_on_ops_i: zeros_or_ones_on_ops
 
-    constructor(b: tinyalu_bfm) : super() {
+    constructor(name: String, parent: uvm_component?) : super(name, parent) {
         op_cov_i = op_cov(op_set)
         zeros_or_ones_on_ops_i = zeros_or_ones_on_ops(op_set, A, B)
-        bfm = b
+    }
+
+    override fun build_phase(phase: uvm_phase?) {
+        if (!uvm_config_db.get<tinyalu_bfm>(null, "*", "bfm", bfm)) fatal("Failed to get BFM")
     }
 
     @Task
-    fun execute() {
+    override fun run_phase(phase: uvm_phase?) {
         forever {
             wait(negedge(bfm.clk))
             A = bfm.A

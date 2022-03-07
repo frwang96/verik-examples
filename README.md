@@ -18,8 +18,8 @@ This example demonstrates substantial parameterization, assertions, and test ben
 
 Examples adapted from [The UVM Primer](https://sites.google.com/view/uvmprimer-com/home) that demonstrate OOP testbench
 functionality.
-These examples import from the [`UVM`](https://github.com/accellera/uvm) and closely follow the original SystemVerilog
-coding conventions.
+These examples import from the [UVM](https://github.com/accellera/uvm) and closely follow the original SystemVerilog
+coding conventions rather than the coding conventions of idiomatic Verik.
 To compile these examples define the environment variable `UVM_HOME` and point it to `uvm/distrib/src`.
 
 - `01-conventional-test`: Conventional testbench for an ALU.
@@ -60,9 +60,9 @@ These examples are rewritten to follow the coding conventions of idiomatic Verik
 
 Miscellaneous examples that demonstrate various aspects of the language.
 
-- `01-count`: Counter module.
-- `02-adder`: Adder module.
-- `03-multiplier`: Multiplier module.
-- `04-comb`: Various combinational logic.
-- `05-alu`: Arithmetic logic unit.
+- `01-count`: Simple counter module.
+- `02-adder`: Simple adder module.
+- `03-multiplier`: Simple multiplier module.
+- `04-comb`: Various combinational logic with tests.
+- `05-alu`: Arithmetic logic unit with tests.
 - `06-cache`: Direct mapped cache.

@@ -22,16 +22,20 @@ import imported.uvm_pkg.uvm_test
 import io.verik.core.*
 
 @Entry
-class RandomTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
+open class random_test : uvm_test {
 
     @Inj
-    val header = "`uvm_component_utils(${t<RandomTest>()});"
+    private val header: String = "`uvm_component_utils(${t<random_test>()});"
 
-    lateinit var tester: RandomTester
-    lateinit var scoreboard: Scoreboard
+    lateinit var tester_h: random_tester
+    lateinit var coverage_h: coverage
+    lateinit var scoreboard_h: scoreboard
 
     override fun build_phase(phase: uvm_phase?) {
-        tester = RandomTester("tester_h", this)
-        scoreboard = Scoreboard("scoreboard_h", this)
+        tester_h = random_tester("tester_h", this)
+        coverage_h = coverage("coverage_h", this)
+        scoreboard_h = scoreboard("scoreboard_h", this)
     }
+
+    constructor(name: String, parent: uvm_component?) : super(name, parent)
 }

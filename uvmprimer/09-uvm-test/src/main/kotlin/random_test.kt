@@ -37,13 +37,16 @@ class random_test : uvm_test {
     @Task
     override fun run_phase(phase: uvm_phase?) {
         val random_tester_h: random_tester
+        val coverage_h: coverage
         val scoreboard_h: scoreboard
 
         phase!!.raise_objection(this)
 
         random_tester_h = random_tester(bfm)
+        coverage_h = coverage(bfm)
         scoreboard_h = scoreboard(bfm)
 
+        fork { coverage_h.execute() }
         fork { scoreboard_h.execute() }
 
         random_tester_h.execute()
