@@ -39,7 +39,7 @@ object Top : Module() {
 
     @Run
     fun test() {
-        val testbench = Testbench(bfm)
+        val testbench = AluTestbench(bfm)
         testbench.execute()
     }
 }

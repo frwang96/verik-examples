@@ -44,6 +44,35 @@ object Top : Module() {
         result = result
     )
 
+    class OpCoverGroup(
+        @In var op: Op,
+        @In var a: Ubit<`8`>,
+        @In var b: Ubit<`8`>,
+    ) : CoverGroup() {
+
+        @Cover
+        val cp_op = cp(op)
+
+        @Cover
+        val cp_a = cp(a) {
+            bin("zeros", "{${u(0x00)}}")
+            bin("ones", "{${u(0xff)}}")
+            bin("others", "{[${u(0x01)}:${u(0xfe)}]}")
+        }
+
+        @Cover
+        val cp_b = cp(b) {
+            bin("zeros", "{${u(0x00)}}")
+            bin("ones", "{${u(0xff)}}")
+            bin("others", "{[${u(0x01)}:${u(0xfe)}]}")
+        }
+
+        @Cover
+        val cc_op_a_b = cc(cp_op, cp_a, cp_b) {
+            ignoreBin("others", "binsof($cp_a.others) && binsof($cp_b.others)")
+        }
+    }
+
     @Run
     fun runClk() {
         clk = false
@@ -53,6 +82,15 @@ object Top : Module() {
         }
         println("FAIL timeout")
         fatal()
+    }
+
+    @Run
+    fun runCoverage() {
+        val op_cg = OpCoverGroup(op, a, b)
+        forever {
+            wait(negedge(clk))
+            op_cg.sample()
+        }
     }
 
     fun randomOp(): Op {

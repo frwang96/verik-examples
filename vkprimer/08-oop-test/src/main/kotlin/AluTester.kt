@@ -19,7 +19,7 @@
 import dut.Op
 import io.verik.core.*
 
-class Tester(val bfm: AluBfm) : Class() {
+class AluTester(val bfm: AluBfm) : Class() {
 
     fun randomOp(): Op {
         return when (random(6)) {

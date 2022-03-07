@@ -18,13 +18,15 @@
 
 import io.verik.core.*
 
-class Testbench(val bfm: AluBfm) : Class() {
+class AluTestbench(val bfm: AluBfm) : Class() {
 
     @Task
     fun execute() {
-        val tester = Tester(bfm)
-        val scoreboard = Scoreboard(bfm)
+        val tester = AluTester(bfm)
+        val coverage = AluCoverage(bfm)
+        val scoreboard = AluScoreboard(bfm)
         fork { tester.execute() }
+        fork { coverage.execute() }
         fork { scoreboard.execute() }
     }
 }

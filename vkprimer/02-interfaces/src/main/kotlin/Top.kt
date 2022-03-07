@@ -29,6 +29,9 @@ object Top : Module() {
     val tester = AluTester(bfm)
 
     @Make
+    val coverage = AluCoverage(bfm)
+
+    @Make
     val scoreboard = AluScoreboard(bfm)
 
     @Make

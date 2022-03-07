@@ -29,6 +29,9 @@ object top : Module() {
     val tester_i = tester(bfm)
 
     @Make
+    val coverage_i = coverage(bfm)
+
+    @Make
     val scoreboard_i = scoreboard(bfm)
 
     @Make

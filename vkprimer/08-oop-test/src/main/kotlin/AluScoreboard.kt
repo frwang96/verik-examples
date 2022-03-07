@@ -19,7 +19,7 @@
 import dut.Op
 import io.verik.core.*
 
-class Scoreboard(val bfm: AluBfm) : Class() {
+class AluScoreboard(val bfm: AluBfm) : Class() {
 
     @Task
     fun execute() {
