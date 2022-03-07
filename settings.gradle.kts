@@ -56,6 +56,7 @@ include("vkprimer:05-static-methods")
 include("vkprimer:06-type-parameters")
 include("vkprimer:07-factory-pattern")
 include("vkprimer:08-oop-test")
+include("vkprimer:17-deep-operations")
 
 include("svverif:01-arbiter")
 
