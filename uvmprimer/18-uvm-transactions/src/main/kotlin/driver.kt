@@ -35,7 +35,7 @@ class driver : uvm_component {
 
     override fun build_phase(phase: uvm_phase?) {
         if (!uvm_config_db.get<tinyalu_bfm>(null, "*", "bfm", bfm)) {
-            inj("`uvm_fatal(${"COMMAND MONITOR"}, ${"Failed to get BFM"})")
+            inj("`uvm_fatal(${"DRIVER"}, ${"Failed to get BFM"})")
         }
         command_port = uvm_get_port("command_port", this)
     }

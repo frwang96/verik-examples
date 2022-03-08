@@ -19,10 +19,10 @@
     "ClassName",
     "ConvertSecondaryConstructorToPrimary",
     "unused",
-    "ConvertToStringTemplate",
-    "NON_EXHAUSTIVE_WHEN",
+    "FunctionName",
     "JoinDeclarationAndAssignment",
-    "FunctionName"
+    "NON_EXHAUSTIVE_WHEN",
+    "ConvertToStringTemplate"
 )
 
 import dut.operation_t.*

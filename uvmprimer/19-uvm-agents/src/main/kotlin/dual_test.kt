@@ -15,6 +15,7 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName", "ConvertSecondaryConstructorToPrimary", "unused")
 
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_config_db
@@ -23,16 +24,18 @@ import imported.uvm_pkg.uvm_test
 import io.verik.core.*
 
 @Entry
-open class DualTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
+open class dual_test : uvm_test {
 
     @Inj
-    private val header = "`uvm_component_utils(${t<DualTest>()});"
+    private val header = "`uvm_component_utils(${t<dual_test>()});"
 
-    lateinit var environment: Environment
+    lateinit var env_h: env
+
+    constructor(name: String, parent: uvm_component?) : super(name, parent)
 
     override fun build_phase(phase: uvm_phase?) {
-        val class_bfm: TinyAluBfm = nc()
-        val module_bfm: TinyAluBfm = nc()
+        val class_bfm: tinyalu_bfm = nc()
+        val module_bfm: tinyalu_bfm = nc()
         if (!uvm_config_db.get(this, "", "class_bfm", class_bfm)) {
             inj("`uvm_fatal(${"DUAL TEST"}, ${"Failed to get class bfm"})")
         }
@@ -40,9 +43,8 @@ open class DualTest(name: String, parent: uvm_component?) : uvm_test(name, paren
             inj("`uvm_fatal(${"DUAL TEST"}, ${"Failed to get module bfm"})")
         }
 
-        val environment_config = EnvironmentConfig(class_bfm, module_bfm)
-        uvm_config_db.set(this, "environment*", "config", environment_config)
-
-        environment = inji("${t<Environment>()}::type_id::create(${"environment"}, $this);")
+        val env_config_h = env_config(class_bfm, module_bfm)
+        uvm_config_db.set(this, "env_h*", "config", env_config_h)
+        env_h = inji("${t<env>()}::type_id::create(${"env_h"}, $this);")
     }
 }
