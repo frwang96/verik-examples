@@ -31,6 +31,8 @@ class scoreboard : uvm_subscriber<Ubit<`16`>> {
 
     lateinit var cmd_f: uvm_tlm_analysis_fifo<command_s>
 
+    constructor(name: String, parent: uvm_component?) : super(name, parent)
+
     override fun build_phase(phase: uvm_phase?) {
         cmd_f = uvm_tlm_analysis_fifo("cmd_f", this)
     }
@@ -38,9 +40,11 @@ class scoreboard : uvm_subscriber<Ubit<`16`>> {
     override fun write(t: Ubit<`16`>) {
         var predicted_result: Ubit<`16`> = u0()
         var cmd: command_s = nc()
+        cmd.A = u0()
+        cmd.B = u0()
         cmd.op = no_op
         do {
-            if (!cmd_f.try_get(cmd)) fatal("No command in checker")
+            if (!cmd_f.try_get(cmd)) fatal("Missing command in checker")
         } while (cmd.op == no_op || cmd.op == rst_op)
 
         when (cmd.op) {
@@ -53,6 +57,4 @@ class scoreboard : uvm_subscriber<Ubit<`16`>> {
             error("FAILED: A: ${cmd.A}  b:${cmd.B}  op:${cmd.op}  result:$predicted_result")
         }
     }
-
-    constructor(name: String, parent: uvm_component?) : super(name, parent)
 }

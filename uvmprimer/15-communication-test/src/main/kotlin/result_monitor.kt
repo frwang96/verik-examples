@@ -15,19 +15,32 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName", "ConvertSecondaryConstructorToPrimary", "FunctionName", "unused")
 
+import imported.uvm_pkg.uvm_analysis_port
 import imported.uvm_pkg.uvm_component
+import imported.uvm_pkg.uvm_config_db
 import imported.uvm_pkg.uvm_phase
 import io.verik.core.*
 
-@Entry
-class AddTest(name: String, parent: uvm_component?) : RandomTest(name, parent) {
+class result_monitor : uvm_component {
 
     @Inj
-    private val header = "`uvm_component_utils(${t<AddTest>()});"
+    val header = "`uvm_component_utils(${t<result_monitor>()});"
+
+    lateinit var ap: uvm_analysis_port<Ubit<`16`>>
+
+    fun write_to_monitor(r: Ubit<`16`>) {
+        println("RESULT MONITOR: resultA: $r")
+        ap.write(r)
+    }
 
     override fun build_phase(phase: uvm_phase?) {
-        inj("${t<RandomTester>()}::type_id::set_type_override(${t<AddTester>()}::get_type());")
-        super.build_phase(phase)
+        val bfm: tinyalu_bfm = nc()
+        if (!uvm_config_db.get<tinyalu_bfm>(null, "*", "bfm", bfm)) fatal("Failed to get BFM")
+        bfm.result_monitor_h = this
+        ap = uvm_analysis_port<Ubit<`16`>>("ap", this)
     }
+
+    constructor(name: String, parent: uvm_component?) : super(name, parent)
 }

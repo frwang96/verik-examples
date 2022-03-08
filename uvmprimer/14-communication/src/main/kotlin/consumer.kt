@@ -26,7 +26,7 @@ import io.verik.core.*
 class consumer : uvm_component {
 
     @Inj
-    val header: String = "`uvm_component_utils(${t<consumer>()});"
+    val header = "`uvm_component_utils(${t<consumer>()});"
 
     lateinit var get_port_h: uvm_get_port<Int>
     lateinit var clk_bfm_i: clk_bfm

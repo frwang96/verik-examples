@@ -25,7 +25,7 @@ import io.verik.core.*
 class producer : uvm_component {
 
     @Inj
-    val header: String = "`uvm_component_utils(${t<producer>()});"
+    val header = "`uvm_component_utils(${t<producer>()});"
 
     var shared = 0
     lateinit var put_port_h: uvm_put_port<Int>

@@ -27,7 +27,7 @@ import io.verik.core.*
 class communication_test : uvm_test {
 
     @Inj
-    val header: String = "`uvm_component_utils(${t<communication_test>()});"
+    val header = "`uvm_component_utils(${t<communication_test>()});"
 
     lateinit var producer_h: producer
     lateinit var consumer_h: consumer

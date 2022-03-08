@@ -16,11 +16,32 @@
 
 @file:Verik
 
-import dut.operation_t
+import dut.tinyalu
+import imported.uvm_pkg.run_test
+import imported.uvm_pkg.uvm_config_db
 import io.verik.core.*
 
-class Command(
-    val a: Ubit<`8`>,
-    val b: Ubit<`8`>,
-    val op: operation_t
-) : Struct()
+@Entry
+object top : Module() {
+
+    @Make
+    val bfm = tinyalu_bfm()
+
+    @Make
+    val tiny_alu = tinyalu(
+        A = bfm.A,
+        B = bfm.B,
+        op = bfm.op,
+        clk = bfm.clk,
+        reset_n = bfm.reset_n,
+        start = bfm.start,
+        done = bfm.done,
+        result = bfm.result
+    )
+
+    @Run
+    fun run() {
+        uvm_config_db.set<tinyalu_bfm>(null, "*", "bfm", bfm)
+        run_test()
+    }
+}

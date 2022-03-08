@@ -15,32 +15,22 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName", "ConvertSecondaryConstructorToPrimary", "unused")
 
-import dut.operation_t
 import imported.uvm_pkg.uvm_component
+import imported.uvm_pkg.uvm_phase
 import io.verik.core.*
 
-open class RandomTester(name: String, parent: uvm_component?) : BaseTester(name, parent) {
+@Entry
+class add_test : random_test {
 
     @Inj
-    private val header = "`uvm_component_utils(${t<RandomTester>()});"
+    private val header = "`uvm_component_utils(${t<add_test>()});"
 
-    override fun getData(): Ubit<`8`> {
-        return when (random(4)) {
-            0 -> u(0x00)
-            1 -> u(0xff)
-            else -> randomUbit<`8`>()
-        }
-    }
+    constructor(name: String, parent: uvm_component?) : super(name, parent)
 
-    override fun getOp(): operation_t {
-        return when (random(6)) {
-            0 -> operation_t.no_op
-            1 -> operation_t.add_op
-            2 -> operation_t.and_op
-            3 -> operation_t.xor_op
-            4 -> operation_t.mul_op
-            else -> operation_t.rst_op
-        }
+    override fun build_phase(phase: uvm_phase?) {
+        inj("${t<random_tester>()}::type_id::set_type_override(${t<add_tester>()}::get_type());")
+        super.build_phase(phase)
     }
 }

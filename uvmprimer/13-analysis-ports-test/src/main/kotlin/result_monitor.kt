@@ -26,7 +26,7 @@ import io.verik.core.*
 class result_monitor : uvm_component {
 
     @Inj
-    val header: String = "`uvm_component_utils(${t<result_monitor>()});"
+    val header = "`uvm_component_utils(${t<result_monitor>()});"
 
     lateinit var ap: uvm_analysis_port<Ubit<`16`>>
 

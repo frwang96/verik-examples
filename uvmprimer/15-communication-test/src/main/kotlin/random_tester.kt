@@ -32,15 +32,6 @@ open class random_tester : base_tester {
     @Inj
     private val header = "`uvm_component_utils(${t<random_tester>()});"
 
-    override fun get_data(): Ubit<`8`> {
-        val zero_ones = randomUbit<`2`>()
-        when (zero_ones) {
-            u(0b00) -> return u(0x00)
-            u(0b11) -> return u(0xff)
-            else -> return randomUbit<`8`>()
-        }
-    }
-
     override fun get_op(): operation_t {
         val op_choice = randomUbit<`3`>()
         when (op_choice) {
@@ -54,6 +45,15 @@ open class random_tester : base_tester {
             u(0b111) -> return rst_op
         }
         return rst_op
+    }
+
+    override fun get_data(): Ubit<`8`> {
+        val zero_ones = randomUbit<`2`>()
+        when (zero_ones) {
+            u(0b00) -> return u(0x00)
+            u(0b11) -> return u(0xff)
+            else -> return randomUbit<`8`>()
+        }
     }
 
     constructor(name: String, parent: uvm_component?) : super(name, parent)

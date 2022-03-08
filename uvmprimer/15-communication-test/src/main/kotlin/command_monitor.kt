@@ -15,21 +15,32 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName", "ConvertSecondaryConstructorToPrimary", "FunctionName", "unused")
 
+import imported.uvm_pkg.uvm_analysis_port
 import imported.uvm_pkg.uvm_component
+import imported.uvm_pkg.uvm_config_db
 import imported.uvm_pkg.uvm_phase
-import imported.uvm_pkg.uvm_test
 import io.verik.core.*
 
-@Entry
-open class RandomTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
+class command_monitor : uvm_component {
 
     @Inj
-    private val header = "`uvm_component_utils(${t<RandomTest>()});"
+    val header = "`uvm_component_utils(${t<command_monitor>()});"
 
-    lateinit var environment: Environment
+    lateinit var ap: uvm_analysis_port<command_s>
 
     override fun build_phase(phase: uvm_phase?) {
-        environment = inji("${t<Environment>()}::type_id::create(${"environment"}, $this);")
+        val bfm: tinyalu_bfm = nc()
+        if (!uvm_config_db.get<tinyalu_bfm>(null, "*", "bfm", bfm)) fatal("Failed to get BFM")
+        bfm.command_monitor_h = this
+        ap = uvm_analysis_port("ap", this)
     }
+
+    fun write_to_monitor(cmd: command_s) {
+        println("COMMAND MONITOR: A:${cmd.A} B:${cmd.B} op:${cmd.op}")
+        ap.write(cmd)
+    }
+
+    constructor(name: String, parent: uvm_component?) : super(name, parent)
 }
