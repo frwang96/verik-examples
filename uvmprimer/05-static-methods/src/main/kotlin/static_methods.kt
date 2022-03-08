@@ -15,6 +15,13 @@
  */
 
 @file:Verik
+@file:Suppress(
+    "ConvertSecondaryConstructorToPrimary",
+    "FunctionName",
+    "unused",
+    "ClassName",
+    "JoinDeclarationAndAssignment"
+)
 
 import io.verik.core.*
 

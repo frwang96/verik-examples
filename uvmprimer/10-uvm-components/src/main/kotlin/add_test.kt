@@ -15,6 +15,7 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName", "ConvertSecondaryConstructorToPrimary", "unused")
 
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_phase

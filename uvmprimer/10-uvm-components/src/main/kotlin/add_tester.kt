@@ -15,6 +15,7 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName", "ConvertSecondaryConstructorToPrimary")
 
 import dut.operation_t
 import dut.operation_t.add_op

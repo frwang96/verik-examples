@@ -16,27 +16,32 @@
 
 @file:Verik
 @file:Suppress(
-    "ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE",
-    "ConvertSecondaryConstructorToPrimary",
-    "FunctionName",
-    "MoveVariableDeclarationIntoWhen",
     "ClassName",
+    "ConvertSecondaryConstructorToPrimary",
+    "MoveVariableDeclarationIntoWhen",
     "LiftReturnOrAssignment"
 )
 
 import dut.operation_t
 import dut.operation_t.*
+import imported.uvm_pkg.uvm_component
 import io.verik.core.*
 
-open class random_tester : Class {
+open class random_tester : base_tester {
 
-    val bfm: tinyalu_bfm
+    @Inj
+    private val header: String = "`uvm_component_utils(${t<random_tester>()});"
 
-    constructor(b: tinyalu_bfm) : super() {
-        bfm = b
+    override fun get_data(): Ubit<`8`> {
+        val zero_ones = randomUbit<`2`>()
+        when (zero_ones) {
+            u(0b00) -> return u(0x00)
+            u(0b11) -> return u(0xff)
+            else -> return randomUbit<`8`>()
+        }
     }
 
-    open fun get_op(): operation_t {
+    override fun get_op(): operation_t {
         val op_choice = randomUbit<`3`>()
         when (op_choice) {
             u(0b000) -> return no_op
@@ -51,29 +56,5 @@ open class random_tester : Class {
         return rst_op
     }
 
-    fun get_data(): Ubit<`8`> {
-        val zero_ones = randomUbit<`2`>()
-        when (zero_ones) {
-            u(0b00) -> return u(0x00)
-            u(0b11) -> return u(0xff)
-            else -> return randomUbit<`8`>()
-        }
-    }
-
-    @Task
-    fun execute() {
-        var iA: Ubit<`8`>
-        var iB: Ubit<`8`>
-        var op_set: operation_t
-        var result: Ubit<`16`>
-        bfm.reset_alu()
-        repeat(100) {
-            op_set = get_op()
-            iA = get_data()
-            iB = get_data()
-            result = bfm.send_op(iA, iB, op_set)
-        }
-        delay(100)
-        finish()
-    }
+    constructor(name: String, parent: uvm_component?) : super(name, parent)
 }

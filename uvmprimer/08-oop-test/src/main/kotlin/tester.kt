@@ -15,6 +15,13 @@
  */
 
 @file:Verik
+@file:Suppress(
+    "ConvertSecondaryConstructorToPrimary",
+    "FunctionName",
+    "MoveVariableDeclarationIntoWhen",
+    "ClassName",
+    "LiftReturnOrAssignment"
+)
 
 import dut.operation_t
 import dut.operation_t.*

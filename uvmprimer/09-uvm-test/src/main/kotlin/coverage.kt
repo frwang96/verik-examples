@@ -15,6 +15,7 @@
  */
 
 @file:Verik
+@file:Suppress("ConvertSecondaryConstructorToPrimary", "ClassName", "JoinDeclarationAndAssignment")
 
 import dut.operation_t
 import io.verik.core.*

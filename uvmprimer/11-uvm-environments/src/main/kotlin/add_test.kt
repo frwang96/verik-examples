@@ -15,33 +15,25 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName", "ConvertSecondaryConstructorToPrimary", "unused")
 
-import dut.tinyalu
-import imported.uvm_pkg.run_test
-import imported.uvm_pkg.uvm_config_db
+import imported.uvm_pkg.uvm_component
+import imported.uvm_pkg.uvm_phase
+import imported.uvm_pkg.uvm_test
 import io.verik.core.*
 
 @Entry
-object Top : Module() {
+class add_test : uvm_test {
 
-    @Make
-    val bfm = TinyAluBfm()
+    @Inj
+    val header: String = "`uvm_component_utils(${t<add_test>()});"
 
-    @Make
-    val tiny_alu = tinyalu(
-        A = bfm.a,
-        B = bfm.b,
-        clk = bfm.clk,
-        op = bfm.op.value,
-        reset_n = bfm.rst_n,
-        start = bfm.start,
-        done = bfm.done,
-        result = bfm.result
-    )
+    lateinit var env_h: env
 
-    @Run
-    fun run() {
-        uvm_config_db.set<TinyAluBfm>(null, "*", "bfm", bfm)
-        run_test()
+    override fun build_phase(phase: uvm_phase?) {
+        inj("${t<base_tester>()}::type_id::set_type_override(${t<add_tester>()}::get_type());")
+        env_h = inji("${t<env>()}::type_id::create(${"env_h"}, $this);")
     }
+
+    constructor(name: String, parent: uvm_component?) : super(name, parent)
 }

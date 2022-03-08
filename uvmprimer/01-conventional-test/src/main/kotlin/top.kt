@@ -15,7 +15,13 @@
  */
 
 @file:Verik
-@file:Suppress("NON_EXHAUSTIVE_WHEN")
+@file:Suppress(
+    "NON_EXHAUSTIVE_WHEN",
+    "ClassName",
+    "FunctionName",
+    "MoveVariableDeclarationIntoWhen",
+    "LiftReturnOrAssignment"
+)
 
 import dut.operation_t
 import dut.operation_t.*

@@ -15,6 +15,7 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName")
 
 import dut.tinyalu
 import io.verik.core.*

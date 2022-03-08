@@ -15,7 +15,7 @@
  */
 
 @file:Verik
-@file:Suppress("NON_EXHAUSTIVE_WHEN")
+@file:Suppress("NON_EXHAUSTIVE_WHEN", "ClassName")
 
 import dut.operation_t.*
 import io.verik.core.*

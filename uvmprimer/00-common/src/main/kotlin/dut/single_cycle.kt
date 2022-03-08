@@ -15,6 +15,7 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName", "RedundantIf", "LiftReturnOrAssignment", "FunctionName")
 
 package dut
 

@@ -15,6 +15,7 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName", "ConvertSecondaryConstructorToPrimary", "unused", "JoinDeclarationAndAssignment")
 
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_config_db

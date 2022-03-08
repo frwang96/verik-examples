@@ -15,6 +15,7 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName", "FunctionName", "LiftReturnOrAssignment")
 
 import dut.operation_t
 import io.verik.core.*

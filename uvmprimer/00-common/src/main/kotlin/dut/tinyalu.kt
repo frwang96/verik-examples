@@ -15,7 +15,7 @@
  */
 
 @file:Verik
-@file:Suppress("REDUNDANT_ELSE_IN_WHEN")
+@file:Suppress("REDUNDANT_ELSE_IN_WHEN", "ClassName", "FunctionName", "LiftReturnOrAssignment")
 
 package dut
 

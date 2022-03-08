@@ -15,7 +15,14 @@
  */
 
 @file:Verik
-@file:Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+@file:Suppress(
+    "ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE",
+    "ConvertSecondaryConstructorToPrimary",
+    "FunctionName",
+    "MoveVariableDeclarationIntoWhen",
+    "ClassName",
+    "LiftReturnOrAssignment"
+)
 
 import dut.operation_t
 import dut.operation_t.*
@@ -32,7 +39,6 @@ open class random_tester : uvm_component {
     lateinit var bfm: tinyalu_bfm
 
     constructor(name: String, parent: uvm_component?) : super(name, parent)
-
 
     open fun get_op(): operation_t {
         val op_choice = randomUbit<`3`>()
@@ -58,7 +64,6 @@ open class random_tester : uvm_component {
         }
     }
 
-
     override fun build_phase(phase: uvm_phase?) {
         if (!uvm_config_db.get<tinyalu_bfm>(null, "*", "bfm", bfm)) fatal("Failed to get BFM")
     }
@@ -71,7 +76,7 @@ open class random_tester : uvm_component {
         var result: Ubit<`16`>
         phase!!.raise_objection(this)
         bfm.reset_alu()
-        repeat(10) {
+        repeat(100) {
             op_set = get_op()
             iA = get_data()
             iB = get_data()

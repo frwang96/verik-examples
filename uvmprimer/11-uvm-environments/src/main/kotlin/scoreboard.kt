@@ -15,7 +15,7 @@
  */
 
 @file:Verik
-@file:Suppress("NON_EXHAUSTIVE_WHEN", "ConvertSecondaryConstructorToPrimary", "ClassName")
+@file:Suppress("NON_EXHAUSTIVE_WHEN", "ClassName", "ConvertSecondaryConstructorToPrimary", "unused")
 
 import dut.operation_t
 import imported.uvm_pkg.uvm_component
