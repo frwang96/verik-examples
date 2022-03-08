@@ -15,34 +15,34 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName", "ConvertSecondaryConstructorToPrimary", "unused")
 
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_phase
-import imported.uvm_pkg.uvm_put_port
+import imported.uvm_pkg.uvm_test
+import imported.uvm_pkg.uvm_tlm_fifo
 import io.verik.core.*
 
-class Producer(name: String, parent: uvm_component?) : uvm_component(name, parent) {
+@Entry
+class communication_test : uvm_test {
 
     @Inj
-    val header = "`uvm_component_utils(${t<Producer>()});"
+    val header: String = "`uvm_component_utils(${t<communication_test>()});"
 
-    lateinit var put_port: uvm_put_port<Int>
-    var result = 0
+    lateinit var producer_h: producer
+    lateinit var consumer_h: consumer
+    lateinit var fifo_h: uvm_tlm_fifo<Int>
 
     override fun build_phase(phase: uvm_phase?) {
-        put_port = uvm_put_port("put_port", this)
+        producer_h = producer("producer_h", this)
+        consumer_h = consumer("consumer_h", this)
+        fifo_h = uvm_tlm_fifo("fifo_h", this)
     }
 
-    @Task
-    override fun run_phase(phase: uvm_phase?) {
-        phase!!.raise_objection(this)
-        repeat(10) {
-            delay(10)
-            put_port.put(result)
-            println("${time()}ns sent=$result")
-            result++
-        }
-        delay(100)
-        phase.drop_objection(this)
+    constructor(name: String, parent: uvm_component?) : super(name, parent)
+
+    override fun connect_phase(phase: uvm_phase?) {
+        producer_h.put_port_h.connect(fifo_h.put_export)
+        consumer_h.get_port_h.connect(fifo_h.get_export)
     }
 }

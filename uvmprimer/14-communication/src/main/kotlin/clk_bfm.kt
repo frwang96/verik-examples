@@ -15,20 +15,20 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName")
 
-import imported.uvm_pkg.run_test
-import imported.uvm_pkg.uvm_config_db
 import io.verik.core.*
 
-@Entry
-object Top : Module() {
+class clk_bfm : ModuleInterface() {
 
-    @Make
-    val clk_bfm = ClkBfm()
+    var clk: Boolean = nc()
 
     @Run
-    fun run() {
-        uvm_config_db.set<ClkBfm>(null, "*", "clk_bfm", clk_bfm)
-        run_test()
+    fun runClk() {
+        clk = false
+        forever {
+            delay(10)
+            clk = !clk
+        }
     }
 }
