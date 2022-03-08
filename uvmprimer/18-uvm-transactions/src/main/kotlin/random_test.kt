@@ -15,6 +15,7 @@
  */
 
 @file:Verik
+@file:Suppress("ConvertSecondaryConstructorToPrimary", "ClassName")
 
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_phase
@@ -22,14 +23,16 @@ import imported.uvm_pkg.uvm_test
 import io.verik.core.*
 
 @Entry
-open class RandomTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
+open class random_test : uvm_test {
 
     @Inj
-    private val header = "`uvm_component_utils(${t<RandomTest>()});"
+    private val header = "`uvm_component_utils(${t<random_test>()});"
 
-    lateinit var environment: Environment
+    lateinit var env_h: env
+
+    constructor(name: String, parent: uvm_component?) : super(name, parent)
 
     override fun build_phase(phase: uvm_phase?) {
-        environment = inji("${t<Environment>()}::type_id::create(${"environment"}, $this);")
+        env_h = inji("${t<env>()}::type_id::create(${"env_h"}, $this);")
     }
 }

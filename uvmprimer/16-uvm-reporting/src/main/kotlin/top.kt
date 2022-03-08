@@ -29,7 +29,7 @@ object top : Module() {
     val bfm = tinyalu_bfm()
 
     @Make
-    val tiny_alu = tinyalu(
+    val DUT = tinyalu(
         A = bfm.A,
         B = bfm.B,
         op = bfm.op,

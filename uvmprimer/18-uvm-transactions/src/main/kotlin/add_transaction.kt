@@ -15,33 +15,18 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName", "ConvertSecondaryConstructorToPrimary", "unused")
 
-import dut.tinyalu
-import imported.uvm_pkg.run_test
-import imported.uvm_pkg.uvm_config_db
+import dut.operation_t.add_op
 import io.verik.core.*
 
-@Entry
-object Top : Module() {
+class add_transaction : command_transaction {
 
-    @Make
-    val bfm = TinyAluBfm()
+    @Inj
+    private val header = "`uvm_object_utils(${t<add_transaction>()});"
 
-    @Make
-    val tiny_alu = tinyalu(
-        A = bfm.a,
-        B = bfm.b,
-        clk = bfm.clk,
-        op = bfm.op.value,
-        reset_n = bfm.rst_n,
-        start = bfm.start,
-        done = bfm.done,
-        result = bfm.result
-    )
+    @Cons
+    val add_only = c(op == add_op)
 
-    @Run
-    fun run() {
-        uvm_config_db.set<TinyAluBfm>(null, "*", "bfm", bfm)
-        run_test()
-    }
+    constructor(name: String = "") : super(name)
 }
