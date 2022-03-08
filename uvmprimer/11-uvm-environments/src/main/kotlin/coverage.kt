@@ -26,7 +26,7 @@ import io.verik.core.*
 class coverage : uvm_component {
 
     @Inj
-    val header: String = "`uvm_component_utils(${t<coverage>()});"
+    val header = "`uvm_component_utils(${t<coverage>()});"
 
     val bfm: tinyalu_bfm = nc()
 

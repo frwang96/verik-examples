@@ -28,7 +28,7 @@ import io.verik.core.*
 class dice_test : uvm_test {
 
     @Inj
-    val header: String = "`uvm_component_utils(${t<dice_test>()});"
+    val header = "`uvm_component_utils(${t<dice_test>()});"
 
     lateinit var dice_roller_h: dice_roller
     lateinit var coverage_h: coverage

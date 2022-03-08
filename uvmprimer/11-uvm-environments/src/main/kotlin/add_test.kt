@@ -26,7 +26,7 @@ import io.verik.core.*
 class add_test : uvm_test {
 
     @Inj
-    val header: String = "`uvm_component_utils(${t<add_test>()});"
+    val header = "`uvm_component_utils(${t<add_test>()});"
 
     lateinit var env_h: env
 

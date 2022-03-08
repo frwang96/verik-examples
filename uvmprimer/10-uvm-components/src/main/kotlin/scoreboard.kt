@@ -26,7 +26,7 @@ import io.verik.core.*
 class scoreboard : uvm_component {
 
     @Inj
-    val header: String = "`uvm_component_utils(${t<scoreboard>()});"
+    val header = "`uvm_component_utils(${t<scoreboard>()});"
 
     lateinit var bfm: tinyalu_bfm
 

@@ -25,7 +25,7 @@ import io.verik.core.*
 class add_tester : random_tester {
 
     @Inj
-    private val header: String = "`uvm_component_utils(${t<add_tester>()});"
+    private val header = "`uvm_component_utils(${t<add_tester>()});"
 
     override fun get_op(): operation_t {
         return add_op

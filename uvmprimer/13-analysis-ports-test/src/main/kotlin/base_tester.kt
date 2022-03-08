@@ -16,10 +16,10 @@
 
 @file:Verik
 @file:Suppress(
-    "ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE",
-    "ClassName",
+    "FunctionName",
     "ConvertSecondaryConstructorToPrimary",
-    "FunctionName"
+    "ClassName",
+    "ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE"
 )
 
 import dut.operation_t

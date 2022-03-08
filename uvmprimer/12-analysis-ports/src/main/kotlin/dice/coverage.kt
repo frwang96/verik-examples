@@ -27,7 +27,7 @@ import io.verik.core.*
 class coverage : uvm_subscriber<Int> {
 
     @Inj
-    val header: String = "`uvm_component_utils(${t<coverage>()});"
+    val header = "`uvm_component_utils(${t<coverage>()});"
 
     var the_roll = 0
     var dice_cg_i: dice_cg

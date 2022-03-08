@@ -26,7 +26,7 @@ import io.verik.core.*
 open class random_test : uvm_test {
 
     @Inj
-    private val header: String = "`uvm_component_utils(${t<random_test>()});"
+    private val header = "`uvm_component_utils(${t<random_test>()});"
 
     lateinit var tester_h: random_tester
     lateinit var coverage_h: coverage

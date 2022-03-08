@@ -34,7 +34,7 @@ import io.verik.core.*
 open class random_tester : uvm_component {
 
     @Inj
-    private val header: String = "`uvm_component_utils(${t<random_tester>()});"
+    private val header = "`uvm_component_utils(${t<random_tester>()});"
 
     lateinit var bfm: tinyalu_bfm
 

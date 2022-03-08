@@ -27,7 +27,7 @@ import io.verik.core.*
 class histogram : uvm_subscriber<Int> {
 
     @Inj
-    val header: String = "`uvm_component_utils(${t<histogram>()});"
+    val header = "`uvm_component_utils(${t<histogram>()});"
 
     // TODO replace with AssociativeArray
     val rolls: Unpacked<`13`, Int> = nc()

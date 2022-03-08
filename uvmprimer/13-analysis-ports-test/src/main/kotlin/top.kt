@@ -15,17 +15,34 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName")
 
-import dut.operation_t
-import imported.uvm_pkg.uvm_component
+import dut.tinyalu
+import imported.uvm_pkg.run_test
+import imported.uvm_pkg.uvm_config_db
 import io.verik.core.*
 
-class AddTester(name: String, parent: uvm_component?) : RandomTester(name, parent) {
+@Entry
+object top : Module() {
 
-    @Inj
-    private val header = "`uvm_component_utils(${t<AddTester>()});"
+    @Make
+    val bfm = tinyalu_bfm()
 
-    override fun getOp(): operation_t {
-        return operation_t.add_op
+    @Make
+    val tiny_alu = tinyalu(
+        A = bfm.A,
+        B = bfm.B,
+        op = bfm.op,
+        clk = bfm.clk,
+        reset_n = bfm.reset_n,
+        start = bfm.start,
+        done = bfm.done,
+        result = bfm.result
+    )
+
+    @Run
+    fun run() {
+        uvm_config_db.set<tinyalu_bfm>(null, "*", "bfm", bfm)
+        run_test()
     }
 }

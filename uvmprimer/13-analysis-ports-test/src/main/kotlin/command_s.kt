@@ -15,33 +15,13 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName")
 
-import dut.tinyalu
-import imported.uvm_pkg.run_test
-import imported.uvm_pkg.uvm_config_db
+import dut.operation_t
 import io.verik.core.*
 
-@Entry
-object Top : Module() {
-
-    @Make
-    val bfm = TinyAluBfm()
-
-    @Make
-    val tiny_alu = tinyalu(
-        A = bfm.a,
-        B = bfm.b,
-        clk = bfm.clk,
-        op = bfm.op.value,
-        reset_n = bfm.rst_n,
-        start = bfm.start,
-        done = bfm.done,
-        result = bfm.result
-    )
-
-    @Run
-    fun run() {
-        uvm_config_db.set<TinyAluBfm>(null, "*", "bfm", bfm)
-        run_test()
-    }
-}
+class command_s(
+    var A: Ubit<`8`>,
+    var B: Ubit<`8`>,
+    var op: operation_t
+) : Struct()

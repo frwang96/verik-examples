@@ -45,10 +45,10 @@ uvmprimer:12-analysis-ports:
   compileFlags: -compile-top top -incdir $UVM_HOME/src $UVM_HOME/src/uvm_pkg.sv
   runFlags: -run-top top -sv_lib $UVM_HOME/src/dpi/libuvm_dpi.so
 uvmprimer:13-analysis-ports-test:
-  compileFlags: -compile-top Top -incdir $UVM_HOME/src $UVM_HOME/src/uvm_pkg.sv
+  compileFlags: -compile-top top -incdir $UVM_HOME/src $UVM_HOME/src/uvm_pkg.sv
   runFlags:
-    - -run-top Top -sv_lib $UVM_HOME/src/dpi/libuvm_dpi.so +UVM_TESTNAME=RandomTest
-    - -run-top Top -sv_lib $UVM_HOME/src/dpi/libuvm_dpi.so +UVM_TESTNAME=AddTest
+    - -run-top top -sv_lib $UVM_HOME/src/dpi/libuvm_dpi.so +UVM_TESTNAME=random_test
+    - -run-top top -sv_lib $UVM_HOME/src/dpi/libuvm_dpi.so +UVM_TESTNAME=add_test
 uvmprimer:14-communication:
   compileFlags: -compile-top Top -incdir $UVM_HOME/src $UVM_HOME/src/uvm_pkg.sv
   runFlags: -run-top Top -sv_lib $UVM_HOME/src/dpi/libuvm_dpi.so +UVM_TESTNAME=CommunicationTest

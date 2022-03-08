@@ -30,7 +30,7 @@ import io.verik.core.*
 open class random_tester : base_tester {
 
     @Inj
-    private val header = "`uvm_component_utils(${t<random_tester>()});"
+    private val header: String = "`uvm_component_utils(${t<random_tester>()});"
 
     override fun get_data(): Ubit<`8`> {
         val zero_ones = randomUbit<`2`>()

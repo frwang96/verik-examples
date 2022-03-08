@@ -15,39 +15,32 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName", "ConvertSecondaryConstructorToPrimary", "FunctionName", "unused")
 
-import dut.operation_t
+import imported.uvm_pkg.uvm_analysis_port
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_config_db
 import imported.uvm_pkg.uvm_phase
 import io.verik.core.*
 
-abstract class BaseTester(name: String, parent: uvm_component?) : uvm_component(name, parent) {
+class result_monitor : uvm_component {
 
     @Inj
-    private val header = "`uvm_component_utils(${t<BaseTester>()});"
+    val header: String = "`uvm_component_utils(${t<result_monitor>()});"
 
-    lateinit var bfm: TinyAluBfm
+    lateinit var ap: uvm_analysis_port<Ubit<`16`>>
+
+    fun write_to_monitor(r: Ubit<`16`>) {
+        println("RESULT MONITOR: resultA: $r")
+        ap.write(r)
+    }
 
     override fun build_phase(phase: uvm_phase?) {
-        if (!uvm_config_db.get<TinyAluBfm>(null, "*", "bfm", bfm)) fatal("Failed to get BFM")
+        val bfm: tinyalu_bfm = nc()
+        if (!uvm_config_db.get<tinyalu_bfm>(null, "*", "bfm", bfm)) fatal("Failed to get BFM")
+        bfm.result_monitor_h = this
+        ap = uvm_analysis_port<Ubit<`16`>>("ap", this)
     }
 
-    @Task
-    override fun run_phase(phase: uvm_phase?) {
-        phase!!.raise_objection(this)
-        bfm.resetAlu()
-        repeat(10) {
-            val a = getData()
-            val b = getData()
-            val op = getOp()
-            bfm.sendOp(a, b, op)
-        }
-        delay(100)
-        phase.drop_objection(this)
-    }
-
-    abstract fun getOp(): operation_t
-
-    abstract fun getData(): Ubit<`8`>
+    constructor(name: String, parent: uvm_component?) : super(name, parent)
 }

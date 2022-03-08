@@ -32,7 +32,7 @@ import io.verik.core.*
 class average : uvm_subscriber<Int> {
 
     @Inj
-    val header: String = "`uvm_component_utils(${t<average>()});"
+    val header = "`uvm_component_utils(${t<average>()});"
 
     var dice_total: Double
     var count: Int

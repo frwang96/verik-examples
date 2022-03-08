@@ -15,20 +15,17 @@
  */
 
 @file:Verik
-@file:Suppress("ConvertSecondaryConstructorToPrimary", "ClassName", "JoinDeclarationAndAssignment")
+@file:Suppress("ConvertSecondaryConstructorToPrimary", "unused", "ClassName", "JoinDeclarationAndAssignment")
 
 import dut.operation_t
 import imported.uvm_pkg.uvm_component
-import imported.uvm_pkg.uvm_config_db
-import imported.uvm_pkg.uvm_phase
+import imported.uvm_pkg.uvm_subscriber
 import io.verik.core.*
 
-class coverage : uvm_component {
+class coverage : uvm_subscriber<command_s> {
 
     @Inj
     val header = "`uvm_component_utils(${t<coverage>()});"
-
-    val bfm: tinyalu_bfm = nc()
 
     var A: Ubit<`8`> = nc()
     var B: Ubit<`8`> = nc()
@@ -42,20 +39,12 @@ class coverage : uvm_component {
         zeros_or_ones_on_ops_i = zeros_or_ones_on_ops(op_set, A, B)
     }
 
-    override fun build_phase(phase: uvm_phase?) {
-        if (!uvm_config_db.get<tinyalu_bfm>(null, "*", "bfm", bfm)) fatal("Failed to get BFM")
-    }
-
-    @Task
-    override fun run_phase(phase: uvm_phase?) {
-        forever {
-            wait(negedge(bfm.clk))
-            A = bfm.A
-            B = bfm.B
-            op_set = bfm.op_set
-            op_cov_i.sample()
-            zeros_or_ones_on_ops_i.sample()
-        }
+    override fun write(t: command_s) {
+        A = t.A
+        B = t.B
+        op_set = t.op
+        op_cov_i.sample()
+        zeros_or_ones_on_ops_i.sample()
     }
 }
 
