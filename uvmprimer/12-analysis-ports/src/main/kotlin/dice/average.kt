@@ -15,32 +15,39 @@
  */
 
 @file:Verik
+@file:Suppress(
+    "ClassName",
+    "ConvertSecondaryConstructorToPrimary",
+    "JoinDeclarationAndAssignment",
+    "ReplaceWithOperatorAssignment"
+)
 
 package dice
 
 import imported.uvm_pkg.uvm_component
 import imported.uvm_pkg.uvm_phase
-import imported.uvm_pkg.uvm_test
+import imported.uvm_pkg.uvm_subscriber
 import io.verik.core.*
 
-@Entry
-class DiceTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
+class average : uvm_subscriber<Int> {
 
     @Inj
-    val header = "`uvm_component_utils(${t<DiceTest>()});"
+    val header: String = "`uvm_component_utils(${t<average>()});"
 
-    lateinit var dice_roller: DiceRoller
-    lateinit var histogram: Histogram
-    lateinit var average: Average
+    var dice_total: Double
+    var count: Int
 
-    override fun build_phase(phase: uvm_phase?) {
-        dice_roller = DiceRoller("dice_roller", this)
-        histogram = Histogram("histogram", this)
-        average = Average("average", this)
+    constructor(name: String, parent: uvm_component?) : super(name, parent) {
+        dice_total = 0.0
+        count = 0
     }
 
-    override fun connect_phase(phase: uvm_phase?) {
-        dice_roller.roll_ap.connect(histogram.analysis_export)
-        dice_roller.roll_ap.connect(average.analysis_export)
+    override fun write(t: Int) {
+        dice_total = dice_total + t
+        count++
+    }
+
+    override fun report_phase(phase: uvm_phase?) {
+        println("DICE AVERAGE: ${dice_total / count}")
     }
 }

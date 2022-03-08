@@ -15,12 +15,13 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName")
 
 import imported.uvm_pkg.run_test
 import io.verik.core.*
 
 @Entry
-class Top : Module() {
+class top : Module() {
 
     @Inj
     val header = """
@@ -29,6 +30,6 @@ class Top : Module() {
 
     @Run
     fun run() {
-        run_test()
+        run_test("dice_test")
     }
 }
