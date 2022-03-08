@@ -15,10 +15,9 @@
  */
 
 @file:Verik
-@file:Suppress("ClassName", "FunctionName", "LiftReturnOrAssignment", "unused")
+@file:Suppress("ClassName", "FunctionName", "unused", "LiftReturnOrAssignment")
 
 import dut.operation_t
-import dut.operation_t.*
 import io.verik.core.*
 
 class tinyalu_bfm : ModuleInterface() {
@@ -50,7 +49,7 @@ class tinyalu_bfm : ModuleInterface() {
     @Task
     fun send_op(iA: Ubit<`8`>, iB: Ubit<`8`>, iop: operation_t): Ubit<`16`> {
         op_set = iop
-        if (iop == rst_op) {
+        if (iop == operation_t.rst_op) {
             wait(posedge(clk))
             reset_n = false
             start = false
@@ -62,7 +61,7 @@ class tinyalu_bfm : ModuleInterface() {
             A = iA
             B = iB
             start = true
-            if (iop == no_op) {
+            if (iop == operation_t.no_op) {
                 wait(posedge(clk))
                 delay(1)
                 start = false
@@ -78,12 +77,12 @@ class tinyalu_bfm : ModuleInterface() {
 
     fun op2enum(): operation_t {
         when (op) {
-            u(0b000) -> return no_op
-            u(0b001) -> return add_op
-            u(0b010) -> return and_op
-            u(0b011) -> return xor_op
-            u(0b100) -> return mul_op
-            u(0b111) -> return rst_op
+            u(0b000) -> return operation_t.no_op
+            u(0b001) -> return operation_t.add_op
+            u(0b010) -> return operation_t.and_op
+            u(0b011) -> return operation_t.xor_op
+            u(0b100) -> return operation_t.mul_op
+            u(0b111) -> return operation_t.rst_op
             else -> fatal("Illegal operation on op bus")
         }
     }
@@ -112,7 +111,7 @@ class tinyalu_bfm : ModuleInterface() {
     fun rst_monitor() {
         on(negedge(reset_n)) {
             val command: command_s = nc()
-            command.op = rst_op
+            command.op = operation_t.rst_op
             if (command_monitor_h != null) {
                 command_monitor_h!!.write_to_monitor(command)
             }

@@ -15,19 +15,34 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName")
 
-import imported.uvm_pkg.uvm_component
-import imported.uvm_pkg.uvm_phase
+import dut.tinyalu
+import imported.uvm_pkg.run_test
+import imported.uvm_pkg.uvm_config_db
 import io.verik.core.*
 
 @Entry
-class AddTest(name: String, parent: uvm_component?) : RandomTest(name, parent) {
+object top : Module() {
 
-    @Inj
-    private val header = "`uvm_component_utils(${t<AddTest>()});"
+    @Make
+    val bfm = tinyalu_bfm()
 
-    override fun build_phase(phase: uvm_phase?) {
-        inj("${t<RandomTester>()}::type_id::set_type_override(${t<AddTester>()}::get_type());")
-        super.build_phase(phase)
+    @Make
+    val tiny_alu = tinyalu(
+        A = bfm.A,
+        B = bfm.B,
+        op = bfm.op,
+        clk = bfm.clk,
+        reset_n = bfm.reset_n,
+        start = bfm.start,
+        done = bfm.done,
+        result = bfm.result
+    )
+
+    @Run
+    fun run() {
+        uvm_config_db.set<tinyalu_bfm>(null, "*", "bfm", bfm)
+        run_test()
     }
 }

@@ -15,34 +15,22 @@
  */
 
 @file:Verik
+@file:Suppress("ConvertSecondaryConstructorToPrimary", "ClassName", "unused")
 
 import imported.uvm_pkg.uvm_component
-import imported.uvm_pkg.uvm_config_db
-import imported.uvm_pkg.uvm_get_port
 import imported.uvm_pkg.uvm_phase
 import io.verik.core.*
 
-class Driver(name: String, parent: uvm_component?) : uvm_component(name, parent) {
+@Entry
+class add_test : random_test {
 
     @Inj
-    val header = "`uvm_component_utils(${t<Driver>()});"
+    private val header = "`uvm_component_utils(${t<add_test>()});"
 
-    lateinit var bfm: TinyAluBfm
-    lateinit var command_port: uvm_get_port<Command>
+    constructor(name: String, parent: uvm_component?) : super(name, parent)
 
     override fun build_phase(phase: uvm_phase?) {
-        if (!uvm_config_db.get<TinyAluBfm>(null, "*", "bfm", bfm)) {
-            inj("`uvm_fatal(${"COMMAND MONITOR"}, ${"Failed to get BFM"})")
-        }
-        command_port = uvm_get_port("command_port", this)
-    }
-
-    @Task
-    override fun run_phase(phase: uvm_phase?) {
-        forever {
-            var command: Command = nc()
-            command_port.get(command)
-            bfm.sendOp(command.a, command.b, command.op)
-        }
+        inj("${t<random_tester>()}::type_id::set_type_override(${t<add_tester>()}::get_type());")
+        super.build_phase(phase)
     }
 }
