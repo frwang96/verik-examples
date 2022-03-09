@@ -45,6 +45,26 @@ class RV32PcpiMul(
     var pcpi_wait_q: Boolean = nc()
     var mul_start: Boolean = nc()
 
+    @Seq
+    fun seqInstr() {
+        instr_mul = false
+        instr_mulh = false
+        instr_mulhsu = false
+        instr_mulhu = false
+
+        if (resetn && pcpi_valid && (pcpi_insn[6, 0] == u(0b0110011)) && (pcpi_insn[31, 25] == u(0b0000001))) {
+            when (pcpi_insn[14, 12]) {
+                u(0b000) -> instr_mul = true
+                u(0b001) -> instr_mulh = true
+                u(0b010) -> instr_mulhsu = true
+                u(0b011) -> instr_mulhu = true
+            }
+        }
+
+        pcpi_wait = instr_any_mul
+        pcpi_wait_q = pcpi_wait
+    }
+
     var rs1: Ubit<`64`> = nc()
     var rs2: Ubit<`64`> = nc()
     var rd: Ubit<`64`> = nc()
@@ -60,4 +80,12 @@ class RV32PcpiMul(
     var mul_counter: Ubit<`7`> = nc()
     var mul_waiting: Boolean = nc()
     var mul_finish: Boolean = nc()
+
+    @Com
+    fun comNext() {
+        next_rd = rd
+        next_rdx = rdx
+        next_rs1 = rs1
+        next_rs2 = rs2
+    }
 }

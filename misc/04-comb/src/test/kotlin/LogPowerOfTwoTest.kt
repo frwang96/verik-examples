@@ -47,9 +47,7 @@ object LogPowerOfTwoTest : Module() {
         } while (a != u0<`*`>())
         println()
         println("logPowerOfTwo: ${if (error) "FAILED" else "PASS"}")
-        if (error)
-            fatal()
-        else
-            finish()
+        if (error) fatal()
+        else finish()
     }
 }

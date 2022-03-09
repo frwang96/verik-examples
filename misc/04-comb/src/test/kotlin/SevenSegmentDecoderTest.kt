@@ -56,9 +56,7 @@ object SevenSegmentDecoderTest : Module() {
         } while (count != u0<`*`>())
         println()
         println("sevenSegmentDecoder: ${if (actual != expected) "FAILED" else "PASS"}")
-        if (actual != expected)
-            fatal()
-        else
-            finish()
+        if (actual != expected) fatal()
+        else finish()
     }
 }

@@ -57,12 +57,9 @@ object RV32BasicTest : Module() {
         on (posedge(clk)) {
             if (mem_valid && mem_ready) {
                 when {
-                    mem_instr ->
-                        println("ifetch 0x$mem_addr: 0x$mem_rdata")
-                    mem_wstrb != u0<`4`>() ->
-                        println("write  0x$mem_addr: 0x$mem_wdata (wstrb=0x$mem_wstrb)")
-                    else ->
-                        println("read   0x$mem_addr: 0x$mem_rdata")
+                    mem_instr -> println("ifetch 0x$mem_addr: 0x$mem_rdata")
+                    mem_wstrb.neqz() -> println("write  0x$mem_addr: 0x$mem_wdata (wstrb=0x$mem_wstrb)")
+                    else -> println("read   0x$mem_addr: 0x$mem_rdata")
                 }
             }
         }
@@ -88,7 +85,7 @@ object RV32BasicTest : Module() {
         COMPRESSED_ISA = false,
         CATCH_MISALIGN = true,
         CATCH_ILLINSN = true,
-        ENABLE_PCPI = true,
+        ENABLE_PCPI = false,
         ENABLE_IRQ_TIMER = true,
         ENABLE_TRACE = false,
         MASKED_IRQ = u("32'h0000_0000"),
@@ -125,7 +122,7 @@ object RV32BasicTest : Module() {
         trace_data = nc()
     )
 
-    var memory: Unpacked<`256`, Ubit<`32`>> = nc()
+    var memory: Unpacked<`256`, Ubit<`32`>> = fill0()
 
     @Run
     fun initMemory() {

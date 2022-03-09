@@ -49,9 +49,7 @@ object VectorEqualTest : Module() {
         } while (expected != u0<`*`>())
         println()
         println("vectorEqual: ${if (error) "FAILED" else "PASS"}")
-        if (error)
-            fatal()
-        else
-            finish()
+        if (error) fatal()
+        else finish()
     }
 }

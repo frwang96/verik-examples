@@ -1194,8 +1194,6 @@ class RV32<
     var latched_is_lb: Boolean = nc()
     var latched_rd: Ubit<REGINDEX_BITS<ENABLE_REGS_16_31, ENABLE_IRQ, ENABLE_IRQ_QREGS>> = nc()
 
-    var current_pc: Ubit<`32`> = nc()
-
     @Com
     fun comNextPc() {
         next_pc = if (latched_store && latched_branch) reg_out and u(1).ext<`32`>().inv() else reg_next_pc
@@ -1443,7 +1441,7 @@ class RV32<
                 CPU_STATE_FETCH -> {
                     mem_do_rinst = !decoder_trigger && !do_waitirq
                     mem_wordsize = u0()
-                    current_pc = reg_next_pc
+                    var current_pc: Ubit<`32`> = reg_next_pc
 
                     when {
                         latched_branch -> {
@@ -1924,7 +1922,6 @@ class RV32<
                     reg_next_pc[1, 0] = u(0b00)
                 }
             }
-            current_pc = ux()
         }
     }
 }
