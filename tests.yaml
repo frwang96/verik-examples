@@ -111,6 +111,9 @@ vkprimer:17-deep-operations:
 svverif:01-arbiter:
   compileFlags: -compile-top Top
   runFlags: -run-top Top
+svverif:02-unique-array:
+  compileFlags: -compile-top Top
+  runFlags: -run-top Top
 
 misc:01-count:
   compileFlags: -compile-top Count

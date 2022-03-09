@@ -59,6 +59,7 @@ include("vkprimer:08-oop-test")
 include("vkprimer:17-deep-operations")
 
 include("svverif:01-arbiter")
+include("svverif:02-unique-array")
 
 include("misc:01-count")
 include("misc:02-adder")
