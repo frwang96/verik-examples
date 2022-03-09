@@ -16,23 +16,7 @@
 
 @file:Verik
 
-import imported.uvm_pkg.uvm_sequence
-import imported.uvm_pkg.uvm_verbosity.UVM_MEDIUM
+import imported.uvm_pkg.uvm_sequencer
 import io.verik.core.*
 
-open class ShortRandomSequence(name: String = "") : uvm_sequence<SequenceItem, SequenceItem>(name) {
-
-    @Inj
-    private val header = "`uvm_object_utils(${t<ShortRandomSequence>()});"
-
-    @Task
-    override fun body() {
-        repeat(10) {
-            val command: SequenceItem = inji("${t<SequenceItem>()}::type_id::create(${"command"})")
-            start_item(command)
-            command.randomize()
-            finish_item(command)
-            inj("`uvm_info(${"SHORT RANDOM"}, ${"random command: $command"}, $UVM_MEDIUM)")
-        }
-    }
-}
+typealias sequencer = uvm_sequencer<sequence_item, sequence_item>

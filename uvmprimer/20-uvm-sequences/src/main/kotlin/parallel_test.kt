@@ -15,33 +15,28 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName", "ConvertSecondaryConstructorToPrimary", "unused", "JoinDeclarationAndAssignment")
 
 import imported.uvm_pkg.uvm_component
-import imported.uvm_pkg.uvm_config_db
-import imported.uvm_pkg.uvm_driver
 import imported.uvm_pkg.uvm_phase
 import io.verik.core.*
 
-class Driver(name: String, parent: uvm_component?) : uvm_driver<SequenceItem, SequenceItem>(name, parent) {
+@Entry
+open class parallel_test : tinyalu_base_test {
 
     @Inj
-    val header = "`uvm_component_utils(${t<Driver>()});"
+    private val header = "`uvm_component_utils(${t<parallel_test>()});"
 
-    lateinit var bfm: TinyAluBfm
+    val parallel_h: parallel_sequence
 
-    override fun build_phase(phase: uvm_phase?) {
-        if (!uvm_config_db.get<TinyAluBfm>(null, "*", "bfm", bfm)) {
-            inj("`uvm_fatal(${"COMMAND MONITOR"}, ${"Failed to get BFM"})")
-        }
+    constructor(name: String, parent: uvm_component?) : super(name, parent) {
+        parallel_h = parallel_sequence("parallel_h")
     }
 
     @Task
     override fun run_phase(phase: uvm_phase?) {
-        forever {
-            var command: SequenceItem = nc()
-            seq_item_port!!.get_next_item(command)
-            command.result = bfm.sendOp(command.a, command.b, command.op)
-            seq_item_port!!.item_done()
-        }
+        phase!!.raise_objection(this)
+        parallel_h.start(sequencer_h)
+        phase.drop_objection(this)
     }
 }

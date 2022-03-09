@@ -34,10 +34,15 @@ open class command_transaction : uvm_transaction {
     @Inj
     private val header = "`uvm_object_utils(${t<command_transaction>()});"
 
-    // TODO support distribution constraint
     @Rand var A: Ubit<`8`> = nc()
     @Rand var B: Ubit<`8`> = nc()
     @Rand var op: operation_t = nc()
+
+    @Cons
+    val data = c(
+        "$A dist {${u(0x00)}:=1, [${u(0x01)} : ${u(0xfe)}]:=1, ${u(0xff)}:=1}",
+        "$B dist {${u(0x00)}:=1, [${u(0x01)} : ${u(0xfe)}]:=1, ${u(0xff)}:=1}"
+    )
 
     override fun do_copy(rhs: uvm_object?) {
         val copied_transaction_h: command_transaction

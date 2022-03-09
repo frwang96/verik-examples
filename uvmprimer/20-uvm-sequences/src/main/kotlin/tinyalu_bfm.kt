@@ -15,17 +15,13 @@
  */
 
 @file:Verik
-@file:Suppress("ClassName", "FunctionName", "LiftReturnOrAssignment")
+@file:Suppress("FunctionName", "LiftReturnOrAssignment", "ClassName", "unused")
 
 import dut.operation_t
-import dut.operation_t.no_op
-import dut.operation_t.rst_op
+import dut.operation_t.*
 import io.verik.core.*
 
 class tinyalu_bfm : ModuleInterface() {
-
-    var command_monitor_h: command_monitor? = null
-    lateinit var result_monitor_h: result_monitor
 
     var A: Ubit<`8`> = nc()
     var B: Ubit<`8`> = nc()
@@ -78,18 +74,32 @@ class tinyalu_bfm : ModuleInterface() {
         return result
     }
 
-    var new_command: Boolean = nc()
+    var command_monitor_h: command_monitor? = null
+
+    fun op2enum(): operation_t {
+        when (op) {
+            u(0b000) -> return no_op
+            u(0b001) -> return add_op
+            u(0b010) -> return and_op
+            u(0b011) -> return xor_op
+            u(0b100) -> return mul_op
+            u(0b111) -> return rst_op
+            else -> fatal("Illegal operation on op bus")
+        }
+    }
+
+    var in_command: Boolean = false
 
     @Seq
-    fun cmd_monitor() {
+    fun op_monitor() {
         on(posedge(clk)) {
-            if (!start) {
-                new_command = true
-            } else {
-                if (new_command) {
-                    command_monitor_h!!.write_to_monitor(A, B, op)
-                    new_command = (op == u(0b000))
+            if (start) {
+                if (!in_command) {
+                    command_monitor_h!!.write_to_monitor(A, B, op2enum())
+                    in_command = (op2enum() != no_op)
                 }
+            } else {
+                in_command = false
             }
         }
     }
@@ -98,10 +108,12 @@ class tinyalu_bfm : ModuleInterface() {
     fun rst_monitor() {
         on(negedge(reset_n)) {
             if (command_monitor_h != null) {
-                command_monitor_h!!.write_to_monitor(A, B, rst_op.value)
+                command_monitor_h!!.write_to_monitor(randomUbit(), u0(), rst_op)
             }
         }
     }
+
+    lateinit var result_monitor_h: result_monitor
 
     @Run
     fun result_monitor_thread() {

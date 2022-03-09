@@ -15,23 +15,29 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName", "ConvertSecondaryConstructorToPrimary", "unused")
 
-import dut.operation_t
 import imported.uvm_pkg.uvm_sequence
+import imported.uvm_pkg.uvm_verbosity.UVM_MEDIUM
 import io.verik.core.*
 
-open class MaxMultSequence(name: String = "") : uvm_sequence<SequenceItem, SequenceItem>(name) {
+open class short_random_sequence : uvm_sequence<sequence_item, sequence_item> {
 
     @Inj
-    private val header = "`uvm_object_utils(${t<MaxMultSequence>()});"
+    private val header = "`uvm_object_utils(${t<short_random_sequence>()});"
+
+    lateinit var command: sequence_item
+
+    constructor(name: String = "") : super(name)
 
     @Task
     override fun body() {
-        val command: SequenceItem = inji("${t<SequenceItem>()}::type_id::create(${"command"})")
-        start_item(command)
-        command.op = operation_t.mul_op
-        command.a = u(0xff)
-        command.b = u(0xff)
-        finish_item(command)
+        repeat(20) {
+            command = inji("${t<sequence_item>()}::type_id::create(${"command"})")
+            start_item(command)
+            command.randomize()
+            finish_item(command)
+            inj("`uvm_info(${"SHORT RANDOM"}, ${"random command: ${command.convert2string()}"}, $UVM_MEDIUM)")
+        }
     }
 }

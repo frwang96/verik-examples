@@ -15,21 +15,34 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName")
 
-import dut.operation_t
-import imported.uvm_pkg.uvm_sequence
+import dut.tinyalu
+import imported.uvm_pkg.run_test
+import imported.uvm_pkg.uvm_config_db
 import io.verik.core.*
 
-open class ResetSequence(name: String = "") : uvm_sequence<SequenceItem, SequenceItem>(name) {
+@Entry
+object top : Module() {
 
-    @Inj
-    private val header = "`uvm_object_utils(${t<ResetSequence>()});"
+    @Make
+    val bfm = tinyalu_bfm()
 
-    @Task
-    override fun body() {
-        val command: SequenceItem = inji("${t<SequenceItem>()}::type_id::create(${"command"})")
-        start_item(command)
-        command.op = operation_t.rst_op
-        finish_item(command)
+    @Make
+    val DUT = tinyalu(
+        A = bfm.A,
+        B = bfm.B,
+        op = bfm.op,
+        clk = bfm.clk,
+        reset_n = bfm.reset_n,
+        start = bfm.start,
+        done = bfm.done,
+        result = bfm.result
+    )
+
+    @Run
+    fun run() {
+        uvm_config_db.set<tinyalu_bfm>(null, "*", "bfm", bfm)
+        run_test()
     }
 }

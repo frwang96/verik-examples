@@ -29,8 +29,7 @@ class histogram : uvm_subscriber<Int> {
     @Inj
     val header = "`uvm_component_utils(${t<histogram>()});"
 
-    // TODO replace with AssociativeArray
-    val rolls: Unpacked<`13`, Int> = nc()
+    val rolls: AssociativeArray<Int, Int> = nc()
 
     constructor(name: String, parent: uvm_component?) : super(name, parent) {
         for (ii in 2 .. 12) rolls[ii] = 0

@@ -15,6 +15,7 @@
  */
 
 @file:Verik
+@file:Suppress("ConvertSecondaryConstructorToPrimary", "ClassName", "FunctionName", "unused")
 
 import dut.operation_t
 import imported.uvm_pkg.uvm_analysis_port
@@ -24,28 +25,33 @@ import imported.uvm_pkg.uvm_phase
 import imported.uvm_pkg.uvm_verbosity.UVM_MEDIUM
 import io.verik.core.*
 
-class CommandMonitor(name: String, parent: uvm_component?) : uvm_component(name, parent) {
+class command_monitor : uvm_component {
 
     @Inj
-    val header = "`uvm_component_utils(${t<CommandMonitor>()});"
+    val header = "`uvm_component_utils(${t<command_monitor>()});"
 
-    lateinit var ap: uvm_analysis_port<SequenceItem>
+    var bfm: tinyalu_bfm = nc()
+    lateinit var ap: uvm_analysis_port<sequence_item>
 
-    fun write(a: Ubit<`8`>, b: Ubit<`8`>, op: operation_t) {
-        inj("`uvm_info(${"COMMAND MONITOR"}, ${"a=$a b=$b op=$op"}, $UVM_MEDIUM)")
-        val cmd = SequenceItem("cmd")
-        cmd.a = a
-        cmd.b = b
-        cmd.op = op
-        ap.write(cmd)
-    }
+    constructor(name: String, parent: uvm_component?) : super(name, parent)
 
     override fun build_phase(phase: uvm_phase?) {
-        val bfm: TinyAluBfm = nc()
-        if (!uvm_config_db.get<TinyAluBfm>(null, "*", "bfm", bfm)) {
+        if (!uvm_config_db.get<tinyalu_bfm>(null, "*", "bfm", bfm)) {
             inj("`uvm_fatal(${"COMMAND MONITOR"}, ${"Failed to get BFM"})")
         }
-        bfm.command_monitor = this
         ap = uvm_analysis_port("ap", this)
+    }
+
+    override fun connect_phase(phase: uvm_phase?) {
+        bfm.command_monitor_h = this
+    }
+
+    fun write_to_monitor(A: Ubit<`8`>, B: Ubit<`8`>, op: operation_t) {
+        inj("`uvm_info(${"COMMAND MONITOR"}, ${"A:$A B:$B op:$op"}, $UVM_MEDIUM)")
+        val cmd = sequence_item("cmd")
+        cmd.A = A
+        cmd.B = B
+        cmd.op = op
+        ap.write(cmd)
     }
 }

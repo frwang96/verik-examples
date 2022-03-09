@@ -15,33 +15,27 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName", "ConvertSecondaryConstructorToPrimary", "unused")
 
-import dut.tinyalu
-import imported.uvm_pkg.run_test
-import imported.uvm_pkg.uvm_config_db
+import imported.uvm_pkg.uvm_sequence
 import io.verik.core.*
 
-@Entry
-object Top : Module() {
+open class random_sequence : uvm_sequence<sequence_item, sequence_item> {
 
-    @Make
-    val bfm = TinyAluBfm()
+    @Inj
+    private val header = "`uvm_object_utils(${t<random_sequence>()});"
 
-    @Make
-    val tiny_alu = tinyalu(
-        A = bfm.a,
-        B = bfm.b,
-        clk = bfm.clk,
-        op = bfm.op.value,
-        reset_n = bfm.rst_n,
-        start = bfm.start,
-        done = bfm.done,
-        result = bfm.result
-    )
+    lateinit var command: sequence_item
 
-    @Run
-    fun run() {
-        uvm_config_db.set<TinyAluBfm>(null, "*", "bfm", bfm)
-        run_test()
+    constructor(name: String = "") : super(name)
+
+    @Task
+    override fun body() {
+        repeat(100) {
+            command = inji("${t<sequence_item>()}::type_id::create(${"command"})")
+            start_item(command)
+            command.randomize()
+            finish_item(command)
+        }
     }
 }

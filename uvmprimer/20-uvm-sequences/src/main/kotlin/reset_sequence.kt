@@ -15,25 +15,26 @@
  */
 
 @file:Verik
+@file:Suppress("ClassName", "ConvertSecondaryConstructorToPrimary", "unused")
 
-import imported.uvm_pkg.uvm_component
-import imported.uvm_pkg.uvm_phase
-import imported.uvm_pkg.uvm_test
+import dut.operation_t.rst_op
+import imported.uvm_pkg.uvm_sequence
 import io.verik.core.*
 
-abstract class TinyAluBaseTest(name: String, parent: uvm_component?) : uvm_test(name, parent) {
+open class reset_sequence : uvm_sequence<sequence_item, sequence_item> {
 
     @Inj
-    private val header = "`uvm_component_utils(${t<TinyAluBaseTest>()});"
+    private val header = "`uvm_object_utils(${t<reset_sequence>()});"
 
-    lateinit var environment: Environment
-    lateinit var sequencer: Sequencer
+    lateinit var command: sequence_item
 
-    override fun build_phase(phase: uvm_phase?) {
-        environment = inji("${t<Environment>()}::type_id::create(${"environment"}, $this);")
-    }
+    constructor(name: String = "") : super(name)
 
-    override fun end_of_elaboration() {
-        sequencer = environment.sequencer
+    @Task
+    override fun body() {
+        command = inji("${t<sequence_item>()}::type_id::create(${"command"})")
+        start_item(command)
+        command.op = rst_op
+        finish_item(command)
     }
 }
