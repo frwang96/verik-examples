@@ -60,6 +60,7 @@ include("vkprimer:17-deep-operations")
 
 include("svverif:01-arbiter")
 include("svverif:02-unique-array")
+include("svverif:03-atm-switch")
 
 include("misc:01-count")
 include("misc:02-adder")

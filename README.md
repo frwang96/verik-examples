@@ -55,6 +55,8 @@ demonstrate more advanced verification features.
 These examples are rewritten to follow the coding conventions of idiomatic Verik.
 
 - `01-arbiter`: Arbiter testbench with module ports and clocking blocks.
+- `02-unique-array`: Generate an array with unique elements.
+- `03-atm-switch`: Asynchronous Transfer Mode switch with checker.
 
 ## [misc](https://github.com/frwang96/verik-examples/tree/main/misc)
 
