@@ -156,7 +156,7 @@ class RV32<
     var pcpi_int_ready: Boolean = nc()
 
     @Make
-    val pcpi_fast_mul = optional<ENABLE_FAST_MUL, RV32PcpiFastMul> {
+    val pcpi_fast_mul = optional(ENABLE_FAST_MUL) {
         RV32PcpiFastMul(
             clk = clk,
             resetn = resetn,
@@ -172,7 +172,7 @@ class RV32<
     }
 
     @Make
-    val pcpi_mul = optional<ENABLE_MUL, RV32PcpiMul> {
+    val pcpi_mul = optional(ENABLE_MUL) {
         RV32PcpiMul(
             clk = clk,
             resetn = resetn,
@@ -198,7 +198,7 @@ class RV32<
     }
 
     @Make
-    val pcpi_div = optional<ENABLE_DIV, RV32PcpiDiv> {
+    val pcpi_div = optional(ENABLE_DIV) {
         RV32PcpiDiv(
             clk = clk,
             resetn = resetn,

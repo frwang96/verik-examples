@@ -1,5 +1,6 @@
 /.run/
 .gradle/
+.aurora/
 out/
 build/
 

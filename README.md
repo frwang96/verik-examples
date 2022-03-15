@@ -8,7 +8,7 @@ Compiling the examples requires a local build of the Verik toolchain.
 
 ## [riscv](https://github.com/frwang96/verik-examples/tree/main/riscv)
 
-RISC-V core based on the [PicoRV32](https://github.com/YosysHQ/picorv32) project.
+RISC-V core adapted from the [PicoRV32](https://github.com/YosysHQ/picorv32) project.
 PicoRV32 is a CPU core that implements the RV32IMC instruction set.
 It is configurable with an optional interrupt controller, single or two-cycle ALU, and single or dual-port register
 file.
@@ -51,12 +51,13 @@ These examples do not import from the UVM and implement the equivalent functiona
 ## [svverif](https://github.com/frwang96/verik-examples/tree/main/svverif)
 
 Examples adapted from [SystemVerilog for Verification](http://www.chris.spear.net/systemverilog/default.htm) that
-demonstrate more advanced verification features.
-These examples are rewritten to follow the coding conventions of idiomatic Verik.
+demonstrate more verification features.
+These examples follow the coding conventions of idiomatic Verik.
 
 - `01-arbiter`: Arbiter testbench with module ports and clocking blocks.
 - `02-unique-array`: Generate an array with unique elements.
-- `03-atm-switch`: Asynchronous Transfer Mode switch with checker.
+- `03-atm-switch`: ATM switch with test bench.
+- `04-utopia-atm-switch`: UTOPIA bus ATM switch with test bench.
 
 ## [misc](https://github.com/frwang96/verik-examples/tree/main/misc)
 

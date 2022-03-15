@@ -18,44 +18,44 @@
 
 import io.verik.core.*
 
+typealias TX_PORTS = `4`
+typealias RX_PORTS = `4`
+
+val TX_PORTS_VAL = i<TX_PORTS>()
+val RX_PORTS_VAL = i<RX_PORTS>()
+
 @Entry
 class Top : Module() {
 
     var clk: Boolean = nc()
     var rst: Boolean = nc()
 
-    @Make
-    var rx = cluster(4) {
-        RxInterface(clk)
-    }
-
-    @Make
-    var tx = cluster(4) {
-        TxInterface(clk)
-    }
-
-    @Make
-    var router = AtmRouter(
-        rx = rx.map { it.dut },
-        tx = tx.map { it.dut },
-        clk = clk,
-        rst = rst
-    )
-
     @Run
-    fun runClk() {
+    fun toggleClk() {
+        rst = false
         clk = false
-        repeat(1000) {
-            delay(20)
+        delay(5)
+        rst = true
+        delay(5)
+        clk = true
+        delay(5)
+        rst = false
+        clk = false
+        forever {
+            delay(5)
             clk = !clk
         }
-        fatal("FAIL timeout")
     }
 
     @Make
-    var test = AtmTest(
-        rx.map { it.tb },
-        tx.map { it.tb },
-        rst
-    )
+    val rx = cluster(RX_PORTS_VAL) { UtopiaInterface() }
+
+    @Make
+    val tx = cluster(TX_PORTS_VAL)  { UtopiaInterface() }
+
+    @Make
+    val mif = CpuInterface()
+
+    @Make
+    val squat = Squat<TX_PORTS, RX_PORTS>()
 }

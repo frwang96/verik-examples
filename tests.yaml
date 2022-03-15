@@ -117,6 +117,9 @@ svverif:02-unique-array:
 svverif:03-atm-switch:
   compileFlags: -compile-top Top
   runFlags: -run-top Top
+svverif:04-utopia-atm-switch:
+  compileFlags: -compile-top Top
+  runFlags: -run-top Top
 
 misc:01-count:
   compileFlags: -compile-top Count
