@@ -45,10 +45,10 @@ class TestCell(
 ) : Struct()
 
 class AtmCell(
-    var uni: UniCell,
-    var nni: NniCell,
-    var test: TestCell,
-    var mem: Packed<`53`, Ubit<`8`>>
+    var uni: UniCell = nc(),
+    var nni: NniCell = nc(),
+    var test: TestCell = nc(),
+    var mem: Packed<`53`, Ubit<`8`>> = nc()
 ) : Union()
 
 class CellConfig(

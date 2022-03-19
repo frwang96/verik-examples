@@ -41,10 +41,11 @@ class Top : Module() {
         delay(5)
         rst = false
         clk = false
-        forever {
+        repeat(1000) {
             delay(5)
             clk = !clk
         }
+        fatal("FAIL timeout")
     }
 
     @Make
@@ -57,5 +58,11 @@ class Top : Module() {
     val mif = CpuInterface()
 
     @Make
-    val squat = Squat<TX_PORTS, RX_PORTS>()
+    val squat = Squat<TX_PORTS, RX_PORTS>(
+        rx = rx.map { it.top_rx },
+        tx = tx.map { it.top_tx },
+        mif = mif.periph,
+        rst = rst,
+        clk = clk
+    )
 }
