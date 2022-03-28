@@ -24,8 +24,8 @@ open class command_transaction : uvm_transaction {
 
     @Cons
     val data = c(
-        "$A dist {${u(0x00)}:=1, [${u(0x01)} : ${u(0xfe)}]:=1, ${u(0xff)}:=1}",
-        "$B dist {${u(0x00)}:=1, [${u(0x01)} : ${u(0xfe)}]:=1, ${u(0xff)}:=1}"
+        inji("$A dist {8'h00:=1, [8'h01 : 8'hfe]:=1, 8'hff:=1}"),
+        inji("$B dist {8'h00:=1, [8'h01 : 8'hfe]:=1, 8'hff:=1}")
     )
 
     override fun do_copy(rhs: uvm_object?) {

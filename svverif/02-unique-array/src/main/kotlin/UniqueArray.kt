@@ -17,7 +17,7 @@ class UniqueArray(
     lateinit var a: ArrayList<Ubit<`8`>>
 
     @Cons
-    val c_size = c("$size inside {[1:$max_size]}")
+    val c_size = c(inji("$size inside {[1:$max_size]}"))
 
     init {
         if (max_value < max_size.toUbit()) {

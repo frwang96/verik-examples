@@ -24,12 +24,12 @@ class sequence_item : uvm_sequence_item {
     @Rand var op: operation_t = nc()
 
     @Cons
-    val op_con = c("$op dist {$no_op := 1, $add_op := 5, $and_op:=5, $xor_op:=5, $mul_op:=5, $rst_op:=1}")
+    val op_con = c(inji("$op dist {$no_op := 1, $add_op := 5, $and_op:=5, $xor_op:=5, $mul_op:=5, $rst_op:=1}"))
 
     @Cons
     val data = c(
-        "$A dist {${u(0x00)}:=1, [${u(0x01)} : ${u(0xfe)}]:=1, ${u(0xff)}:=1}",
-        "$B dist {${u(0x00)}:=1, [${u(0x01)} : ${u(0xfe)}]:=1, ${u(0xff)}:=1}"
+        inji("$A dist {8'h00:=1, [8'h01 : 8'hfe]:=1, 8'hff:=1}"),
+        inji("$B dist {8'h00:=1, [8'h01 : 8'hfe]:=1, 8'hff:=1}")
     )
 
     var result: Ubit<`16`> = nc()

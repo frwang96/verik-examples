@@ -30,7 +30,7 @@ class coverage : uvm_subscriber<Int> {
     }
 
     override fun report_phase(phase: uvm_phase?) {
-        println("COVERAGE: ${dice_cg_i.getCoverage()}%")
+        println("COVERAGE: ${dice_cg_i.coverage()}%")
     }
 }
 

@@ -24,9 +24,9 @@ class AtmCell : Class() {
 
     @Cons
     val c_hec = c(
-        "$hec dist {1:=$w_good_hec, 0:=(100-$w_good_hec)}",
-        "$w_good_hec inside {[0:100]}",
-        "$delay inside {[1:50]}"
+        inji("$hec dist {1:=$w_good_hec, 0:=(100-$w_good_hec)}"),
+        inji("$w_good_hec inside {[0:100]}"),
+        inji("$delay inside {[1:50]}")
     )
 
     init {
