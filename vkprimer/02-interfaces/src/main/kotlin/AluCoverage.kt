@@ -30,22 +30,27 @@ class AluCoverage(
         val cp_op = cp(op)
 
         @Cover
-        val cp_a = cp(a) {
-            bin("zeros", "{${u(0x00)}}")
-            bin("ones", "{${u(0xff)}}")
-            bin("others", "{[${u(0x01)}:${u(0xfe)}]}")
-        }
+        val cp_a = cp(
+            a,
+            "bins zeros = {8'h00}",
+            "bins others = {[8'h01:8'hfe]}",
+            "bins ones = {8'hff}"
+        )
 
         @Cover
-        val cp_b = cp(b) {
-            bin("zeros", "{${u(0x00)}}")
-            bin("ones", "{${u(0xff)}}")
-            bin("others", "{[${u(0x01)}:${u(0xfe)}]}")
-        }
+        val cp_b = cp(
+            b,
+            "bins zeros = {8'h00}",
+            "bins others = {[8'h01:8'hfe]}",
+            "bins ones = {8'hff}"
+        )
 
         @Cover
-        val cc_op_a_b = cc(cp_op, cp_a, cp_b) {
-            ignoreBin("others", "binsof($cp_a.others) && binsof($cp_b.others)")
-        }
+        val cc_op_a_b = cc(
+            cp_op,
+            cp_a,
+            cp_b,
+            "ignore_bins others = binsof($cp_a.others) && binsof($cp_b.others)"
+        )
     }
 }
