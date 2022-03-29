@@ -13,12 +13,12 @@ class Top : Module() {
     var rst: Boolean = nc()
 
     @Make
-    var rx = cluster(4) {
+    var rx = cluster(STREAMS_VAL) {
         RxInterface(clk)
     }
 
     @Make
-    var tx = cluster(4) {
+    var tx = cluster(STREAMS_VAL) {
         TxInterface(clk)
     }
 
