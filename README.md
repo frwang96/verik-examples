@@ -3,11 +3,6 @@
 Examples for [Verik](https://github.com/frwang96/verik).
 Refer to [template](https://github.com/frwang96/verik-template) for a template project.
 Compiling the examples requires a local build of the Verik toolchain.
-Anyone is welcome to contribute by raising [issues](https://github.com/frwang96/verik-examples/issues),
-posting in [discussions](https://github.com/frwang96/verik-examples/discussions), or creating
-[pull requests](https://github.com/frwang96/verik-examples/pulls).
-These examples serve as a [regression test](https://verik.io/docs/regression/) for the Verik toolchain.
-If you have a Verik project that you are willing to share, I would love to add it to this collection.
 
 <!--- examples --->
 
@@ -28,7 +23,7 @@ coding conventions rather than the coding conventions of idiomatic Verik.
 Warnings from code style violations are
 [suppressed](https://www.jetbrains.com/help/idea/disabling-and-enabling-inspections.html) with
 `@file:Suppress` annotations at the top of the source files.
-To compile these examples define the environment variable `UVM_HOME` and point it to `uvm/distrib/src`.
+To compile these examples define the environment variable `UVM_HOME` and point it to `uvm/distrib`.
 
 ### 01-conventional-test
 Conventional testbench for an ALU. <br/>

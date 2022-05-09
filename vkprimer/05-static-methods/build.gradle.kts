@@ -7,10 +7,6 @@ plugins {
     id("io.verik.verik-plugin")
 }
 
-dependencies {
-    implementation(project(":vkprimer:00-common"))
-}
-
 verik {
     dsim {
         compileTops = listOf("Top")

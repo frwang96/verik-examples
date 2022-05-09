@@ -7,7 +7,11 @@ plugins {
     id("io.verik.verik-plugin")
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
+verik {
+    dsim {
+        compileTops = listOf("RV32BasicTest")
+        sim {
+            name = "sim"
+        }
+    }
 }
