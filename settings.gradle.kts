@@ -13,6 +13,10 @@ pluginManagement {
 
 include("riscv")
 
+include("fpga:01-sevenseg")
+include("fpga:02-camera")
+include("fpga:03-fft")
+
 include("uvmprimer:00-common")
 include("uvmprimer:01-conventional-test")
 include("uvmprimer:02-interfaces")

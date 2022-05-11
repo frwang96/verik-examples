@@ -14,6 +14,25 @@ It is configurable with an optional interrupt controller, single or two-cycle AL
 file. <br/>
 Tags: `#Modules` `#Parameterization` `#Assertions`
 
+## [fpga](https://github.com/frwang96/verik-examples/tree/main/fpga)
+
+Examples that are meant to be run on the [Nexys 4](https://digilent.com/reference/programmable-logic/nexys-4/start), a
+development board with an Artix-7 FPGA.
+These examples are synthesized with [Xilinx Vivado](https://www.xilinx.com/products/design-tools/vivado.html) and may
+integrate [Vivado IP](https://www.xilinx.com/products/intellectual-property.html).
+
+### 01-sevenseg
+Simple seven-segment display driver with test bench. <br/>
+Tags: `#FPGA` `#Modules`
+
+### 02-camera
+Write data from a camera into block memory and read from the memory to drive a VGA display. <br/>
+Tags: `#FPGA` `#Modules`
+
+### 03-fft
+Read audio input from an ADC, perform an FFT, and plot the magnitudes on a VGA display. <br/>
+Tags: `#FPGA` `#Modules`
+
 ## [uvmprimer](https://github.com/frwang96/verik-examples/tree/main/uvmprimer)
 
 Examples adapted from [The UVM Primer](https://sites.google.com/view/uvmprimer-com/home) that demonstrate OOP testbench
